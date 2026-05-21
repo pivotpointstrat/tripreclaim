@@ -129,18 +129,22 @@
     }
     .airline-logo {
       display: inline-flex; align-items: center; justify-content: center;
-      padding: 6px 14px;
+      padding: 8px 16px;
       border: 1px solid #e2e8f0;
-      border-radius: 8px;
+      border-radius: 10px;
       background: #fff;
-      font-size: 0.78rem; font-weight: 800; letter-spacing: 0.3px;
-      opacity: 0.65; transition: opacity 0.2s;
-      white-space: nowrap;
+      height: 52px;
     }
-    .airline-logo:hover { opacity: 1; }
+    .airline-logo img {
+      height: 28px; width: auto; max-width: 110px;
+      filter: grayscale(100%) opacity(0.55);
+      transition: filter 0.2s;
+      object-fit: contain;
+    }
+    .airline-logo:hover img { filter: grayscale(0%) opacity(1); }
     .airline-more {
-      font-size: 0.8rem; font-weight: 700; letter-spacing: 1px;
-      color: #94a3b8; text-transform: uppercase; padding: 6px 4px;
+      font-size: 0.82rem; font-weight: 800; letter-spacing: 1px;
+      color: #94a3b8; text-transform: uppercase; padding: 0 4px;
     }
 
     /* ── SECTIONS COMMON ── */
@@ -399,15 +403,15 @@
 <div class="trust-bar">
   <p><strong>Supported airlines include:</strong></p>
   <div class="airline-logos">
-    <span class="airline-logo" style="color:#0078D2">✈ American</span>
-    <span class="airline-logo" style="color:#E51937">▲ Delta</span>
-    <span class="airline-logo" style="color:#1B4596">⬡ United</span>
-    <span class="airline-logo" style="color:#304CB2">♥ Southwest</span>
-    <span class="airline-logo" style="color:#003876">● JetBlue</span>
-    <span class="airline-logo" style="color:#01426A">❄ Alaska</span>
-    <span class="airline-logo" style="color:#05164D">◆ Lufthansa</span>
-    <span class="airline-logo" style="color:#2B3F8C">✦ British Airways</span>
-    <span class="airline-logo" style="color:#5C0632">◈ Qatar Airways</span>
+    <span class="airline-logo"><img src="/logos/american.svg" alt="American Airlines"></span>
+    <span class="airline-logo"><img src="/logos/delta.svg" alt="Delta"></span>
+    <span class="airline-logo"><img src="/logos/united.svg" alt="United"></span>
+    <span class="airline-logo"><img src="/logos/southwest.svg" alt="Southwest"></span>
+    <span class="airline-logo"><img src="/logos/jetblue.svg" alt="JetBlue"></span>
+    <span class="airline-logo"><img src="/logos/alaska.svg" alt="Alaska Airlines"></span>
+    <span class="airline-logo"><img src="/logos/lufthansa.svg" alt="Lufthansa"></span>
+    <span class="airline-logo"><img src="/logos/british.svg" alt="British Airways"></span>
+    <span class="airline-logo"><img src="/logos/qatar.svg" alt="Qatar Airways"></span>
     <span class="airline-more">++ More</span>
   </div>
 </div>
