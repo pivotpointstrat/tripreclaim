@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reclaim — We Alert You When Your Flight Price Drops So You Can Claim a Refund</title>
+<style>
+  /* [Previous styles remain unchanged] */
+  .faq { background: #f1f5f9; padding: 64px 24px; }
+  .faq-container { max-width: 800px; margin: 0 auto; }
+  .faq-item { background: #fff; margin-bottom: 16px; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .faq-question { font-weight: 700; color: #0f172a; margin-bottom: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .faq-answer { color: #64748b; display: none; padding-top: 12px; }
+  .faq-question::after { content: '+'; font-size: 1.5rem; color: #3b82f6; }
+  .faq-question.active::after { content: '−'; }
+  .faq-question.active + .faq-answer { display: block; }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const faqQuestions = document.querySelectorAll('.faq-question');
+    faqQuestions.forEach(question => {
+      question.addEventListener('click', function() {
+        this.classList.toggle('active');
+      });
+    });
+  });
+</script>
+</head>
+<body>
+
+<!-- Previous sections remain unchanged -->
+
+<section class="faq" id="faq">
+  <div class="faq-container">
+    <h2>Frequently Asked Questions</h2>
+    <p class="subtitle">Got questions? We've got answers.</p>
+    
+    <div class="faq-item">
+      <div class="faq-question">How does Reclaim track flight prices?</div>
+      <div class="faq-answer">We continuously monitor airline pricing databases and compare your original booking price against current rates. When a significant price drop occurs that meets refund criteria, we automatically generate a personalized alert.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Is my personal booking information secure?</div>
+      <div class="faq-answer">Absolutely. We use bank-level 256-bit encryption and never store complete booking details. Only essential information required for price tracking is temporarily processed.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">What airlines are supported?</div>
+      <div class="faq-answer">We support major US and international carriers including American Airlines, Delta, United, Southwest, JetBlue, and many more. Our coverage continues to expand regularly.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">How quickly will I be notified of a price drop?</div>
+      <div class="faq-answer">Our system checks prices hourly. Once a qualifying price reduction is detected, you'll receive an instant email and mobile notification with precise refund instructions.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">What if my airline doesn't offer a refund?</div>
+      <div class="faq-answer">We provide comprehensive guides for each scenario, including credit card price protection claims, airline-specific policies, and alternative refund strategies.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p style="margin-bottom:12px;">© 2026 Reclaim. All rights reserved.</p>
+  <div>
+    <a href="/privacy">Privacy Policy</a>
+    <a href="/terms">Terms of Service</a>
+    <a href="mailto:hello@getreclaimapp.com">Contact</a>
+  </div>
+</footer>
+
+</body>
+</html>

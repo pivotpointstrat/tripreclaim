@@ -1,0 +1,4 @@
+.a0proj/
+*.promptinclude.md
+*.env
+.env*
