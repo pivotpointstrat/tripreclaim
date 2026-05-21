@@ -6,8 +6,20 @@ const { requireAuth } = require('../middleware/auth');
 const { sendWelcome } = require('../services/email');
 
 const SUPPORTED_AIRLINES = [
-  'American Airlines', 'Delta', 'United', 'Southwest', 'JetBlue',
-  'Alaska Airlines', 'Lufthansa', 'British Airways', 'Qatar Airways',
+  // Full airline list — kept loose, frontend validates
+  'American Airlines', 'Delta Air Lines', 'United Airlines', 'Southwest Airlines',
+  'JetBlue', 'Alaska Airlines', 'Spirit Airlines', 'Frontier Airlines',
+  'Hawaiian Airlines', 'Sun Country Airlines', 'Allegiant Air',
+  'Air France', 'KLM', 'Lufthansa', 'British Airways', 'Virgin Atlantic',
+  'Swiss International Air Lines', 'Austrian Airlines', 'Brussels Airlines',
+  'Finnair', 'Iberia', 'SAS Scandinavian Airlines', 'Turkish Airlines',
+  'Aer Lingus', 'EasyJet', 'Ryanair', 'Wizz Air', 'TAP Air Portugal', 'LOT Polish Airlines',
+  'Qatar Airways', 'Emirates', 'Etihad Airways', 'Air Arabia', 'flydubai', 'Saudia',
+  'Singapore Airlines', 'Cathay Pacific', 'Japan Airlines', 'ANA All Nippon Airways',
+  'Korean Air', 'Asiana Airlines', 'Air China', 'China Eastern', 'China Southern',
+  'EVA Air', 'Thai Airways', 'Malaysia Airlines', 'Qantas', 'Air New Zealand',
+  'Garuda Indonesia', 'Air Canada', 'WestJet', 'Aeromexico', 'LATAM Airlines',
+  'Avianca', 'Copa Airlines', 'GOL Airlines', 'Azul Brazilian Airlines',
 ];
 
 /**
@@ -20,7 +32,7 @@ router.get('/', requireAuth, async (req, res) => {
       .select('-priceHistory')
       .sort({ createdAt: -1 })
       .lean();
-    res.json({ bookings });
+    res.json(bookings);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch bookings' });
   }

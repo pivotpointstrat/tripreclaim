@@ -112,4 +112,32 @@ router.put('/profile', require('../middleware/auth').requireAuth, async (req, re
   }
 });
 
+
+/**
+ * GET /auth/referral
+ * Get or create user's referral code and stats
+ */
+router.get('/referral', require('../middleware/auth').requireAuth, async (req, res) => {
+  try {
+    let user = req.user;
+    if (!user.referralCode) {
+      const code = Math.random().toString(36).substring(2, 10).toUpperCase();
+      user = await User.findByIdAndUpdate(
+        user._id,
+        { referralCode: code },
+        { new: true }
+      );
+    }
+    res.json({
+      referralCode: user.referralCode,
+      referralLink: `${process.env.FRONTEND_URL}?ref=${user.referralCode}`,
+      referralCount: user.referralCount || 0,
+      tripsEarned: user.referralTripsEarned || 0,
+    });
+  } catch (err) {
+    console.error('[auth] Referral error:', err.message);
+    res.status(500).json({ error: 'Failed to get referral info' });
+  }
+});
+
 module.exports = router;
