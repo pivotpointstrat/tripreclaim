@@ -48,6 +48,26 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: null,
   },
+  // Profile
+  name: {
+    type: String,
+    default: null,
+    trim: true,
+  },
+  phone: {
+    type: String,
+    default: null,
+    trim: true,
+  },
+  notificationPrefs: {
+    email: { type: Boolean, default: true },
+    sms: { type: Boolean, default: false },
+    dropThresholdDefault: { type: Number, default: 10 },
+  },
+  onboardingComplete: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true,
 });

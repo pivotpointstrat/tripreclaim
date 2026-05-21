@@ -82,8 +82,34 @@ router.get('/verify', async (req, res) => {
  * Return current user info (requires session token)
  */
 router.get('/me', require('../middleware/auth').requireAuth, (req, res) => {
-  const { email, plan, planStatus, tripsRemaining, createdAt } = req.user;
-  res.json({ email, plan, planStatus, tripsRemaining, createdAt });
+  const { email, plan, planStatus, tripsRemaining, createdAt, name, phone, notificationPrefs, onboardingComplete } = req.user;
+  res.json({ email, plan, planStatus, tripsRemaining, createdAt, name, phone, notificationPrefs, onboardingComplete });
+});
+
+/**
+ * PUT /auth/profile
+ * Update user profile (name, phone, notification preferences)
+ */
+router.put('/profile', require('../middleware/auth').requireAuth, async (req, res) => {
+  try {
+    const { name, phone, notificationPrefs, onboardingComplete } = req.body;
+    const update = {};
+    if (name !== undefined) update.name = name.trim();
+    if (phone !== undefined) update.phone = phone.trim();
+    if (notificationPrefs !== undefined) update.notificationPrefs = notificationPrefs;
+    if (onboardingComplete !== undefined) update.onboardingComplete = onboardingComplete;
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: update },
+      { new: true }
+    );
+    const { email, plan, planStatus, tripsRemaining, createdAt: ca, name: n, phone: p, notificationPrefs: np, onboardingComplete: oc } = user;
+    res.json({ email, plan, planStatus, tripsRemaining, createdAt: ca, name: n, phone: p, notificationPrefs: np, onboardingComplete: oc });
+  } catch (err) {
+    console.error('[auth] Profile update error:', err.message);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
 });
 
 module.exports = router;

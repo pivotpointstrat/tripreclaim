@@ -50,6 +50,7 @@ app.use(express.json());
 // ── Routes ──
 app.use('/auth', require('./routes/auth'));
 app.use('/bookings', require('./routes/bookings'));
+app.use('/billing', require('./routes/billing'));
 
 // ── Health check ──
 app.get('/health', (req, res) => {
