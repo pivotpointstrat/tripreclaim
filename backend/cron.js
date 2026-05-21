@@ -9,11 +9,21 @@
  */
 
 require('dotenv').config();
+const http = require('http');
 const cron = require('node-cron');
 const connectDB = require('./db');
 const { runMonitoringCycle } = require('./services/alerts');
 
 const start = async () => {
+  // Minimal HTTP server so Railway health checks pass
+  const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ status: 'ok', service: 'TripReclaim Monitor', uptime: process.uptime() }));
+  });
+  server.listen(process.env.PORT || 3001, () => {
+    console.log(`✅ Health server listening on port ${process.env.PORT || 3001}`);
+  });
+
   console.log('🕐 TripReclaim Monitor starting...');
   await connectDB();
 
