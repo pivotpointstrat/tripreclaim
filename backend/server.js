@@ -10,10 +10,23 @@ const app = express();
 // ── Security ──
 app.use(helmet());
 app.use(cors({
-  origin: [
-    process.env.FRONTEND_URL || 'https://tripreclaim.com',
-    'http://localhost:3001', // local dashboard dev
-  ],
+  origin: (origin, callback) => {
+    const allowed = [
+      'https://tripreclaim.com',
+      'https://www.tripreclaim.com',
+      'http://localhost:3001',
+      'http://localhost:3000',
+    ];
+    // Also allow the configured FRONTEND_URL (strip trailing slash)
+    const envUrl = (process.env.FRONTEND_URL || '').replace(/\/$/, '');
+    if (envUrl) allowed.push(envUrl);
+    // Allow requests with no origin (e.g. curl, mobile apps, Stripe webhooks)
+    if (!origin || allowed.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS: origin ${origin} not allowed`));
+    }
+  },
   credentials: true,
 }));
 
