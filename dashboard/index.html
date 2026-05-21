@@ -178,19 +178,23 @@
 const API = 'https://tripreclaim-production.up.railway.app';
 
 // ── Airline list ──
-const AIRLINES = [
-  'American Airlines','Delta Air Lines','United Airlines','Southwest Airlines','JetBlue','Alaska Airlines',
-  'Spirit Airlines','Frontier Airlines','Hawaiian Airlines','Sun Country Airlines','Allegiant Air',
-  'Air France','KLM','Lufthansa','British Airways','Virgin Atlantic','Swiss International Air Lines',
-  'Austrian Airlines','Brussels Airlines','Finnair','Iberia','SAS Scandinavian Airlines','Turkish Airlines',
-  'Aer Lingus','EasyJet','Ryanair','Wizz Air','TAP Air Portugal','LOT Polish Airlines',
-  'Qatar Airways','Emirates','Etihad Airways','Air Arabia','flydubai','Saudia',
-  'Singapore Airlines','Cathay Pacific','Japan Airlines','ANA All Nippon Airways','Korean Air',
-  'Asiana Airlines','Air China','China Eastern','China Southern','EVA Air',
-  'Thai Airways','Malaysia Airlines','Qantas','Air New Zealand','Garuda Indonesia',
-  'Air Canada','WestJet','Aeromexico','LATAM Airlines','Avianca','Copa Airlines',
-  'GOL Airlines','Azul Brazilian Airlines',
+const MAJOR_US_AIRLINES = [
+  'American Airlines', 'Delta Air Lines', 'JetBlue', 'Southwest Airlines', 'United Airlines',
 ];
+const OTHER_AIRLINES = [
+  'Aer Lingus', 'Air Arabia', 'Air Canada', 'Air China', 'Air France', 'Air New Zealand',
+  'Alaska Airlines', 'Allegiant Air', 'ANA All Nippon Airways', 'Asiana Airlines',
+  'Austrian Airlines', 'Avianca', 'Azul Brazilian Airlines', 'British Airways',
+  'Brussels Airlines', 'Cathay Pacific', 'China Eastern', 'China Southern', 'Copa Airlines',
+  'EasyJet', 'Emirates', 'Etihad Airways', 'EVA Air', 'Finnair', 'flydubai',
+  'Frontier Airlines', 'Garuda Indonesia', 'GOL Airlines', 'Hawaiian Airlines', 'Iberia',
+  'Japan Airlines', 'KLM', 'Korean Air', 'LATAM Airlines', 'LOT Polish Airlines',
+  'Lufthansa', 'Malaysia Airlines', 'Aeromexico', 'Qantas', 'Qatar Airways', 'Ryanair',
+  'SAS Scandinavian Airlines', 'Saudia', 'Singapore Airlines', 'Spirit Airlines',
+  'Sun Country Airlines', 'Swiss International Air Lines', 'TAP Air Portugal',
+  'Thai Airways', 'Turkish Airlines', 'Virgin Atlantic', 'WestJet', 'Wizz Air',
+];
+const AIRLINES = [...MAJOR_US_AIRLINES, ...OTHER_AIRLINES];
 
 // ── Auth helpers ──
 const getToken = () => localStorage.getItem('tr_token');
@@ -493,7 +497,12 @@ async function renderFlightsTab() {
             <label>Airline *</label>
             <select name="airline" required>
               <option value="">Select airline...</option>
-              ${AIRLINES.map(a => `<option>${a}</option>`).join('')}
+              <optgroup label="── Major US Carriers ──">
+                ${MAJOR_US_AIRLINES.map(a => `<option>${a}</option>`).join('')}
+              </optgroup>
+              <optgroup label="── All Airlines ──">
+                ${OTHER_AIRLINES.map(a => `<option>${a}</option>`).join('')}
+              </optgroup>
             </select>
           </div>
           <div class="form-group">
@@ -939,10 +948,10 @@ async function loadReferral() {
     el.innerHTML = `
       <div class="referral-card">
         <h3>🎁 Refer a Friend — Earn Free Trips</h3>
-        <p>Share your unique link. When a friend subscribes, you both get 1 free Per Trip credit added to your account.</p>
+        <p>Share your unique link. Share your link. When a friend subscribes to any plan, you both get <strong>1 free month of TripReclaim</strong> added to your account automatically.</p>
         <div class="referral-stats">
           <div class="ref-stat"><div class="val">${data.referralCount}</div><div class="lbl">Referrals</div></div>
-          <div class="ref-stat"><div class="val">${data.tripsEarned}</div><div class="lbl">Free trips earned</div></div>
+          <div class="ref-stat"><div class="val">${data.tripsEarned}</div><div class="lbl">Free months earned</div></div>
         </div>
         <div class="referral-link-box" id="ref-link-box">${data.referralLink}</div>
         <button class="btn-copy" onclick="copyReferralLink('${data.referralLink}')">Copy Link</button>
