@@ -103,7 +103,24 @@
 
 <script>
 const API = 'https://tripreclaim-production.up.railway.app';
-const AIRLINES = ['American Airlines','Delta','United','Southwest','JetBlue','Alaska Airlines','Lufthansa','British Airways','Qatar Airways'];
+const AIRLINES = [
+  // US Carriers
+  'American Airlines','Delta Air Lines','United Airlines','Southwest Airlines','JetBlue','Alaska Airlines',
+  'Spirit Airlines','Frontier Airlines','Hawaiian Airlines','Sun Country Airlines','Allegiant Air',
+  // International - Europe
+  'Air France','KLM','Lufthansa','British Airways','Virgin Atlantic','Swiss International Air Lines',
+  'Austrian Airlines','Brussels Airlines','Finnair','Iberia','SAS Scandinavian Airlines','Turkish Airlines',
+  'Aer Lingus','EasyJet','Ryanair','Wizz Air','TAP Air Portugal','LOT Polish Airlines',
+  // International - Middle East & Africa
+  'Qatar Airways','Emirates','Etihad Airways','Air Arabia','flydubai','Saudia',
+  // International - Asia Pacific
+  'Singapore Airlines','Cathay Pacific','Japan Airlines','ANA All Nippon Airways','Korean Air',
+  'Asiana Airlines','Air China','China Eastern','China Southern','EVA Air',
+  'Thai Airways','Malaysia Airlines','Qantas','Air New Zealand','Garuda Indonesia',
+  // International - Americas
+  'Air Canada','WestJet','Aeromexico','LATAM Airlines','Avianca','Copa Airlines',
+  'GOL Airlines','Azul Brazilian Airlines',
+];
 
 // ── Auth helpers ──
 const getToken = () => localStorage.getItem('tr_token');
@@ -260,13 +277,17 @@ async function renderDashboard() {
               <input type="date" name="departureDate" required min="${new Date(Date.now()+86400000).toISOString().split('T')[0]}">
             </div>
             <div class="form-group">
+              <label>Return Date <span style="font-weight:400;color:#94a3b8">(optional, for round trips)</span></label>
+              <input type="date" name="returnDate" min="${new Date(Date.now()+86400000).toISOString().split('T')[0]}">
+            </div>
+            <div class="form-group">
               <label>Price You Paid ($) *</label>
-              <input type="number" name="pricePaid" placeholder="e.g. 349.00" min="1" step="0.01" required>
+              <input type="text" name="pricePaid" id="pricePaidInput" placeholder="e.g. $1,299.00" required oninput="formatPrice(this)">
             </div>
             <div class="form-group">
               <label>Passengers</label>
               <select name="passengers">
-                ${[1,2,3,4,5,6].map(n => `<option value="${n}">${n}</option>`).join('')}
+                ${[1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}">${n}</option>`).join('')}
               </select>
             </div>
             <div class="form-group">
@@ -370,6 +391,17 @@ function renderBookings() {
   }).join('');
 }
 
+// ── Price Formatter ──
+function formatPrice(input) {
+  let raw = input.value.replace(/[^0-9.]/g, '');
+  const parts = raw.split('.');
+  if (raw) {
+    const intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const decPart = parts[1] !== undefined ? '.' + parts[1].slice(0, 2) : '';
+    input.value = '$' + intPart + decPart;
+  }
+}
+
 async function submitBooking(e) {
   e.preventDefault();
   const form = e.target;
@@ -385,7 +417,8 @@ async function submitBooking(e) {
     departureDate: form.departureDate.value,
     cabinClass: form.cabinClass.value,
     passengers: parseInt(form.passengers.value),
-    pricePaid: parseFloat(form.pricePaid.value),
+    pricePaid: parseFloat(form.pricePaid.value.replace(/[$,]/g, '')),
+    returnDate: form.returnDate.value || null,
     dropThreshold: parseFloat(form.dropThreshold.value) || 10,
     confirmationNumber: form.confirmationNumber.value || null,
   };
