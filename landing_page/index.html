@@ -128,8 +128,20 @@
       gap: 28px; flex-wrap: wrap; margin-top: 14px;
     }
     .airline-logo {
-      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.5px;
-      color: #94a3b8; text-transform: uppercase; opacity: 0.7;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .airline-logo img {
+      height: 28px; width: auto; max-width: 100px;
+      filter: grayscale(100%) opacity(0.55);
+      transition: filter 0.2s;
+      object-fit: contain;
+    }
+    .airline-logo img:hover {
+      filter: grayscale(0%) opacity(1);
+    }
+    .airline-more {
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 1px;
+      color: #94a3b8; text-transform: uppercase;
     }
 
     /* ── SECTIONS COMMON ── */
@@ -388,15 +400,16 @@
 <div class="trust-bar">
   <p><strong>Supported airlines include:</strong></p>
   <div class="airline-logos">
-    <span class="airline-logo">American Airlines</span>
-    <span class="airline-logo">Delta</span>
-    <span class="airline-logo">United</span>
-    <span class="airline-logo">Southwest</span>
-    <span class="airline-logo">JetBlue</span>
-    <span class="airline-logo">Alaska</span>
-    <span class="airline-logo">Spirit</span>
-    <span class="airline-logo">Frontier</span>
-    <span class="airline-logo">+ more</span>
+    <span class="airline-logo"><img src="https://logo.clearbit.com/aa.com" alt="American Airlines"></span>
+    <span class="airline-logo"><img src="https://logo.clearbit.com/delta.com" alt="Delta"></span>
+    <span class="airline-logo"><img src="https://logo.clearbit.com/united.com" alt="United"></span>
+    <span class="airline-logo"><img src="https://logo.clearbit.com/southwest.com" alt="Southwest"></span>
+    <span class="airline-logo"><img src="https://logo.clearbit.com/jetblue.com" alt="JetBlue"></span>
+    <span class="airline-logo"><img src="https://logo.clearbit.com/alaskaair.com" alt="Alaska Airlines"></span>
+    <span class="airline-logo"><img src="https://logo.clearbit.com/lufthansa.com" alt="Lufthansa"></span>
+    <span class="airline-logo"><img src="https://logo.clearbit.com/britishairways.com" alt="British Airways"></span>
+    <span class="airline-logo"><img src="https://logo.clearbit.com/qatarairways.com" alt="Qatar Airways"></span>
+    <span class="airline-more">++ More</span>
   </div>
 </div>
 
