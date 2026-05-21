@@ -172,11 +172,16 @@
     }
     .hiw-step:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
     .step-num {
-      width: 56px; height: 56px;
+      width: 64px; height: 64px;
       background: var(--blue-light); color: var(--blue);
-      border-radius: 16px; font-size: 1.5rem; font-weight: 800;
+      border-radius: 18px;
       display: flex; align-items: center; justify-content: center;
       margin: 0 auto 20px;
+    }
+    .step-num svg {
+      width: 30px; height: 30px;
+      stroke: var(--blue); fill: none; stroke-width: 2;
+      stroke-linecap: round; stroke-linejoin: round;
     }
     .hiw-step h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 10px; }
     .hiw-step p { color: var(--slate); font-size: 0.95rem; }
@@ -421,17 +426,17 @@
     <p class="section-sub">No complicated setup. Just submit your booking and let TripReclaim do the work.</p>
     <div class="hiw-grid">
       <div class="hiw-step">
-        <div class="step-num">1</div>
+        <div class="step-num"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg></div>
         <h3>Submit Your Booking</h3>
         <p>Enter your flight booking details — airline, route, travel dates, and the price you paid. Takes less than 60 seconds.</p>
       </div>
       <div class="hiw-step">
-        <div class="step-num">2</div>
+        <div class="step-num"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><polyline points="11 8 11 11 13 13"/></svg></div>
         <h3>We Monitor 24/7</h3>
         <p>Our system checks your fare every hour against live airline pricing. We track every sale, flash deal, and price correction.</p>
       </div>
       <div class="hiw-step">
-        <div class="step-num">3</div>
+        <div class="step-num"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><line x1="12" y1="2" x2="12" y2="4"/><circle cx="12" cy="12" r="3" stroke-width="1.5"/><line x1="12" y1="9" x2="12" y2="7.5"/><line x1="12" y1="15" x2="12" y2="16.5"/></svg></div>
         <h3>Get Your Alert & Refund</h3>
         <p>When the price drops, you get an instant alert with exact refund instructions tailored to your airline's policy. Keep the difference.</p>
       </div>
