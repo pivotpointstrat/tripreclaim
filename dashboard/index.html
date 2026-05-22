@@ -681,7 +681,7 @@ function renderShell(user) {
   const firstName = user.name ? user.name.split(' ')[0] : (user.email ? user.email.split('@')[0] : 'there');
   render(`
     <nav class="navbar">
-      <a href="/" class="nav-logo"><img src="/logos/logo.png" alt="TripReclaim" style="height:30px;width:auto;display:block;filter:brightness(0) invert(1);"></a>
+      <a href="/" class="nav-logo"><img src="/logos/logo.png" alt="TripReclaim" style="height:36px;width:auto;display:block;"></a>
       <div class="nav-user">
         <span>${user.email || '' }</span>
         <button class="nav-logout" onclick="logout()">Sign out</button>
