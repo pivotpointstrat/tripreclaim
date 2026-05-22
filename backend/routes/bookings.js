@@ -72,6 +72,25 @@ router.post('/', requireAuth, async (req, res) => {
       return res.status(403).json({ error: 'No trips remaining on your Per Trip plan. Please purchase another.' });
     }
 
+    // Enforce simultaneous flight monitoring caps by plan
+    const planCaps = { per_trip: 1, monthly: 5, annual: 15 };
+    const cap = planCaps[user.plan] || 1;
+    const activeCount = await Booking.countDocuments({
+      userId: user._id,
+      status: 'monitoring'
+    });
+    if (activeCount >= cap) {
+      const upgradeTo = user.plan === 'per_trip' ? 'monthly' : 'annual';
+      return res.status(403).json({
+        error: `Flight monitoring limit reached`,
+        code: 'FLIGHT_CAP_REACHED',
+        current: activeCount,
+        cap,
+        plan: user.plan,
+        upgradeTo
+      });
+    }
+
     const {
       airline,
       origin,

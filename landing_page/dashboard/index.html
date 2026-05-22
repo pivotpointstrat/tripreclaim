@@ -882,7 +882,7 @@ async function renderFlightsTab() {
         <div style="font-weight:700;font-size:1rem;">🚀 You're on Per Trip — ${user.tripsRemaining || 0} trip${user.tripsRemaining !== 1 ? 's' : ''} remaining</div>
         <div style="font-size:0.85rem;opacity:0.85;margin-top:2px;">Upgrade to Monthly for unlimited monitoring on all your flights</div>
       </div>
-      <a href="https://buy.stripe.com/aEU5nH3Yf2wf5XqcN6" target="_blank" style="background:#fff;color:#1d4ed8;font-weight:700;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:0.9rem;white-space:nowrap;">Upgrade to Monthly →</a>
+      <a href="https://buy.stripe.com/eVqaEPgMj8ytaP45D54wM05" target="_blank" style="background:#fff;color:#1d4ed8;font-weight:700;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:0.9rem;white-space:nowrap;">Upgrade to Monthly →</a>
     </div>` : ''}
     <div id="savings-area"></div>
     <div id="policy-changes-area"></div>
@@ -1229,6 +1229,24 @@ async function submitBooking() {
     loadBookings();
   } catch (err) {
     showMsg('step2-msg', `❌ ${err.message}`, 'error');
+    // Handle flight cap error with upgrade prompt
+    try {
+      const errData = JSON.parse(err.message);
+      if (errData && errData.code === 'FLIGHT_CAP_REACHED') {
+        const capMap = { per_trip: 1, monthly: 5, annual: 15 };
+        const upgradeLinks = {
+          monthly: 'https://buy.stripe.com/eVqaEPgMj8ytaP45D54wM05',
+          annual:  'https://buy.stripe.com/bJe28j3ZxeWR6yO0iL4wM06'
+        };
+        const upgradeLink = upgradeLinks[errData.upgradeTo] || upgradeLinks.monthly;
+        const upgradeLabel = errData.upgradeTo === 'annual' ? 'Annual ($49/yr)' : 'Monthly ($5.99/mo)';
+        showMsg('step2-msg',
+          `🚫 Flight monitoring limit reached (${errData.current} of ${errData.cap} active). ` +
+          `<a href="${upgradeLink}" target="_blank" style="color:#1d4ed8;font-weight:700;">Upgrade to ${upgradeLabel} →</a>`,
+          'error'
+        );
+      }
+    } catch(_) {}
   }
   btn.disabled = false; btn.textContent = 'Start Monitoring This Flight →';
 }
@@ -1319,10 +1337,10 @@ async function renderAccountTab() {
   const user = getUser() || {};
   const planLabels = { per_trip: 'Per Trip' , monthly: 'Monthly' , annual: 'Annual' };
   const planLabel = planLabels[user.plan] || 'Free';
-  const planPrices = { per_trip: '$1.99 per trip' , monthly: '$4.99/month' , annual: '$39/year' };
+  const planPrices = { per_trip: '$2.99 per trip' , monthly: '$5.99/month' , annual: '$49/year' };
   const upgradeLinks = {
-    monthly: 'https://buy.stripe.com/9B628janV9Cx9L02qT4wM02' ,
-    annual: 'https://buy.stripe.com/dRmbIT67F5mh8GWe9B4wM03' ,
+    monthly: 'https://buy.stripe.com/eVqaEPgMj8ytaP45D54wM05' ,
+    annual: 'https://buy.stripe.com/bJe28j3ZxeWR6yO0iL4wM06' ,
   };
 
   document.getElementById('tab-content' ).innerHTML = `
@@ -1337,7 +1355,7 @@ async function renderAccountTab() {
       <div class="plan-actions">
         <button class="btn-plan" onclick="openBillingPortal()">Manage Billing</button>
         ${user.plan === 'per_trip'  ? `<a href="${upgradeLinks.monthly}" target="_blank" class="btn-plan upgrade">Upgrade to Monthly</a>` : '' }
-        ${user.plan === 'monthly'  ? `<a href="${upgradeLinks.annual}" target="_blank" class="btn-plan upgrade">Upgrade to Annual (Save 35%)</a>` : '' }
+        ${user.plan === 'monthly'  ? `<a href="${upgradeLinks.annual}" target="_blank" class="btn-plan upgrade">Upgrade to Annual (Save 32%)</a>` : '' }
       </div>
     </div>
 
