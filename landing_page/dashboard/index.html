@@ -941,7 +941,19 @@ async function renderFlightsTab() {
       <div class="form-step active" id="step1">
         <!-- Confirmation lookup -->
         <div class="lookup-banner">
-          <div class="lookup-banner-title">🔍 Already have a confirmation number? Look up your booking</div>
+          <!-- Method 1: Email Forward -->
+          <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1.5px solid #93c5fd;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
+            <div style="font-weight:700;color:#1d4ed8;font-size:0.95rem;margin-bottom:4px;">📧 Easiest: Forward your confirmation email</div>
+            <div style="font-size:0.85rem;color:#1e40af;margin-bottom:8px;">Works for <strong>every airline worldwide</strong> — including British Airways, Lufthansa, Southwest, and more. We parse it automatically.</div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <div style="background:#1d4ed8;color:#fff;padding:8px 16px;border-radius:8px;font-weight:700;font-size:0.9rem;letter-spacing:0.5px;">track@tripreclaim.com</div>
+              <button onclick="copyTrackEmail()" style="background:#fff;border:1.5px solid #93c5fd;color:#1d4ed8;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:0.85rem;font-weight:600;">📋 Copy</button>
+              <span id="track-copy-msg" style="color:#16a34a;font-size:0.82rem;display:none;">✅ Copied!</span>
+            </div>
+            <div style="font-size:0.75rem;color:#64748b;margin-top:6px;">Just forward your booking confirmation email to this address. We'll set up monitoring automatically and email you confirmation.</div>
+          </div>
+          <!-- Method 2: Conf # lookup -->
+          <div class="lookup-banner-title">🔍 Or look up by confirmation number (American, Delta, United, JetBlue, Alaska)</div>
           <div class="lookup-row">
             <div class="form-group">
               <label>Airline</label>
@@ -1119,6 +1131,13 @@ async function renderFlightsTab() {
   `;
   loadBookings();
   setTimeout(loadPolicyChanges, 200);
+}
+
+function copyTrackEmail() {
+  navigator.clipboard.writeText('track@tripreclaim.com').then(() => {
+    const msg = document.getElementById('track-copy-msg');
+    if (msg) { msg.style.display = 'inline'; setTimeout(() => msg.style.display = 'none', 2000); }
+  }).catch(() => { prompt('Copy this email address:', 'track@tripreclaim.com'); });
 }
 
 async function openAirlineLookup() {

@@ -43,6 +43,7 @@ app.use(limiter);
 // ── Body parsing ──
 // IMPORTANT: Stripe webhook route needs raw body — mount BEFORE json middleware
 app.use('/webhooks', require('./routes/twilio-webhook'));
+app.use('/webhooks/email-inbound', require('./routes/email-inbound'));
 app.use('/webhook', require('./routes/webhook'));
 
 // JSON body parser for all other routes

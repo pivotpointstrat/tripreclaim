@@ -81,11 +81,12 @@ const bookingSchema = new mongoose.Schema({
   },
 
   // Plan snapshot at time of booking
-  planAtBooking: {
-    type: String,
+  planAtBooking: { type: String,
     enum: ['per_trip', 'monthly', 'annual'],
     required: true,
   },
+  parsedFrom:      { type: String, default: null },
+  parseConfidence: { type: Number, default: null },
 }, {
   timestamps: true,
 });
