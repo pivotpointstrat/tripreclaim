@@ -1,4 +1,5 @@
 const { Resend } = require('resend');
+const twilio = require('twilio');
 const { getPolicyForAirline } = require('./policyAgent');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -339,4 +340,61 @@ const getRefundGuide = (airline) => {
   return guides[airline] || `<p>Contact ${airline} customer service directly with your booking reference and current lower fare screenshot to request a price adjustment.</p>`;
 };
 
-module.exports = { sendMagicLink, sendWelcome, sendPriceDropAlert, sendCreditExpiryReminder, sendPolicyChangeAlert };
+
+// ─── Twilio SMS ───────────────────────────────────────────────────────────────
+const getTwilioClient = () => {
+  const sid = process.env.TWILIO_ACCOUNT_SID;
+  const token = process.env.TWILIO_AUTH_TOKEN;
+  if (!sid || !token) return null;
+  return twilio(sid, token);
+};
+
+const TWILIO_FROM = process.env.TWILIO_FROM_NUMBER || '+18885165777';
+
+/**
+ * Send a raw SMS message.
+ * Silently skips if Twilio credentials are not configured.
+ */
+const sendSmsAlert = async (to, message) => {
+  if (!to) return;
+  // Normalise phone number — ensure E.164 format
+  const phone = to.startsWith('+') ? to : `+1${to.replace(/\D/g, '')}`;
+  const client = getTwilioClient();
+  if (!client) {
+    console.warn('[sms] Twilio not configured — skipping SMS to', phone);
+    return;
+  }
+  try {
+    const msg = await client.messages.create({ from: TWILIO_FROM, to: phone, body: message });
+    console.log(`[sms] Sent to ${phone} — SID: ${msg.sid}`);
+  } catch (err) {
+    console.error(`[sms] Failed to send to ${phone}:`, err.message);
+  }
+};
+
+/**
+ * Send a price-drop SMS alert.
+ * Crafts a short, actionable message appropriate for the alert type.
+ */
+const sendSmsPriceDropAlert = async (phone, booking, currentPrice, opts = {}) => {
+  const { netSavings = null, notWorthClaiming = false } = opts;
+  const route = `${booking.origin}→${booking.destination}`;
+  const net = netSavings !== null ? netSavings : (booking.pricePaid - currentPrice);
+  const hoursSinceBooking = (Date.now() - new Date(booking.createdAt).getTime()) / (1000 * 60 * 60);
+  const in24hWindow = hoursSinceBooking < 24;
+  const dashUrl = 'https://tripreclaim.com/dashboard/';
+
+  let body;
+  if (notWorthClaiming) {
+    body = `ℹ️ TripReclaim: ${booking.airline} ${route} dropped but fees exceed savings — not worth claiming. We’ll keep watching. ${dashUrl}`;
+  } else if (in24hWindow) {
+    const hoursLeft = Math.max(0, 24 - hoursSinceBooking).toFixed(0);
+    body = `⚡ TripReclaim: ${booking.airline} ${route} dropped $${net.toFixed(0)}! FULL CASH REFUND available — ${hoursLeft}h left. Claim now: ${dashUrl}`;
+  } else {
+    body = `✈️ TripReclaim: ${booking.airline} ${route} dropped $${net.toFixed(0)} — travel credit available. See your Claim Kit: ${dashUrl}`;
+  }
+
+  await sendSmsAlert(phone, body);
+};
+
+module.exports = { sendMagicLink, sendWelcome, sendPriceDropAlert, sendCreditExpiryReminder, sendPolicyChangeAlert, sendSmsAlert, sendSmsPriceDropAlert };

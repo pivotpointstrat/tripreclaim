@@ -1,4 +1,6 @@
 const Booking = require('../models/Booking');
+const User = require('../models/User');
+const { sendSmsPriceDropAlert } = require('./email');
 const { getLowestPrice } = require('./monitor');
 const { sendPriceDropAlert } = require('./email');
 const { getPolicyForAirline } = require('./policyAgent');
@@ -165,6 +167,15 @@ const checkBooking = async (booking) => {
                   rawDrop,
                   notWorthClaiming: false,
                 });
+                // Send SMS if user has it enabled
+                try {
+                  const user = await User.findOne({ email: booking.email }).select('phone notificationPrefs').lean();
+                  if (user && user.notificationPrefs && user.notificationPrefs.sms && user.phone) {
+                    await sendSmsPriceDropAlert(user.phone, booking, price, { netSavings, notWorthClaiming: false });
+                  }
+                } catch (smsErr) {
+                  console.warn('[alerts] SMS send failed (non-fatal):', smsErr.message);
+                }
                 update.alertsSent = (booking.alertsSent || 0) + 1;
                 update.lastAlertAt = now;
                 update.lastAlertPrice = price;
