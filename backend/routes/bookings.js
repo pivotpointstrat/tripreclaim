@@ -3,6 +3,7 @@ const router = express.Router();
 const Booking = require('../models/Booking');
 const User = require('../models/User');
 const { requireAuth } = require('../middleware/auth');
+const AirlinePolicy = require('../models/AirlinePolicy');
 const { sendWelcome } = require('../services/email');
 
 const SUPPORTED_AIRLINES = [
@@ -222,6 +223,123 @@ router.patch('/:id/claim-credit', requireAuth, async (req, res) => {
   } catch (err) {
     console.error('[bookings] claim-credit error:', err.message);
     res.status(500).json({ error: 'Failed to record credit claim' });
+  }
+});
+
+/**
+ * GET /bookings/:id/claim-email
+ * Generate a complete, ready-to-send refund request email for a price-drop claim.
+ * Returns { subject, body, claimUrl, claimPhone }
+ */
+router.get('/:id/claim-email', requireAuth, async (req, res) => {
+  try {
+    const booking = await Booking.findOne({
+      _id: req.params.id,
+      userId: req.user._id,
+    }).lean();
+    if (!booking) return res.status(404).json({ error: 'Booking not found' });
+
+    // Fetch airline policy — try IATA code extracted from flightNumber, then airline name
+    let policy = null;
+    // Derive IATA code from flightNumber (e.g. "AA 202" -> "AA") or airline name lookup
+    const airlineCodeMatch = booking.flightNumber
+      ? booking.flightNumber.trim().match(/^([A-Z]{2,3})/i)
+      : null;
+    if (airlineCodeMatch) {
+      policy = await AirlinePolicy.findOne({
+        code: airlineCodeMatch[1].toUpperCase(),
+      }).lean();
+    }
+    if (!policy) {
+      policy = await AirlinePolicy.findOne({
+        airline: { $regex: new RegExp(booking.airline.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i') },
+      }).lean();
+    }
+
+    // Pricing calculations
+    const pricePaid    = parseFloat(booking.pricePaid) || 0;
+    const currentPrice = booking.lowestPriceSeen
+      ? parseFloat(booking.lowestPriceSeen)
+      : parseFloat((pricePaid * 0.85).toFixed(2));
+    const passengers   = booking.passengers || 1;
+    const diffPerPax   = parseFloat((pricePaid - currentPrice).toFixed(2));
+    const totalDiff    = parseFloat((diffPerPax * passengers).toFixed(2));
+    const totalPaid    = parseFloat((pricePaid * passengers).toFixed(2));
+
+    // Determine refund type hint from policy
+    const refundTypes   = policy?.policies?.refundTypes || {};
+    const hasCash       = Object.values(refundTypes).some(v => v && v.toString().toLowerCase().includes('cash'));
+    const refundMethod  = hasCash ? 'refund' : 'travel credit';
+    const paymentMethod = hasCash ? 'original payment method' : `${booking.airline} account`;
+
+    // Airline-specific action sentence
+    const claimSteps       = policy?.policies?.claimSteps || [];
+    const airlineSpecific  = claimSteps.length
+      ? `Per your policy, ${claimSteps[0].replace(/^Step \d+: /i, '').toLowerCase()}.`
+      : `Please process this request per your standard price adjustment policy.`;
+
+    // Format date nicely
+    const depDate = new Date(booking.departureDate);
+    const depDateStr = depDate.toLocaleDateString('en-US', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    });
+
+    // Cabin class display
+    const cabinDisplay = {
+      economy: 'Economy', premium_economy: 'Premium Economy',
+      business: 'Business', first: 'First Class',
+    }[booking.cabinClass] || booking.cabinClass || 'Economy';
+
+    // User details
+    const userName  = req.user.name  || 'Traveler';
+    const userEmail = req.user.email || '';
+
+    // Build subject
+    const confNum  = booking.confirmationNumber || 'N/A';
+    const flightNo = booking.flightNumber        || '';
+    const subject  = `Price Drop Refund Request — Booking ${confNum}` +
+      (flightNo ? ` — ${flightNo}` : '') +
+      ` — ${booking.origin}→${booking.destination}` +
+      ` — ${depDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+
+    // Build body
+    const body = [
+      `Dear ${booking.airline} Customer Service,`,
+      ``,
+      `I am writing to request a price adjustment for my upcoming flight.`,
+      ``,
+      `Booking Details:`,
+      `- Confirmation Number: ${confNum}`,
+      flightNo ? `- Flight: ${flightNo}` : null,
+      `- Route: ${booking.origin} → ${booking.destination}`,
+      `- Departure: ${depDateStr}`,
+      `- Cabin Class: ${cabinDisplay}`,
+      `- Passengers: ${passengers}`,
+      ``,
+      `At the time of booking, I paid $${pricePaid.toFixed(2)} per person ($${totalPaid.toFixed(2)} total for ${passengers} passenger${passengers > 1 ? 's' : ''}).`,
+      ``,
+      `The current price for the same flight is $${currentPrice.toFixed(2)} per person, a difference of $${diffPerPax.toFixed(2)} per person ($${totalDiff.toFixed(2)} total).`,
+      ``,
+      `Per ${booking.airline}'s price adjustment policy, I am respectfully requesting a ${refundMethod} of $${totalDiff.toFixed(2)} to my ${paymentMethod}.`,
+      ``,
+      airlineSpecific,
+      ``,
+      `Thank you for your assistance. I look forward to your response.`,
+      ``,
+      `Sincerely,`,
+      userName,
+      userEmail,
+    ].filter(line => line !== null).join('\n');
+
+    res.json({
+      subject,
+      body,
+      claimUrl:   policy?.policies?.claimUrl   || null,
+      claimPhone: policy?.policies?.claimPhone || null,
+    });
+  } catch (err) {
+    console.error('[bookings] claim-email error:', err.message);
+    res.status(500).json({ error: 'Failed to generate claim email' });
   }
 });
 

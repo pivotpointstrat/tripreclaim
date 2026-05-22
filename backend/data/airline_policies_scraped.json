@@ -1,0 +1,268 @@
+[
+  {
+    "airline": "Delta Air Lines",
+    "code": "DL",
+    "dataSource": "scraped",
+    "scrapedUrl": "https://www.delta.com/us/en/change-cancel/overview",
+    "lastUpdated": "2026-05-21",
+    "policies": {
+      "priceDropPolicy": "Delta does not offer direct price-drop refunds. If the price drops after booking, customers can cancel and rebook (paying applicable fees) or use eCredit from cancelled ticket toward the new booking. For refundable fares, cancel and rebook at lower price for full cash refund.",
+      "twentyFourHourRule": "Full refund within 24 hours of purchase for tickets originating in the US, regardless of fare type. Cancel via My Trips at delta.com. Applies to eTickets only.",
+      "basicEconomyRules": "Delta Main Basic (Basic Economy) and Delta Comfort Basic: Not eligible for Same-Day Standby or Same-Day Confirmed; cancellation charge $99-$400 depending on route; change fees $0-$400 plus price difference. Check Baggage & Travel Fees page for specifics by origin/destination.",
+      "awardTicketPolicy": "SkyMiles award tickets: miles redeposited to SkyMiles account upon cancellation. Redeposit fees may apply depending on Medallion status. Diamond/Platinum Medallion members: free redeposit. Lower tiers may incur fees. Taxes/fees refunded to original form of payment.",
+      "claimSteps": [
+        "Step 1: Log in to delta.com and navigate to My Trips",
+        "Step 2: Select the booking you wish to cancel or change",
+        "Step 3: Choose 'Change Flight' (to rebook at lower fare) or 'Cancel Flight'",
+        "Step 4: If cancelling a non-refundable ticket, remaining value (minus cancellation fee) issues as an eCredit",
+        "Step 5: For refundable tickets, click 'Request Refund' at delta.com/refund-form",
+        "Step 6: Rebook at the new lower price using eCredit or pay difference"
+      ],
+      "claimUrl": "https://www.delta.com/my-trips/search",
+      "refundFormUrl": "https://www.delta.com/refund-form/",
+      "eCreditsUrl": "https://www.delta.com/redeem-ecredit/",
+      "claimPhone": "1-800-221-1212",
+      "creditExpiry": "eCredits typically valid 1 year from original ticket issue date. If issued from cancelled ticket, expiry tied to original ticket date.",
+      "cancellationFees": {
+        "basicEconomy": "$99\u2013$400 depending on route (domestic vs. international)",
+        "classicNonRefundable": "$0\u2013$400 depending on route; $0 for US/Canada-originating itineraries since elimination of change fees",
+        "extraOrRefundable": "$0 \u2014 fully refundable to original payment",
+        "sameDayConfirmed": "From $75 for Classic; free for Extra/Refundable when available"
+      },
+      "refundTypes": {
+        "cash": "Only for Extra/Refundable fare tickets",
+        "eCredit": "Non-refundable Classic/Basic cancellations; valid 1 year",
+        "miles": "SkyMiles redeposited for award cancellations (fees may apply)"
+      },
+      "loopholes": [
+        "No change fees for Classic/Extra tickets originating US/Canada \u2014 rebook at lower price and keep difference as eCredit",
+        "If Delta changes your flight schedule by 30+ minutes, you qualify for a full cash refund regardless of fare type \u2014 call to invoke this",
+        "Use the 24-hour risk-free window immediately if you find a lower price after booking",
+        "Same-Day Confirmed ($75) can be used the day of travel to grab a lower-priced earlier/later flight on same route",
+        "Medallion status holders often get waived redeposit fees on SkyMiles awards \u2014 check status before assuming fees apply",
+        "eCredits can be applied to new bookings for any passenger if transferred \u2014 check transfer rules"
+      ]
+    }
+  },
+  {
+    "airline": "Southwest Airlines",
+    "code": "WN",
+    "dataSource": "knowledge_base",
+    "scrapedUrl": "https://www.southwest.com (blocked by Firecrawl)",
+    "lastUpdated": "2026-05-21",
+    "policies": {
+      "priceDropPolicy": "Southwest has the most consumer-friendly price drop policy among US carriers. If the price drops after booking, cancel and rebook at the lower price online \u2014 no fees. Difference issued as travel credit (Wanna Get Away) or cash (Anytime/Business Select). No change or cancellation fees on any fare.",
+      "twentyFourHourRule": "Full refund to original payment within 24 hours for all fare types if booked at least 7 days before departure. Wanna Get Away fares cancelled after 24 hours receive travel funds (credits), not cash.",
+      "basicEconomyRules": "Southwest has no Basic Economy equivalent. Wanna Get Away (cheapest fare) has the most restrictions: travel funds are non-transferable and valid 12 months from purchase. Wanna Get Away Plus: travel funds are transferable. Both can be cancelled without fee.",
+      "awardTicketPolicy": "Rapid Rewards points are immediately refunded to account upon cancellation for all fare types, with no redeposit fees. Taxes/fees ($5.60 per segment) refunded to original form of payment.",
+      "claimSteps": [
+        "Step 1: Go to southwest.com and click 'My Trips' or 'Change/Cancel'",
+        "Step 2: Look up your booking by confirmation number + first/last name",
+        "Step 3: Select the flight to cancel",
+        "Step 4: Cancel the existing booking \u2014 funds issued as travel credit (Wanna Get Away) or cash (Anytime/Business Select)",
+        "Step 5: Search for and book the new lower-priced flight",
+        "Step 6: Apply travel funds at checkout using the confirmation number and passenger name"
+      ],
+      "claimUrl": "https://www.southwest.com/air/manage-booking/index.html",
+      "claimPhone": "1-800-435-9792",
+      "creditExpiry": "Wanna Get Away travel funds: valid 12 months from original purchase date (not flight date). Wanna Get Away Plus: transferable to another Rapid Rewards member. Anytime/Business Select: full cash refund, no expiry concern.",
+      "cancellationFees": {
+        "wannaGetAway": "$0 cancellation fee \u2014 funds issued as non-transferable travel credit valid 12 months",
+        "wannaGetAwayPlus": "$0 cancellation fee \u2014 funds issued as transferable travel credit valid 12 months",
+        "anytime": "$0 cancellation fee \u2014 full refund to original payment",
+        "businessSelect": "$0 cancellation fee \u2014 full refund to original payment"
+      },
+      "refundTypes": {
+        "cash": "Anytime and Business Select fares only",
+        "travelCredit": "Wanna Get Away and Wanna Get Away Plus fares; valid 12 months",
+        "points": "Rapid Rewards points refunded immediately with no redeposit fee"
+      },
+      "loopholes": [
+        "Zero change/cancel fees on all fares \u2014 always cancel and rebook if price drops even $1",
+        "Wanna Get Away Plus travel funds are transferable \u2014 can be gifted to another traveler",
+        "Travel funds from a cancelled Wanna Get Away can be applied to a new booking for ANY Southwest passenger, not just the original traveler (as long as you hold the confirmation number)",
+        "Book Anytime fare for full flexibility with cash refunds, then switch to Wanna Get Away if price drops significantly",
+        "Monitor southwest.com directly for price changes \u2014 no GDS fees or OTA markups",
+        "If Southwest cancels/significantly changes your flight, you get a full cash refund regardless of fare type"
+      ]
+    }
+  },
+  {
+    "airline": "JetBlue Airways",
+    "code": "B6",
+    "dataSource": "scraped",
+    "scrapedUrl": "https://www.jetblue.com/help/refunds",
+    "lastUpdated": "2026-05-21",
+    "policies": {
+      "priceDropPolicy": "JetBlue does not offer direct price-drop refunds to original payment. If fare drops, cancel and rebook: fare difference issued as JetBlue travel credit (not cash). Blue Basic fares incur a per-person cancellation fee before credit is issued. Net benefit = price drop minus cancellation fee.",
+      "twentyFourHourRule": "Free cancellation within 24 hours of booking IF the booking was made 7 or more days before the scheduled departure date. The entire itinerary must be cancelled (not just one segment). Not applicable for JetBlue Vacations packages.",
+      "basicEconomyRules": "Blue Basic fare: per-person cancellation fee applies (~$100 domestic, ~$200 international) before travel credit is issued. No same-day changes. Not eligible for same-day standby at no charge. Must pay fee even within policy window (except 24-hour rule). Loophole: cancellation fee may exceed price drop savings \u2014 calculate net before claiming.",
+      "awardTicketPolicy": "TrueBlue points refunded immediately to TrueBlue account upon cancellation. No redeposit fees stated. Taxes/fees refunded per standard timeline.",
+      "claimSteps": [
+        "Step 1: Go to jetblue.com/manage-trips and sign in or look up booking",
+        "Step 2: Select the trip you wish to cancel",
+        "Step 3: Click 'Cancel' and follow cancellation prompts",
+        "Step 4: Note the travel credit amount (issued immediately to JetBlue Travel Bank)",
+        "Step 5: Search for and rebook the same/similar flight at the new lower price",
+        "Step 6: Apply travel credit at checkout (automatically available in your Travel Bank)"
+      ],
+      "claimUrl": "https://www.jetblue.com/manage-trips",
+      "claimPhone": "1-800-538-2583",
+      "creditExpiry": "JetBlue travel credits valid 12 months from original ticketing date. If travel credit is used and then that booking is cancelled, the credit retains the original expiration date \u2014 does not reset.",
+      "cancellationFees": {
+        "blueBasic": "~$100 per person (domestic), ~$200 per person (international) \u2014 deducted from credit issued",
+        "blue": "$0 cancellation fee \u2014 full amount as travel credit",
+        "bluePlus": "$0 cancellation fee \u2014 full amount as travel credit",
+        "blueExtra": "$0 cancellation fee \u2014 full amount as travel credit or cash if refundable",
+        "mint": "$0 for non-refundable \u2014 travel credit; refundable Mint \u2192 cash"
+      },
+      "refundTypes": {
+        "cash": "Refundable fares only (cancel any time before departure); credit card refund 7-10 business days",
+        "travelCredit": "Non-refundable fares (Blue, Blue Plus, Blue Extra non-refundable); valid 12 months; issued immediately",
+        "points": "TrueBlue points refunded immediately to account",
+        "extras": "Seats, bags, pets refunded to original payment in 7-10 business days"
+      },
+      "loopholes": [
+        "Always calculate net savings for Blue Basic: price_drop_savings minus cancellation_fee \u2014 skip claim if negative",
+        "If JetBlue changes your flight schedule, you can cancel and get a full cash refund to original payment regardless of fare type",
+        "Book directly on jetblue.com (not OTAs) to retain full refund/change rights",
+        "JetBlue Best Fare Guarantee: if you find a lower JetBlue fare elsewhere, they may match it \u2014 check jetblue.com/customer-assurance/our-promise",
+        "Travel credit refunds for fare changes go to Travel Bank (not original payment) \u2014 this is stated policy, cannot be reversed once processed",
+        "Seats/bags/extras are always refunded to original payment, not travel credit \u2014 useful for partial recovery"
+      ]
+    }
+  },
+  {
+    "airline": "Alaska Airlines",
+    "code": "AS",
+    "dataSource": "knowledge_base",
+    "scrapedUrl": "https://www.alaskaair.com (blocked by Firecrawl \u2014 bot protection)",
+    "lastUpdated": "2026-05-21",
+    "policies": {
+      "priceDropPolicy": "Alaska Airlines eliminated change fees on most fares. If the price drops, cancel and rebook online. Non-Saver fares: remaining value issued as eCredit minus any applicable fees. Saver fares are non-changeable and non-refundable. For refundable fares, full cash refund available.",
+      "twentyFourHourRule": "Full refund within 24 hours of booking for all fare types if the flight is at least 24 hours away. Cancel via the app or alaskaair.com. Applies to tickets purchased directly from Alaska Airlines.",
+      "basicEconomyRules": "Saver fare (Alaska's equivalent of Basic Economy): non-changeable, non-refundable after 24-hour window. Cannot upgrade cabin. Cannot earn or redeem Mileage Plan miles on most Saver bookings. Changes/cancellations result in full forfeiture of fare value.",
+      "awardTicketPolicy": "Mileage Plan award cancellations: miles redeposited to account. Redeposit fee: $125 for non-elite members; waived for MVP, MVP Gold, and MVP Gold 75K members. Taxes/fees refunded to original payment.",
+      "claimSteps": [
+        "Step 1: Log in to alaskaair.com and go to 'Manage Reservations'",
+        "Step 2: Find your booking and select 'Change or Cancel Flight'",
+        "Step 3: Choose to cancel the current booking",
+        "Step 4: Confirm cancellation \u2014 remaining value (minus fees if applicable) issued as eCredit",
+        "Step 5: Search for the same route at the new lower price",
+        "Step 6: At checkout, select 'Use eCredit' to apply credit toward new booking"
+      ],
+      "claimUrl": "https://www.alaskaair.com/bookings/manage-reservations",
+      "claimPhone": "1-800-252-7522",
+      "creditExpiry": "eCredits valid 12 months from original ticket issue date. Cannot be extended. Non-transferable to other passengers.",
+      "cancellationFees": {
+        "saverFare": "100% forfeiture after 24-hour window \u2014 no credit issued",
+        "mainCabin": "$0 cancellation fee \u2014 remaining value as eCredit valid 12 months",
+        "firstClass": "$0 cancellation fee \u2014 refundable tickets get cash, non-refundable get eCredit",
+        "awardRedeposit": "$125 for non-elite; free for MVP, MVP Gold, MVP Gold 75K"
+      },
+      "refundTypes": {
+        "cash": "Refundable (Flex) fare tickets; also when Alaska changes/cancels your flight",
+        "eCredit": "Non-refundable Main Cabin cancellations; valid 12 months",
+        "miles": "Mileage Plan miles redeposited (fee applies for non-status members)"
+      },
+      "loopholes": [
+        "Alaska is part of oneworld alliance \u2014 if a partner (AA, BA, etc.) changes flight significantly, Alaska may honor a full refund",
+        "If Alaska changes your itinerary by 30+ minutes, you qualify for full cash refund on any fare including Saver",
+        "MVP status members get free award redeposit \u2014 worth considering if you hold status",
+        "Alaska's price match: not officially offered, but proactive re-pricing requests via chat have succeeded",
+        "Book via Alaska's app for easiest online change/cancel management",
+        "Main Cabin (non-Saver) has zero change fees \u2014 freely rebook at lower price and apply eCredit difference"
+      ]
+    }
+  },
+  {
+    "airline": "United Airlines",
+    "code": "UA",
+    "dataSource": "knowledge_base",
+    "scrapedUrl": "https://www.united.com (page not found / blocked)",
+    "lastUpdated": "2026-05-21",
+    "policies": {
+      "priceDropPolicy": "United eliminated change fees for most fares originating in the US, Canada, Europe, and other regions. If the price drops, cancel the existing booking (receiving an eCredit) and rebook at the lower price. Basic Economy is the only fare that cannot be changed or refunded after the 24-hour window.",
+      "twentyFourHourRule": "Full refund within 24 hours of purchase for all fare types except MileagePlus award tickets. Must cancel within 24 hours and the flight must be at least 7 days away. Process via the United app, united.com, or by calling.",
+      "basicEconomyRules": "Basic Economy (N, O, Q fare classes): No changes permitted after 24-hour window. Cancellation results in full forfeiture. Cannot upgrade seat. Cannot select seats in advance (assigned at check-in). Cannot earn Premier Qualifying Points. No same-day changes.",
+      "awardTicketPolicy": "MileagePlus award cancellations: miles redeposited. Redeposit fee: $75\u2013$100 for non-elite members; waived for Premier Silver and above. Close-in booking fee: $75 for non-elite if booking within 21 days. Taxes refunded to original payment.",
+      "claimSteps": [
+        "Step 1: Go to united.com and log in; navigate to 'My Trips'",
+        "Step 2: Select the booking with the price drop",
+        "Step 3: Click 'Change Flight' to explore rebooking directly, or 'Cancel' to get eCredit",
+        "Step 4: If cancelling, confirm and receive eCredit (valid 12 months from ticket issue date)",
+        "Step 5: Search for the same route at the new lower price",
+        "Step 6: At checkout, select 'Use eCredit/Certificate' to apply credit toward new fare"
+      ],
+      "claimUrl": "https://www.united.com/en/us/manageres/mytrips",
+      "claimPhone": "1-800-864-8331",
+      "creditExpiry": "United eCredits valid 12 months from ticket issue date (not travel date). Future Flight Credits for cancelled non-refundable tickets are non-transferable.",
+      "cancellationFees": {
+        "basicEconomy": "Full forfeiture after 24-hour window \u2014 $0 recovered",
+        "economy": "$0 change/cancel fee for US/Canada/Europe-originating tickets \u2014 eCredit issued",
+        "premiumEconomy": "$0 change/cancel fee \u2014 eCredit or cash (if refundable)",
+        "business": "$0 change/cancel fee \u2014 eCredit or cash (if refundable)",
+        "awardRedeposit": "$75\u2013$100 for non-Premier; free for Premier Silver and above"
+      },
+      "refundTypes": {
+        "cash": "Refundable fare tickets only; refund request at refunds.united.com",
+        "eCredit": "Non-refundable ticket cancellations; valid 12 months from issue",
+        "miles": "MileagePlus miles redeposited (fees may apply for non-status)"
+      },
+      "loopholes": [
+        "If United changes your flight by 25+ minutes, you can request a full cash refund on any fare including Basic Economy \u2014 call to invoke",
+        "United's 'change flight' tool lets you rebook at a lower price directly; difference issued as eCredit without needing full cancellation",
+        "Premier Silver and above: free award redeposit \u2014 time cancellations strategically if you have status",
+        "Refunds for significantly delayed/cancelled flights: DOT requires cash refund for flights cancelled by airline \u2014 do not accept eCredit without asking for cash first",
+        "United credit cards (Chase) often come with rebooking protections \u2014 check card benefits before paying change fees",
+        "Book directly on united.com (not OTAs) to retain full change/cancel rights and access eCredit system"
+      ]
+    }
+  },
+  {
+    "airline": "American Airlines",
+    "code": "AA",
+    "dataSource": "knowledge_base",
+    "scrapedUrl": "https://www.aa.com (not supported by Firecrawl)",
+    "lastUpdated": "2026-05-21",
+    "policies": {
+      "priceDropPolicy": "American Airlines does not offer direct price-drop refunds. If the fare drops after booking, cancel and rebook at the lower price. Non-Basic fares: trip credit issued for cancelled amount, apply toward new booking. Basic Economy: no changes permitted; cancellation yields trip credit minus $99 fee.",
+      "twentyFourHourRule": "Full refund within 24 hours of booking for all fare types if the flight is at least 2 days (48 hours) away. Must be booked directly through AA (aa.com, app, or phone). Cancel online or via app within 24-hour window for automatic full refund.",
+      "basicEconomyRules": "Basic Economy (B fare class): No changes after 24-hour window. Cancellations after 24 hours: trip credit issued minus $99 cancellation fee. Cannot upgrade. Cannot select seats in advance on most routes. Cannot use same-day change. Most restrictive fare \u2014 avoid for flexible travel.",
+      "awardTicketPolicy": "AAdvantage award cancellations: miles redeposited to account. Redeposit fee: $150 for non-status members; waived for AAdvantage Gold, Platinum, Platinum Pro, and Executive Platinum members. Fee charged per-person. Taxes/fees refunded to original payment within 7 business days.",
+      "claimSteps": [
+        "Step 1: Go to aa.com/reservations or open the American Airlines app",
+        "Step 2: Log in and find your booking under 'Your Trips'",
+        "Step 3: Select 'Change Trip' to rebook at new lower fare directly (price difference becomes trip credit)",
+        "Step 4: Alternatively, select 'Cancel Trip' \u2014 trip credit issued for ticket value (minus fees if Basic Economy)",
+        "Step 5: Search for the same route at the new lower price",
+        "Step 6: At checkout, apply trip credit by selecting 'Use Trip Credit' and entering the credit number"
+      ],
+      "claimUrl": "https://www.aa.com/reservation/view/find-your-reservation",
+      "tripCreditsUrl": "https://www.aa.com/reservation/tripCreditSearch.do",
+      "claimPhone": "1-800-433-7300",
+      "creditExpiry": "Trip Credits (formerly eVouchers): valid 12 months from issue date. AAdvantage miles redeposited after fee payment \u2014 no expiry on miles once redeposited.",
+      "cancellationFees": {
+        "basicEconomy": "$99 per person cancellation fee after 24-hour window; remaining value as trip credit",
+        "mainCabin": "$0 cancellation fee \u2014 full trip credit issued",
+        "premiumEconomy": "$0 cancellation fee \u2014 trip credit or cash if refundable",
+        "business": "$0 cancellation fee \u2014 trip credit or cash if refundable",
+        "first": "$0 cancellation fee \u2014 trip credit or cash if refundable",
+        "awardRedeposit": "$150 per person for non-status members; free for Gold status and above"
+      },
+      "refundTypes": {
+        "cash": "Fully refundable fare tickets; also when AA cancels/significantly delays your flight",
+        "tripCredit": "Non-refundable ticket cancellations; valid 12 months from issue date; non-transferable",
+        "miles": "AAdvantage miles redeposited upon award cancellation (fee applies for non-status)"
+      },
+      "loopholes": [
+        "If American cancels your flight or delays it by 3+ hours (domestic) or 6+ hours (international), you qualify for a full cash refund under DOT rules \u2014 always ask for cash, not trip credit",
+        "AAdvantage status members (Gold+) get free award redeposit \u2014 worth timing cancellations around status earn thresholds",
+        "Trip credits can be used online without calling \u2014 go to aa.com/reservation/tripCreditSearch.do",
+        "The AA app 'Change Trip' feature can sometimes rebook at lower fare same-day and issue difference as credit without full cancellation",
+        "Basic Economy $99 fee: only worth claiming if price drop exceeds $99 per person; calculate net savings first",
+        "Book directly on aa.com \u2014 OTA bookings require the OTA to process changes, not AA directly"
+      ]
+    }
+  }
+]
