@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The DOT 24-Hour Flight Cancellation Rule Explained (2026)</title>
+  <meta name="description" content="Under federal law, you have 24 hours after booking any US flight to cancel for a full cash refund — no fees, no questions. Here's exactly how to use it and what TripReclaim does during this critical window.">
+  <link rel="canonical" href="https://tripreclaim.com/blog/dot-24-hour-flight-cancellation-rule/">
+  <meta property="og:title" content="The DOT 24-Hour Flight Cancellation Rule Explained">
+  <meta property="og:description" content="Federal law gives you 24 hours to cancel any US flight for a full cash refund. Here's how to use it to your advantage.">
+  <meta property="og:url" content="https://tripreclaim.com/blog/dot-24-hour-flight-cancellation-rule/">
+  <meta property="og:type" content="article">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; line-height: 1.75; }
+    .navbar { background: #1d4ed8; padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+    .navbar a img { height: 34px; }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a { color: #bfdbfe; font-size: 0.9rem; text-decoration: none; }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta { background: #fff; color: #1d4ed8 !important; padding: 8px 18px; border-radius: 8px; font-weight: 700 !important; font-size: 0.88rem !important; }
+    .article-hero { background: linear-gradient(135deg, #064e3b, #1d4ed8); padding: 60px 24px 48px; color: #fff; text-align: center; }
+    .article-hero .tag { display: inline-block; background: rgba(255,255,255,0.15); color: #a7f3d0; font-size: 0.78rem; font-weight: 700; padding: 5px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 18px; }
+    .article-hero h1 { font-size: 2.1rem; font-weight: 800; max-width: 720px; margin: 0 auto 16px; line-height: 1.25; }
+    .article-hero .meta { color: #6ee7b7; font-size: 0.88rem; }
+    .layout { max-width: 820px; margin: 0 auto; padding: 56px 24px 80px; }
+    .toc { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 24px 28px; margin-bottom: 40px; }
+    .toc h3 { font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #1d4ed8; margin-bottom: 12px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { font-size: 0.92rem; margin-bottom: 6px; }
+    .toc a { color: #1d4ed8; text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+    .article-body h2 { font-size: 1.55rem; font-weight: 800; margin: 48px 0 16px; color: #0f172a; }
+    .article-body h3 { font-size: 1.15rem; font-weight: 700; margin: 32px 0 12px; color: #1e40af; }
+    .article-body p { margin-bottom: 18px; color: #334155; font-size: 1rem; }
+    .article-body ul, .article-body ol { padding-left: 22px; margin-bottom: 18px; }
+    .article-body li { margin-bottom: 8px; color: #334155; font-size: 1rem; }
+    .article-body strong { color: #0f172a; }
+    .highlight-box { background: #f0fdf4; border-left: 4px solid #22c55e; border-radius: 0 8px 8px 0; padding: 18px 22px; margin: 28px 0; }
+    .highlight-box strong { color: #166534; }
+    .warning-box { background: #fff7ed; border-left: 4px solid #f97316; border-radius: 0 8px 8px 0; padding: 18px 22px; margin: 28px 0; }
+    .warning-box strong { color: #9a3412; }
+    .law-box { background: #f0f9ff; border: 2px solid #0ea5e9; border-radius: 12px; padding: 24px 28px; margin: 32px 0; }
+    .law-box h3 { color: #0369a1; margin-top: 0; margin-bottom: 10px; font-size: 1rem; }
+    .law-box p { color: #0c4a6e; font-size: 0.95rem; margin: 0; }
+    .steps { counter-reset: steps; padding-left: 0; list-style: none; }
+    .steps li { counter-increment: steps; display: flex; gap: 16px; margin-bottom: 16px; align-items: flex-start; }
+    .steps li::before { content: counter(steps); background: #059669; color: #fff; font-weight: 800; font-size: 0.85rem; min-width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .timeline { margin: 24px 0; }
+    .timeline-item { display: flex; gap: 16px; margin-bottom: 0; position: relative; }
+    .timeline-item::before { content: ''; position: absolute; left: 19px; top: 36px; bottom: -4px; width: 2px; background: #e2e8f0; }
+    .timeline-item:last-child::before { display: none; }
+    .timeline-dot { min-width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; flex-shrink: 0; margin-bottom: 24px; }
+    .dot-green { background: #dcfce7; color: #166534; }
+    .dot-yellow { background: #fef9c3; color: #854d0e; }
+    .dot-red { background: #fee2e2; color: #991b1b; }
+    .timeline-content h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; color: #0f172a; }
+    .timeline-content p { font-size: 0.88rem; color: #64748b; margin: 0; padding-bottom: 24px; }
+    .cta-inline { background: linear-gradient(135deg, #1d4ed8, #7c3aed); border-radius: 14px; padding: 36px 32px; text-align: center; margin: 48px 0; color: #fff; }
+    .cta-inline h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 10px; }
+    .cta-inline p { color: #c7d2fe; margin-bottom: 20px; font-size: 0.95rem; }
+    .cta-inline a { background: #fff; color: #1d4ed8; padding: 12px 28px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 0.95rem; display: inline-block; }
+    .breadcrumb { font-size: 0.82rem; color: #94a3b8; margin-bottom: 32px; }
+    .breadcrumb a { color: #1d4ed8; text-decoration: none; }
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 0.9rem; }
+    th { background: #059669; color: #fff; padding: 10px 14px; text-align: left; font-weight: 600; }
+    td { padding: 10px 14px; border-bottom: 1px solid #e2e8f0; color: #334155; }
+    tr:nth-child(even) td { background: #f8fafc; }
+    .footer { text-align: center; margin-top: 60px; padding-top: 24px; border-top: 1px solid #e2e8f0; color: #94a3b8; font-size: 0.85rem; }
+    @media (max-width: 600px) { .article-hero h1 { font-size: 1.5rem; } .nav-links { display: none; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="/"><img src="/logos/logo.png" alt="TripReclaim"></a>
+  <div class="nav-links">
+    <a href="/#how-it-works">How It Works</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/blog/">Blog</a>
+    <a href="/dashboard/" class="nav-cta">Sign In</a>
+  </div>
+</nav>
+
+<div class="article-hero">
+  <span class="tag">⚖️ Know Your Rights</span>
+  <h1>The DOT 24-Hour Flight Cancellation Rule Explained</h1>
+  <p class="meta">6 min read &nbsp;·&nbsp; Updated May 2026</p>
+</div>
+
+<div class="layout">
+  <div class="breadcrumb"><a href="/">Home</a> › <a href="/blog/">Blog</a> › DOT 24-Hour Flight Cancellation Rule</div>
+
+  <div class="toc">
+    <h3>📋 In This Article</h3>
+    <ol>
+      <li><a href="#what-is-it">What is the DOT 24-hour rule?</a></li>
+      <li><a href="#requirements">Who qualifies and when does it apply?</a></li>
+      <li><a href="#how-to-use">How to use it to capture a price drop</a></li>
+      <li><a href="#airline-by-airline">How to cancel with each major airline</a></li>
+      <li><a href="#price-monitoring">Why price monitoring in the first 24 hours matters most</a></li>
+      <li><a href="#after-24h">What happens after the 24-hour window closes?</a></li>
+    </ol>
+  </div>
+
+  <div class="article-body">
+
+    <p>Most travelers don't know it, but there's a federal regulation in the United States that gives you a powerful safety net every time you book a flight. It's called the DOT 24-Hour Rule, and it's one of the most valuable — and least used — consumer protections in the travel industry.</p>
+
+    <p>In plain English: <strong>if you cancel a flight within 24 hours of booking and the flight is at least 7 days away, you're entitled to a full refund to your original payment method</strong> — no cancellation fees, no travel credit, no games. Real cash back.</p>
+
+    <h2 id="what-is-it">What Is the DOT 24-Hour Rule?</h2>
+
+    <div class="law-box">
+      <h3>⚖️ The Legal Foundation</h3>
+      <p>Under <strong>14 CFR Part 259</strong> (Enhanced Protections for Airline Passengers), the US Department of Transportation requires airlines operating flights to, from, or within the United States to either: (a) allow passengers to cancel within 24 hours of purchase for a full refund, or (b) hold a reservation at the quoted price for 24 hours without payment. Most major airlines satisfy this requirement through the cancellation option.</p>
+    </div>
+
+    <p>This rule was designed to protect travelers who book impulsively or spot pricing errors — giving them time to review their decision. But savvy travelers have learned to use it for something even more valuable: <strong>capturing price drops that occur in the hours immediately after booking</strong>.</p>
+
+    <h2 id="requirements">Who Qualifies and When Does It Apply?</h2>
+
+    <p>The rule applies broadly, but there are a few key requirements:</p>
+
+    <table>
+      <tr><th>Requirement</th><th>Details</th></tr>
+      <tr><td><strong>Flight origin/destination</strong></td><td>Flights to, from, or within the United States</td></tr>
+      <tr><td><strong>Days until departure</strong></td><td>Flight must be at least 7 days (168 hours) away at time of booking</td></tr>
+      <tr><td><strong>Time since booking</strong></td><td>Must cancel within 24 hours of original purchase</td></tr>
+      <tr><td><strong>Booking channel</strong></td><td>Must have booked directly with the airline (not all third-party OTAs are covered)</td></tr>
+      <tr><td><strong>Fare class</strong></td><td>Applies to all fare classes including Basic Economy</td></tr>
+    </table>
+
+    <div class="warning-box">
+      <strong>⚠️ OTA Exception:</strong> If you booked through a third-party site like Expedia, Kayak, or Priceline, the DOT rule technically applies to the airline — but the OTA may have its own cancellation policies that complicate the refund. For maximum protection, book directly with the airline.
+    </div>
+
+    <h2 id="how-to-use">How to Use the 24-Hour Rule to Capture a Price Drop</h2>
+
+    <p>Here's the strategy that turns the 24-hour rule from a safety net into an active money-saving tool:</p>
+
+    <ol class="steps">
+      <li><strong>Book the flight</strong> at the current price to lock in your seat and itinerary</li>
+      <li><strong>Immediately start monitoring</strong> — sign up for price alerts on the exact flight you booked</li>
+      <li><strong>If the price drops</strong> within your 24-hour window — even by $30 — cancel the original booking for a full cash refund</li>
+      <li><strong>Immediately rebook</strong> the same flight at the new lower price</li>
+      <li><strong>Net result:</strong> Same seat, same flight — but at the lower price. Difference back on your card.</li>
+    </ol>
+
+    <div class="highlight-box">
+      <strong>✅ Real Example:</strong> A traveler books NYC→Miami for $389 on a Tuesday morning. TripReclaim detects a price drop to $249 at 2am Wednesday (airlines batch-update fares overnight). The traveler is alerted, cancels the original booking, and immediately rebooks for $249. They receive $140 back on their credit card within 7 business days.
+    </div>
+
+    <h3>When Are Prices Most Likely to Drop in the First 24 Hours?</h3>
+
+    <p>Airline pricing algorithms are always running, but price drops tend to cluster at specific times:</p>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot dot-green">11pm</div>
+        <div class="timeline-content">
+          <h4>Late Night / Overnight (11pm–3am)</h4>
+          <p>Airlines often batch-update their fare inventories overnight. This is when the biggest drops happen. If you booked in the evening, check again before bed and first thing in the morning.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot dot-green">6am</div>
+        <div class="timeline-content">
+          <h4>Early Morning (5am–8am)</h4>
+          <p>A second batch-update window. Fares posted overnight take effect and competing airlines often respond with their own adjustments.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot dot-yellow">12pm</div>
+        <div class="timeline-content">
+          <h4>Midday (11am–1pm)</h4>
+          <p>A moderate update window as demand from the morning booking rush affects fare availability. Less dramatic than overnight but still worth watching.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot dot-red">3pm</div>
+        <div class="timeline-content">
+          <h4>Afternoon Peak (2pm–6pm)</h4>
+          <p>Highest booking volume of the day. Prices are most likely to increase, not decrease, during this window as demand fills seats.</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 id="airline-by-airline">How to Cancel Within 24 Hours — By Airline</h2>
+
+    <p>Each airline has a slightly different process for the 24-hour cancellation. Here's the fastest path for each major carrier:</p>
+
+    <table>
+      <tr><th>Airline</th><th>Cancel Path</th><th>Refund Timeline</th></tr>
+      <tr><td><strong>American Airlines</strong></td><td>aa.com → My Trips → Cancel Trip</td><td>7 business days</td></tr>
+      <tr><td><strong>Delta</strong></td><td>delta.com → My Trips → Cancel</td><td>7 business days</td></tr>
+      <tr><td><strong>United</strong></td><td>united.com → My Trips → Cancel</td><td>7 business days</td></tr>
+      <tr><td><strong>Southwest</strong></td><td>southwest.com → Change/Cancel → Cancel flight</td><td>Instant to Rapid Rewards; 7 days to card</td></tr>
+      <tr><td><strong>Alaska</strong></td><td>alaskaair.com → My Trips → Cancel</td><td>7 business days</td></tr>
+      <tr><td><strong>JetBlue</strong></td><td>jetblue.com → Manage Trips → Cancel</td><td>5–7 business days</td></tr>
+      <tr><td><strong>Spirit</strong></td><td>spirit.com → My Trips → Cancel</td><td>7 business days</td></tr>
+    </table>
+
+    <div class="highlight-box">
+      <strong>✅ Pro Tip:</strong> After cancelling, rebook immediately — don't wait. The price that triggered your cancellation may only be available for a short window before seats fill or the algorithm re-prices. TripReclaim's price drop alerts include a direct booking link to rebook at the detected price.
+    </div>
+
+    <h2 id="price-monitoring">Why Price Monitoring in the First 24 Hours Matters Most</h2>
+
+    <p>The 24-hour window is when price monitoring is most valuable — and most other tools ignore it completely.</p>
+
+    <p>Here's why the first 24 hours are different from all other monitoring periods:</p>
+
+    <ul>
+      <li><strong>Cash refunds, not credits:</strong> Within 24 hours, you get real money back — not a travel credit that expires in a year</li>
+      <li><strong>No fare class restrictions:</strong> Even Basic Economy qualifies — the rule overrides airline fare class restrictions</li>
+      <li><strong>High price volatility:</strong> Batch algorithm updates mean fares can swing $50–$200 overnight</li>
+      <li><strong>No fees anywhere:</strong> Zero cancellation fees, zero rebooking fees — pure savings</li>
+    </ul>
+
+    <p>This is why TripReclaim's monitoring schedule is front-loaded for new bookings:</p>
+
+    <table>
+      <tr><th>Time Since Booking</th><th>Check Frequency</th><th>Why</th></tr>
+      <tr><td>0–1 hour</td><td>Every 15 minutes</td><td>Immediate batch pricing resets</td></tr>
+      <tr><td>1–6 hours</td><td>Every 30 minutes</td><td>Demand surge response window</td></tr>
+      <tr><td>6–24 hours</td><td>Every hour</td><td>Overnight batch updates</td></tr>
+      <tr><td>After 24 hours</td><td>Adaptive (2–8 hrs)</td><td>Standard price monitoring</td></tr>
+    </table>
+
+    <p>When a price drop is detected within the 24-hour window, the TripReclaim alert prominently shows:</p>
+    <ul>
+      <li>The drop amount and new price</li>
+      <li>Exact hours and minutes remaining in your DOT refund window</li>
+      <li>One-click link to cancel your specific booking on the airline's site</li>
+      <li>Reminder to rebook immediately after cancelling</li>
+    </ul>
+
+    <h2 id="after-24h">What Happens After the 24-Hour Window Closes?</h2>
+
+    <p>Once your 24-hour window closes, the DOT rule no longer applies. But that doesn't mean price drops stop mattering — it means the type of recovery changes.</p>
+
+    <table>
+      <tr><th>Window</th><th>What You Can Get</th></tr>
+      <tr><td>Within 24 hours</td><td>Full cash refund to original payment method</td></tr>
+      <tr><td>After 24 hours (Main Cabin)</td><td>Travel credit for the price difference</td></tr>
+      <tr><td>After 24 hours (Basic Economy)</td><td>Usually nothing, or credit minus cancellation fee</td></tr>
+      <tr><td>Award/miles booking, any time</td><td>Miles difference refunded instantly</td></tr>
+    </table>
+
+    <p>Travel credits are still valuable — a $150 Delta eCredit on a future flight is real money. TripReclaim monitors your bookings for price drops throughout the entire period from booking to departure, with airline-specific step-by-step claim instructions included in every alert.</p>
+
+  </div>
+
+  <div class="cta-inline">
+    <h3>⚡ Protect Your 24-Hour Window Automatically</h3>
+    <p>TripReclaim checks your new bookings every 15 minutes and sends an urgent alert the moment a price drops — while you still have time to cancel for a full cash refund.</p>
+    <a href="/#pricing">Start Monitoring — from $1.99 →</a>
+  </div>
+
+  <div class="article-body">
+    <h2>Frequently Asked Questions</h2>
+
+    <h3>Does the 24-hour rule apply to international flights?</h3>
+    <p>Yes — as long as the flight originates from or arrives in the United States. A flight from London to New York on a US carrier qualifies. A flight between two non-US cities (e.g., Paris to Tokyo) booked on a US carrier may also qualify depending on the carrier's policy.</p>
+
+    <h3>What if I booked through a travel agent or OTA?</h3>
+    <p>The DOT rule technically applies to the airline, but third-party booking sites may have their own policies. Contact the airline directly if your OTA is unresponsive. Booking directly with the airline always gives you clearer protection.</p>
+
+    <h3>Can I use the 24-hour rule more than once?</h3>
+    <p>Yes — the rule applies to each individual booking. If you cancel and rebook at a lower price, the new booking gets its own fresh 24-hour window. There's no limit to how many times you can use this protection across different bookings.</p>
+
+    <h3>Does the rule apply to Basic Economy fares?</h3>
+    <p>Yes. The DOT rule overrides airline fare class restrictions. Basic Economy fares that are normally non-refundable still qualify for the full 24-hour cash refund. This is one of the only situations where Basic Economy tickets can be cancelled without penalty.</p>
+
+    <h3>How long does the refund take?</h3>
+    <p>Most major airlines process 24-hour cancellation refunds within 7 business days to the original payment method. Credit card refunds can take an additional 1–2 billing cycles to appear on your statement, though many appear much sooner.</p>
+  </div>
+
+  <div class="footer">&copy; 2026 TripReclaim &middot; <a href="/blog/">Blog</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
+</div>
+</body>
+</html>
