@@ -1597,9 +1597,22 @@ function openClaimCreditModal(bookingId, suggestedAmount) {
   const expDefault = new Date(Date.now() + 365*86400000).toISOString().split('T')[0];
   overlay.className = 'modal-overlay';
   overlay.style.display = 'flex';
-  overlay.innerHTML = '<div class="modal-box" style="max-width:420px;"><div class="modal-header"><div class="modal-title">\u2705 Record Travel Credit</div><button class="modal-close" onclick="document.getElementById(\'claim-credit-modal\').style.display=\'none\'.toString()">&times;</button></div><p style="color:var(--slate);font-size:0.9rem;margin-bottom:20px;">Record the travel credit so we can track its expiry and remind you before it expires.</p><div class="form-group" style="margin-bottom:14px;"><label>Credit Amount ($)</label><input type="number" id="cc-amount" value="' + suggestedAmount + '" step="0.01" min="0.01"></div><div class="form-group" style="margin-bottom:20px;"><label>Credit Expiry Date</label><input type="date" id="cc-expiry" value="' + expDefault + '"><span class="hint">Usually 1 year from original ticket purchase date</span></div><div style="display:flex;gap:10px;"><button class="btn-primary" style="flex:2;" onclick="saveClaimedCredit(\'' + bookingId + \')">Save Credit</button><button class="btn-secondary" style="flex:1;" onclick="document.getElementById(\'claim-credit-modal\').style.display=\'none\'">Cancel</button></div></div>';
+  const box = document.createElement('div');
+  box.className = 'modal-box';
+  box.style.maxWidth = '420px';
+  box.innerHTML = '<div class="modal-header"><div class="modal-title">&#x2705; Record Travel Credit</div><button class="modal-close" onclick="closeCreditModal()">&times;</button></div>' +
+    '<p style="color:var(--slate);font-size:0.9rem;margin-bottom:20px;">Record the travel credit so we can track its expiry and remind you before it expires.</p>' +
+    '<div class="form-group" style="margin-bottom:14px;"><label>Credit Amount ($)</label><input type="number" id="cc-amount" value="' + suggestedAmount + '" step="0.01" min="0.01"></div>' +
+    '<div class="form-group" style="margin-bottom:20px;"><label>Credit Expiry Date</label><input type="date" id="cc-expiry" value="' + expDefault + '"><span class="hint">Usually 1 year from original ticket purchase date</span></div>' +
+    '<div style="display:flex;gap:10px;"><button class="btn-primary" style="flex:2;" id="cc-save-btn">Save Credit</button><button class="btn-secondary" style="flex:1;" onclick="closeCreditModal()">Cancel</button></div>';
+  overlay.innerHTML = '';
+  overlay.appendChild(box);
+  document.getElementById('cc-save-btn').onclick = function() { saveClaimedCredit(bookingId); };
   overlay.onclick = function(e) { if (e.target === overlay) overlay.style.display = 'none'; };
 }
+
+function closeCreditModal() { const m = document.getElementById('claim-credit-modal'); if (m) m.style.display = 'none'; }
+
 
 async function saveClaimedCredit(bookingId) {
   const amount = parseFloat(document.getElementById('cc-amount').value);
