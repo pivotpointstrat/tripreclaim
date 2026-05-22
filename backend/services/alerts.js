@@ -64,6 +64,24 @@ const buildMilesDropMessage = (booking, currentMilesCost) => {
  * Updates booking state and sends alert if threshold met.
  * Returns a result summary object.
  */
+// Miles program valuation (cents per mile) — industry standard estimates
+const MILES_CPM = {
+  'AAdvantage':    1.5,
+  'SkyMiles':      1.2,
+  'MileagePlus':   1.5,
+  'TrueBlue':      1.5,
+  'Mileage Plan':  1.8,
+  'Rapid Rewards': 1.5,
+  'Avios':         1.5,
+  'Qmiles':        1.5,
+  'default':       1.3,
+};
+
+const estimateMilesCost = (cashPrice, program) => {
+  const cpm = MILES_CPM[program] || MILES_CPM['default'];
+  return Math.round((cashPrice / cpm) * 100);
+};
+
 const checkBooking = async (booking) => {
   const result = {
     bookingId: booking._id,
@@ -112,14 +130,66 @@ const checkBooking = async (booking) => {
 
       // ── Miles / award booking: compare miles cost ──
       if (booking.bookingType !== 'cash' && booking.milesPaid) {
-        // SerpAPI returns dollar price; we can't directly compare miles here.
-        // Log for now and skip dollar-based alerting for miles bookings.
-        // A future iteration will integrate a miles-valuation layer.
+        // Use cash price as miles-valuation proxy
+        const program = booking.milesProgram || 'default';
+        const estimatedCurrentMiles = estimateMilesCost(price, program);
+        const milesSavings = booking.milesPaid - estimatedCurrentMiles;
+        const milesThreshold = 2000; // alert if route drops by 2,000+ miles
+
         console.log(
-          `[alerts] Miles booking ${booking._id}: current price $${price} ` +
-          `(paid ${booking.milesPaid} ${booking.milesProgram || 'miles'}) — skipping dollar alert`
+          `[alerts] Miles booking ${booking._id}: $${price} cash → ~${estimatedCurrentMiles.toLocaleString()} miles ` +
+          `(paid ${booking.milesPaid.toLocaleString()} ${program}) — savings: ${milesSavings.toLocaleString()} miles`
         );
-        // Still schedule next check
+
+        if (milesSavings >= milesThreshold) {
+          const shouldAlert =
+            booking.lastAlertPrice === null ||
+            price < booking.lastAlertPrice - 5;
+
+          if (shouldAlert) {
+            try {
+              await sendPriceDropAlert(booking.email, booking, price, {
+                netSavings: milesSavings,
+                rawDrop: milesSavings,
+                notWorthClaiming: false,
+                isMilesBooking: true,
+                estimatedCurrentMiles,
+                milesSavings,
+                program,
+              });
+              // Send SMS if enabled
+              try {
+                const user = await User.findOne({ email: booking.email }).select('phone notificationPrefs').lean();
+                if (user && user.notificationPrefs && user.notificationPrefs.sms && user.phone) {
+                  await sendSmsPriceDropAlert(user.phone, booking, price, {
+                    netSavings: milesSavings,
+                    notWorthClaiming: false,
+                    isMilesBooking: true,
+                    estimatedCurrentMiles,
+                    milesSavings,
+                    program,
+                  });
+                }
+              } catch (smsErr) {
+                console.warn('[alerts] Miles SMS send failed (non-fatal):', smsErr.message);
+              }
+              update.alertsSent = (booking.alertsSent || 0) + 1;
+              update.lastAlertAt = now;
+              update.lastAlertPrice = price;
+              result.dropped = true;
+              result.alertSent = true;
+              console.log(
+                `[alerts] ✈️  Miles alert sent for ${result.route} — ` +
+                `${booking.milesPaid.toLocaleString()} → ~${estimatedCurrentMiles.toLocaleString()} miles ` +
+                `(save ${milesSavings.toLocaleString()} miles)`
+              );
+            } catch (emailErr) {
+              console.error(`[alerts] Failed to send miles alert email: ${emailErr.message}`);
+            }
+          } else {
+            result.dropped = true; // miles drop detected, alert already sent
+          }
+        }
       } else {
         // ── Cash booking: calculate price drop ──
         const rawDrop = booking.pricePaid - price;
