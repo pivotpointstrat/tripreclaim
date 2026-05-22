@@ -873,6 +873,7 @@ let formData = {};
 let matchMode = 'exact';
 
 async function renderFlightsTab() {
+  const user = getUser() || {};
   const minDate = new Date(Date.now()+86400000).toISOString().split('T')[0];
   document.getElementById('tab-content').innerHTML = `
     ${user.plan === 'per_trip' ? `
