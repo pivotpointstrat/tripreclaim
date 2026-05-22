@@ -22,6 +22,9 @@
     ul { margin: 0 0 14px 20px; }
     ul li { margin-bottom: 6px; color: #374151; font-size: 0.97rem; }
     a { color: #1d4ed8; }
+    .sms-box { background: #eff6ff; border-left: 4px solid #1d4ed8; border-radius: 6px; padding: 18px 20px; margin: 16px 0 20px; }
+    .sms-box p { margin-bottom: 8px; font-size: 0.95rem; }
+    .sms-box p:last-child { margin-bottom: 0; }
     .footer { text-align: center; margin-top: 60px; padding-top: 24px; border-top: 1px solid #e2e8f0; color: #94a3b8; font-size: 0.85rem; }
   </style>
 </head>
@@ -32,7 +35,7 @@
 </nav>
 <div class="container">
   <h1>Privacy Policy</h1>
-  <p class="updated">Last updated: May 21, 2026</p>
+  <p class="updated">Last updated: May 22, 2026</p>
 
   <p>TripReclaim (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) is operated by Pivot Point Media Holdings LLC. This Privacy Policy explains how we collect, use, and protect your information when you use our flight price monitoring service.</p>
 
@@ -42,7 +45,7 @@
     <li><strong>Account information:</strong> Email address, name, and phone number (optional)</li>
     <li><strong>Booking details:</strong> Flight information including airline, route, dates, price paid, confirmation numbers, and flight numbers</li>
     <li><strong>Payment information:</strong> Processed securely by Stripe. We do not store card numbers on our servers.</li>
-    <li><strong>Communication preferences:</strong> Email and SMS notification settings</li>
+    <li><strong>Communication preferences:</strong> Email and SMS notification settings, including the date and time you provided consent to receive SMS messages</li>
   </ul>
   <p>We also collect information automatically:</p>
   <ul>
@@ -56,49 +59,83 @@
     <li>To generate refund claim emails and claim kits on your behalf</li>
     <li>To process payments via Stripe</li>
     <li>To send transactional emails including login links and price drop alerts</li>
+    <li>To send SMS text alerts when you have opted in to receive them</li>
     <li>To improve our service and troubleshoot issues</li>
     <li>To comply with legal obligations</li>
   </ul>
 
-  <h2>3. Data Sharing</h2>
+  <h2>3. SMS Text Message Communications</h2>
+  <p>TripReclaim offers optional SMS text message alerts for flight price drops. The following terms apply to our SMS program:</p>
+
+  <div class="sms-box">
+    <p><strong>Program Name:</strong> TripReclaim Price Drop Alerts</p>
+    <p><strong>Sender:</strong> TripReclaim via (888) 516-5777</p>
+    <p><strong>Message Types:</strong> Flight price drop notifications, 24-hour full refund window alerts, and account-related messages</p>
+    <p><strong>Message Frequency:</strong> Varies based on your monitored bookings and price change activity. Typically 1&ndash;5 messages per booking per monitoring period.</p>
+    <p><strong>Message &amp; Data Rates:</strong> Message and data rates may apply. Charges are determined by your mobile carrier.</p>
+  </div>
+
+  <p><strong>How You Opt In:</strong> You consent to receive SMS alerts by enabling the SMS toggle in your TripReclaim account settings at <a href="https://tripreclaim.com/dashboard/">tripreclaim.com/dashboard/</a>. By enabling SMS notifications, you expressly consent to receive recurring automated text messages from TripReclaim at the mobile number provided. Consent is not a condition of purchase.</p>
+
+  <p><strong>How to Opt Out:</strong> You may opt out of SMS messages at any time by:</p>
+  <ul>
+    <li>Replying <strong>STOP</strong> to any SMS message you receive from us</li>
+    <li>Disabling the SMS toggle in your account notification settings</li>
+    <li>Emailing <a href="mailto:hello@tripreclaim.com">hello@tripreclaim.com</a> with your request</li>
+  </ul>
+  <p>After texting STOP, you will receive one final confirmation message. You will not receive further SMS messages unless you re-enable the SMS toggle in your account settings.</p>
+
+  <p><strong>How to Get Help:</strong> Reply <strong>HELP</strong> to any message for help, or contact us at <a href="mailto:hello@tripreclaim.com">hello@tripreclaim.com</a>. Our response: &ldquo;TripReclaim: Flight price drop alerts. For help visit tripreclaim.com or email hello@tripreclaim.com. Reply STOP to unsubscribe.&rdquo;</p>
+
+  <p><strong>Supported Carriers:</strong> Most major US carriers are supported including AT&amp;T, T-Mobile, Verizon, Sprint, and others. Carrier support is not guaranteed for all MVNOs.</p>
+
+  <p><strong>SMS Data:</strong> We collect and store your mobile phone number and the timestamp of your SMS opt-in consent. This data is retained as long as your account is active or until you opt out. We do not share your phone number with third parties for marketing purposes. We use Twilio (twilio.com) as our SMS delivery provider; your phone number is transmitted to Twilio solely for message delivery.</p>
+
+  <h2>4. Data Sharing</h2>
   <p>We do not sell your personal data. We share data only with:</p>
   <ul>
     <li><strong>Stripe:</strong> For payment processing</li>
     <li><strong>Resend:</strong> For email delivery</li>
+    <li><strong>Twilio:</strong> For SMS message delivery (phone number transmitted only for message routing)</li>
     <li><strong>SerpApi / Google Flights:</strong> Route and date data (no personal info) for price lookups</li>
     <li><strong>MongoDB Atlas:</strong> Secure database storage</li>
     <li><strong>Railway:</strong> Cloud infrastructure hosting</li>
   </ul>
 
-  <h2>4. Data Retention</h2>
-  <p>We retain your account data as long as your account is active. Booking records are retained for 90 days after the flight departure date. You may request deletion of your data at any time by emailing <a href="mailto:hello@tripreclaim.com">hello@tripreclaim.com</a>.</p>
+  <h2>5. Data Retention</h2>
+  <p>We retain your account data as long as your account is active. Booking records are retained for 90 days after the flight departure date. SMS consent records are retained for a minimum of 4 years as required by TCPA compliance standards. You may request deletion of your data at any time by emailing <a href="mailto:hello@tripreclaim.com">hello@tripreclaim.com</a>.</p>
 
-  <h2>5. Security</h2>
+  <h2>6. Security</h2>
   <p>We use industry-standard security measures including HTTPS encryption, JWT authentication, and secure database practices. No method of transmission over the internet is 100% secure, and we cannot guarantee absolute security.</p>
 
-  <h2>6. Your Rights</h2>
+  <h2>7. Your Rights</h2>
   <p>You have the right to:</p>
   <ul>
     <li>Access the personal data we hold about you</li>
     <li>Request correction of inaccurate data</li>
     <li>Request deletion of your data</li>
-    <li>Opt out of marketing communications</li>
+    <li>Opt out of marketing communications at any time</li>
+    <li>Opt out of SMS messages at any time by replying STOP or updating your account settings</li>
   </ul>
   <p>To exercise these rights, contact us at <a href="mailto:hello@tripreclaim.com">hello@tripreclaim.com</a>.</p>
 
-  <h2>7. Cookies</h2>
+  <h2>8. Cookies</h2>
   <p>We use localStorage (not cookies) to store your authentication token in the browser. We do not use third-party tracking cookies or advertising cookies.</p>
 
-  <h2>8. Children&rsquo;s Privacy</h2>
+  <h2>9. Children&rsquo;s Privacy</h2>
   <p>TripReclaim is not intended for use by children under 13. We do not knowingly collect personal information from children under 13.</p>
 
-  <h2>9. Changes to This Policy</h2>
+  <h2>10. TCPA Compliance</h2>
+  <p>Our SMS program complies with the Telephone Consumer Protection Act (TCPA) and all applicable Federal Communications Commission (FCC) regulations. We obtain express written consent before sending any automated SMS messages. You may revoke consent at any time by replying STOP to any message or by contacting us directly. We maintain records of all opt-in consents including the date, time, and method of consent.</p>
+
+  <h2>11. Changes to This Policy</h2>
   <p>We may update this policy from time to time. We will notify you of significant changes by email or via the dashboard. Continued use of the service after changes constitutes acceptance.</p>
 
-  <h2>10. Contact</h2>
-  <p>Questions about this policy? Contact us at:<br>
+  <h2>12. Contact</h2>
+  <p>Questions about this policy or our SMS program? Contact us at:<br>
   <strong>Pivot Point Media Holdings LLC</strong><br>
-  <a href="mailto:hello@tripreclaim.com">hello@tripreclaim.com</a></p>
+  <a href="mailto:hello@tripreclaim.com">hello@tripreclaim.com</a><br>
+  TripReclaim &mdash; tripreclaim.com</p>
 
   <div class="footer">&copy; 2026 TripReclaim &middot; Pivot Point Media Holdings LLC &middot; <a href="/terms/">Terms of Service</a></div>
 </div>
