@@ -965,7 +965,7 @@ async function renderFlightsTab() {
             </div>
             <button class="btn-lookup" onclick="openAirlineLookup()">Look Up Booking →</button>
           </div>
-          <div id="lookup-hint" style="font-size:0.78rem;color:#64748b;margin-top:8px;">✨ We'll automatically retrieve your flight details — no copying needed. Supported: American, Delta, United, JetBlue, Alaska.</div>
+          <div id="lookup-hint" style="font-size:0.78rem;color:#64748b;margin-top:8px;">✨ We'll automatically retrieve your flight details — no copying needed. Supported: American, Delta, United, JetBlue, Alaska, British Airways, Lufthansa.</div>
         </div>
 
         <div class="form-grid">
@@ -1133,7 +1133,7 @@ async function openAirlineLookup() {
   if (!lastName){ alert('Please enter your last name.'); return; }
 
   // Check if this airline supports auto-lookup
-  const supported = ['American Airlines','Delta','United','JetBlue','Alaska Airlines'];
+  const supported = ['American Airlines','Delta','United','JetBlue','Alaska Airlines','British Airways','Lufthansa'];
   if (!supported.includes(airline)) {
     // Fallback: open manage booking page for unsupported airlines
     const fa = document.getElementById('f-airline'); if (fa) fa.value = airline;

@@ -169,6 +169,76 @@ const scrapeJetBlue = async (page, confirmationNumber, lastName) => {
   });
 };
 
+/** British Airways */
+const scrapeBritishAirways = async (page, confirmationNumber, lastName) => {
+  await page.goto('https://www.britishairways.com/travel/managebooking/public/en_gb', {
+    waitUntil: 'networkidle2', timeout: 30000
+  });
+  await page.waitForTimeout(1500);
+
+  // Accept cookies if dialog appears
+  try {
+    await page.click('#CybotCookiebotDialogBodyButtonAccept, [data-cookie-accept], .accept-cookies', { timeout: 3000 });
+    await page.waitForTimeout(500);
+  } catch (_) {}
+
+  await page.waitForSelector('[name="bookingRef"], #bookingRef, [name="recordLocator"]', { timeout: 10000 });
+  await page.type('[name="bookingRef"], #bookingRef, [name="recordLocator"]', confirmationNumber.toUpperCase());
+  await page.type('[name="lastName"], #lastName, [name="passengerLastName"]', lastName.toUpperCase());
+
+  await Promise.all([
+    page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 20000 }).catch(() => {}),
+    page.click('[type="submit"], .btn-primary, [data-testid="submit"]'),
+  ]);
+  await page.waitForTimeout(2000);
+
+  return await page.evaluate(() => {
+    const getText = (sel) => document.querySelector(sel)?.innerText?.trim() || null;
+    const origin = getText('.departure-airport, [data-testid="departureAirport"], .from-airport');
+    const dest = getText('.arrival-airport, [data-testid="arrivalAirport"], .to-airport');
+    const flightNum = getText('.flight-number, [data-testid="flightNumber"], .flight-num');
+    const depDate = getText('.departure-date, [data-testid="departureDate"], .travel-date');
+    const cabin = getText('.cabin-class, [data-testid="cabinClass"], .travel-class');
+    const passengers = document.querySelectorAll('.passenger-name, [data-testid="passenger"], .traveller-name').length || 1;
+    return { origin, dest, flightNum, depDate, cabin, passengers };
+  });
+};
+
+/** Lufthansa */
+const scrapeLufthansa = async (page, confirmationNumber, lastName) => {
+  await page.goto('https://www.lufthansa.com/us/en/manage-booking', {
+    waitUntil: 'networkidle2', timeout: 30000
+  });
+  await page.waitForTimeout(1500);
+
+  // Accept cookies if dialog appears
+  try {
+    await page.click('#cm-acceptAll, .js-accept-essential-cookies, [data-testid="uc-accept-all-button"]', { timeout: 3000 });
+    await page.waitForTimeout(500);
+  } catch (_) {}
+
+  await page.waitForSelector('[name="bookingCode"], #bookingCode, [name="pnr"], [placeholder*="booking code"]', { timeout: 10000 });
+  await page.type('[name="bookingCode"], #bookingCode, [name="pnr"]', confirmationNumber.toUpperCase());
+  await page.type('[name="name"], #name, [name="lastName"], [placeholder*="last name"]', lastName.toUpperCase());
+
+  await Promise.all([
+    page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 20000 }).catch(() => {}),
+    page.click('[type="submit"], .lh-button--primary, [data-testid="submit-button"]'),
+  ]);
+  await page.waitForTimeout(2000);
+
+  return await page.evaluate(() => {
+    const getText = (sel) => document.querySelector(sel)?.innerText?.trim() || null;
+    const origin = getText('.departure-airport, [data-testid="origin"], .iata-code-origin');
+    const dest = getText('.arrival-airport, [data-testid="destination"], .iata-code-destination');
+    const flightNum = getText('.flight-number, [data-testid="flightNumber"], .flight-designation');
+    const depDate = getText('.departure-date, [data-testid="departureDate"], .date-departure');
+    const cabin = getText('.cabin-class, [data-testid="cabinClass"], .travel-class');
+    const passengers = document.querySelectorAll('.passenger-name, [data-testid="passenger"], .traveler').length || 1;
+    return { origin, dest, flightNum, depDate, cabin, passengers };
+  });
+};
+
 /** Alaska Airlines */
 const scrapeAlaska = async (page, confirmationNumber, lastName) => {
   const url = `https://www.alaskaair.com/booking/reservation-details/${confirmationNumber.toUpperCase()}/${lastName.toUpperCase()}`;
@@ -196,6 +266,8 @@ const SCRAPERS = {
   'United':            scrapeUnited,
   'JetBlue':           scrapeJetBlue,
   'Alaska Airlines':   scrapeAlaska,
+  'British Airways':   scrapeBritishAirways,
+  'Lufthansa':         scrapeLufthansa,
 };
 
 /**
