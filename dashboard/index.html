@@ -35,7 +35,7 @@
     .welcome-bar p { color: var(--slate); font-size: 0.9rem; margin-top: 2px; }
 
     /* ── Tabs ── */
-    .tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 28px; gap: 0; }
+    .tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 28px; }
     .tab { padding: 10px 20px; font-size: 0.95rem; font-weight: 500; color: var(--slate); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s; background: none; border-top: none; border-left: none; border-right: none; }
     .tab:hover { color: var(--blue); }
     .tab.active { color: var(--blue); border-bottom-color: var(--blue); }
@@ -48,12 +48,57 @@
     /* ── Forms ── */
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; position: relative; }
     label { font-size: 0.85rem; font-weight: 600; color: #374151; }
     input, select, textarea { padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; width: 100%; outline: none; transition: border-color 0.15s; font-family: inherit; }
     input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29,78,216,0.1); }
     .hint { font-size: 0.78rem; color: #94a3b8; margin-top: 2px; }
     .form-actions { margin-top: 20px; display: flex; gap: 12px; align-items: center; }
+
+    /* ── Airport autocomplete ── */
+    .airport-wrap { position: relative; }
+    .airport-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 50; max-height: 220px; overflow-y: auto; margin-top: 2px; }
+    .airport-option { padding: 10px 14px; cursor: pointer; font-size: 0.88rem; border-bottom: 1px solid #f1f5f9; display: flex; align-items: baseline; gap: 8px; }
+    .airport-option:last-child { border-bottom: none; }
+    .airport-option:hover, .airport-option.highlighted { background: var(--blue-light); }
+    .airport-code { font-weight: 700; color: var(--blue); font-size: 0.95rem; min-width: 36px; }
+    .airport-info { color: var(--slate); font-size: 0.82rem; }
+    .airport-input { text-transform: uppercase; }
+
+    /* ── Form steps ── */
+    .step-indicator { display: flex; align-items: center; gap: 0; margin-bottom: 24px; }
+    .step-item { display: flex; align-items: center; gap: 8px; }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; transition: all 0.2s; }
+    .step-num.active { background: var(--blue); color: #fff; }
+    .step-num.done { background: var(--green); color: #fff; }
+    .step-num.pending { background: var(--border); color: #94a3b8; }
+    .step-label { font-size: 0.82rem; font-weight: 600; }
+    .step-label.active { color: var(--blue); }
+    .step-label.done { color: var(--green); }
+    .step-label.pending { color: #94a3b8; }
+    .step-connector { flex: 1; height: 2px; background: var(--border); margin: 0 8px; min-width: 20px; }
+    .step-connector.done { background: var(--green); }
+    .form-step { display: none; }
+    .form-step.active { display: block; }
+
+    /* ── Lookup banner ── */
+    .lookup-banner { background: var(--blue-light); border: 1px solid #bfdbfe; border-radius: 10px; padding: 14px 16px; margin-bottom: 20px; }
+    .lookup-banner-title { font-size: 0.85rem; font-weight: 700; color: var(--blue); margin-bottom: 8px; }
+    .lookup-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+    .lookup-row .form-group { flex: 1; min-width: 140px; }
+    .btn-lookup { background: var(--blue); color: #fff; padding: 10px 16px; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap; height: 42px; }
+    .btn-lookup:hover { background: var(--blue-dark); }
+
+    /* ── Monitoring preferences ── */
+    .match-mode-group { display: flex; gap: 10px; margin-bottom: 16px; }
+    .match-mode-opt { flex: 1; padding: 12px 14px; border: 2px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.15s; }
+    .match-mode-opt.selected { border-color: var(--blue); background: var(--blue-light); }
+    .match-mode-opt .mode-title { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .match-mode-opt.selected .mode-title { color: var(--blue); }
+    .match-mode-opt .mode-desc { font-size: 0.78rem; color: #94a3b8; }
+    .flexible-prefs { background: var(--slate-light); border-radius: 10px; padding: 14px 16px; margin-top: 8px; display: none; }
+    .flexible-prefs.show { display: block; }
+    .section-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
 
     /* ── Buttons ── */
     .btn-primary { background: var(--blue); color: #fff; padding: 10px 20px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
@@ -85,7 +130,7 @@
     .plan-badge { background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
     .plan-badge.warn { background: rgba(251,191,36,0.25); color: #fde68a; }
     .plan-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-    .btn-plan { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+    .btn-plan { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background 0.15s; text-decoration: none; display: inline-block; }
     .btn-plan:hover { background: rgba(255,255,255,0.25); }
     .btn-plan.upgrade { background: #fff; color: var(--blue); border-color: #fff; }
     .btn-plan.upgrade:hover { background: #e0e7ff; }
@@ -94,7 +139,7 @@
     .booking-card { background: #fff; border-radius: 12px; box-shadow: var(--card-shadow); padding: 16px 20px; margin-bottom: 14px; border-left: 4px solid var(--blue); }
     .booking-card.paused { border-left-color: #94a3b8; opacity: 0.85; }
     .booking-card.expired { border-left-color: #e2e8f0; opacity: 0.6; }
-    .booking-route { font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .booking-route { font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .booking-meta { font-size: 0.82rem; color: var(--slate); margin: 4px 0 10px; }
     .booking-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
     .stat-box { background: var(--slate-light); border-radius: 8px; padding: 10px 12px; }
@@ -102,12 +147,12 @@
     .stat-value { font-size: 1rem; font-weight: 700; color: var(--text); margin-top: 2px; }
     .stat-value.drop { color: var(--green); }
     .booking-footer { font-size: 0.76rem; color: #94a3b8; margin-top: 8px; }
-    .booking-actions { margin-top: 12px; display: flex; gap: 8px; }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; }
+    .booking-actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; flex-shrink: 0; }
     .status-dot.paused { background: #94a3b8; }
     .status-dot.expired { background: #e2e8f0; }
 
-    /* ── Onboarding wizard overlay ── */
+    /* ── Onboarding wizard ── */
     .onboarding-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
     .onboarding-box { background: #fff; border-radius: 16px; padding: 36px 32px; max-width: 480px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
     .onboarding-logo { font-size: 1.3rem; font-weight: 800; color: var(--blue); margin-bottom: 20px; }
@@ -142,7 +187,6 @@
     .auth-screen .logo { font-size: 1.5rem; font-weight: 800; color: var(--blue); margin-bottom: 20px; }
     .auth-screen h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
     .auth-screen p { color: var(--slate); font-size: 0.9rem; margin-bottom: 24px; }
-    #auth-msg { min-height: 20px; }
 
     /* ── Price History Modal ── */
     .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -158,6 +202,7 @@
     .history-table td { padding: 8px 10px; border-top: 1px solid var(--border); }
     .history-table tr:hover td { background: var(--blue-light); }
     .price-drop { color: var(--green); font-weight: 600; }
+
     /* ── Referral card ── */
     .referral-card { background: linear-gradient(135deg, #1d4ed8, #7c3aed); border-radius: 12px; padding: 24px; color: #fff; margin-bottom: 20px; }
     .referral-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
@@ -177,7 +222,267 @@
 <script>
 const API = 'https://tripreclaim-production.up.railway.app';
 
-// ── Airline list ──
+// ═══════════════════════════════════════════
+// AIRPORT DATABASE (300+ airports)
+// ═══════════════════════════════════════════
+const AIRPORTS = [
+  // ── Major US Airports ──
+  {c:'JFK',n:'John F. Kennedy International',city:'New York'},
+  {c:'LGA',n:'LaGuardia',city:'New York'},
+  {c:'EWR',n:'Newark Liberty International',city:'New York'},
+  {c:'LAX',n:'Los Angeles International',city:'Los Angeles'},
+  {c:'BUR',n:'Hollywood Burbank',city:'Los Angeles'},
+  {c:'LGB',n:'Long Beach Airport',city:'Long Beach'},
+  {c:'SNA',n:'John Wayne Airport',city:'Orange County'},
+  {c:'ONT',n:'Ontario International',city:'Ontario'},
+  {c:'ORD',n:'O'Hare International',city:'Chicago'},
+  {c:'MDW',n:'Midway International',city:'Chicago'},
+  {c:'ATL',n:'Hartsfield-Jackson',city:'Atlanta'},
+  {c:'DFW',n:'Dallas/Fort Worth International',city:'Dallas'},
+  {c:'DAL',n:'Dallas Love Field',city:'Dallas'},
+  {c:'MIA',n:'Miami International',city:'Miami'},
+  {c:'FLL',n:'Fort Lauderdale-Hollywood',city:'Fort Lauderdale'},
+  {c:'PBI',n:'Palm Beach International',city:'West Palm Beach'},
+  {c:'BOS',n:'Logan International',city:'Boston'},
+  {c:'SFO',n:'San Francisco International',city:'San Francisco'},
+  {c:'OAK',n:'Oakland International',city:'Oakland'},
+  {c:'SJC',n:'Norman Y. Mineta San Jose',city:'San Jose'},
+  {c:'SEA',n:'Seattle-Tacoma International',city:'Seattle'},
+  {c:'DEN',n:'Denver International',city:'Denver'},
+  {c:'LAS',n:'Harry Reid International',city:'Las Vegas'},
+  {c:'PHX',n:'Phoenix Sky Harbor',city:'Phoenix'},
+  {c:'IAH',n:'George Bush Intercontinental',city:'Houston'},
+  {c:'HOU',n:'William P. Hobby',city:'Houston'},
+  {c:'MSP',n:'Minneapolis-Saint Paul',city:'Minneapolis'},
+  {c:'DTW',n:'Detroit Metropolitan Wayne County',city:'Detroit'},
+  {c:'PHL',n:'Philadelphia International',city:'Philadelphia'},
+  {c:'CLT',n:'Charlotte Douglas International',city:'Charlotte'},
+  {c:'MCO',n:'Orlando International',city:'Orlando'},
+  {c:'TPA',n:'Tampa International',city:'Tampa'},
+  {c:'PDX',n:'Portland International',city:'Portland'},
+  {c:'SAN',n:'San Diego International',city:'San Diego'},
+  {c:'AUS',n:'Austin-Bergstrom International',city:'Austin'},
+  {c:'BNA',n:'Nashville International',city:'Nashville'},
+  {c:'MCI',n:'Kansas City International',city:'Kansas City'},
+  {c:'SLC',n:'Salt Lake City International',city:'Salt Lake City'},
+  {c:'MSY',n:'Louis Armstrong New Orleans',city:'New Orleans'},
+  {c:'RDU',n:'Raleigh-Durham International',city:'Raleigh'},
+  {c:'PIT',n:'Pittsburgh International',city:'Pittsburgh'},
+  {c:'CMH',n:'John Glenn Columbus International',city:'Columbus'},
+  {c:'IND',n:'Indianapolis International',city:'Indianapolis'},
+  {c:'MKE',n:'General Mitchell International',city:'Milwaukee'},
+  {c:'BDL',n:'Bradley International',city:'Hartford'},
+  {c:'BUF',n:'Buffalo Niagara International',city:'Buffalo'},
+  {c:'ALB',n:'Albany International',city:'Albany'},
+  {c:'RIC',n:'Richmond International',city:'Richmond'},
+  {c:'CLE',n:'Cleveland Hopkins International',city:'Cleveland'},
+  {c:'SAT',n:'San Antonio International',city:'San Antonio'},
+  {c:'ABQ',n:'Albuquerque International Sunport',city:'Albuquerque'},
+  {c:'TUL',n:'Tulsa International',city:'Tulsa'},
+  {c:'OKC',n:'Will Rogers World',city:'Oklahoma City'},
+  {c:'OMA',n:'Eppley Airfield',city:'Omaha'},
+  {c:'DSM',n:'Des Moines International',city:'Des Moines'},
+  {c:'GRR',n:'Gerald R. Ford International',city:'Grand Rapids'},
+  {c:'MEM',n:'Memphis International',city:'Memphis'},
+  {c:'LIT',n:'Clinton National Airport',city:'Little Rock'},
+  {c:'JAX',n:'Jacksonville International',city:'Jacksonville'},
+  {c:'SAV',n:'Savannah/Hilton Head International',city:'Savannah'},
+  {c:'CHS',n:'Charleston International',city:'Charleston'},
+  {c:'GSO',n:'Piedmont Triad International',city:'Greensboro'},
+  {c:'GSP',n:'Greenville-Spartanburg International',city:'Greenville'},
+  {c:'ORF',n:'Norfolk International',city:'Norfolk'},
+  {c:'BWI',n:'Baltimore/Washington International',city:'Baltimore'},
+  {c:'IAD',n:'Washington Dulles International',city:'Washington DC'},
+  {c:'DCA',n:'Ronald Reagan Washington National',city:'Washington DC'},
+  {c:'BHM',n:'Birmingham-Shuttlesworth International',city:'Birmingham'},
+  {c:'HNL',n:'Daniel K. Inouye International',city:'Honolulu'},
+  {c:'OGG',n:'Kahului Airport',city:'Maui'},
+  {c:'KOA',n:'Ellison Onizuka Kona International',city:'Kona'},
+  {c:'ANC',n:'Ted Stevens Anchorage International',city:'Anchorage'},
+  {c:'SJU',n:'Luis Muñoz Marín International',city:'San Juan PR'},
+  {c:'STT',n:'Cyril E. King',city:'St. Thomas USVI'},
+  // ── Canada ──
+  {c:'YYZ',n:'Toronto Pearson International',city:'Toronto'},
+  {c:'YVR',n:'Vancouver International',city:'Vancouver'},
+  {c:'YYC',n:'Calgary International',city:'Calgary'},
+  {c:'YUL',n:'Montréal-Trudeau International',city:'Montreal'},
+  {c:'YEG',n:'Edmonton International',city:'Edmonton'},
+  {c:'YOW',n:'Ottawa Macdonald-Cartier International',city:'Ottawa'},
+  // ── Mexico & Caribbean ──
+  {c:'MEX',n:'Mexico City International',city:'Mexico City'},
+  {c:'GDL',n:'Guadalajara International',city:'Guadalajara'},
+  {c:'MTY',n:'Monterrey International',city:'Monterrey'},
+  {c:'CUN',n:'Cancún International',city:'Cancún'},
+  {c:'PVR',n:'Licenciado Gustavo Díaz Ordaz',city:'Puerto Vallarta'},
+  {c:'SJD',n:'Los Cabos International',city:'Los Cabos'},
+  {c:'NAS',n:'Lynden Pindling International',city:'Nassau'},
+  {c:'BGI',n:'Grantley Adams International',city:'Bridgetown'},
+  {c:'MBJ',n:'Sangster International',city:'Montego Bay'},
+  {c:'KIN',n:'Norman Manley International',city:'Kingston'},
+  {c:'PUJ',n:'Punta Cana International',city:'Punta Cana'},
+  {c:'SDQ',n:'Las Américas International',city:'Santo Domingo'},
+  // ── South America ──
+  {c:'GRU',n:'São Paulo-Guarulhos International',city:'São Paulo'},
+  {c:'GIG',n:'Rio de Janeiro-Galeão International',city:'Rio de Janeiro'},
+  {c:'EZE',n:'Ministro Pistarini International',city:'Buenos Aires'},
+  {c:'BOG',n:'El Dorado International',city:'Bogotá'},
+  {c:'LIM',n:'Jorge Chávez International',city:'Lima'},
+  {c:'SCL',n:'Arturo Merino Benítez International',city:'Santiago'},
+  {c:'UIO',n:'Mariscal Sucre International',city:'Quito'},
+  {c:'GYE',n:'José Joaquín de Olmedo International',city:'Guayaquil'},
+  {c:'CCS',n:'Simón Bolívar International',city:'Caracas'},
+  // ── UK & Ireland ──
+  {c:'LHR',n:'Heathrow',city:'London'},
+  {c:'LGW',n:'Gatwick',city:'London'},
+  {c:'STN',n:'Stansted',city:'London'},
+  {c:'LTN',n:'Luton',city:'London'},
+  {c:'LCY',n:'City Airport',city:'London'},
+  {c:'MAN',n:'Manchester Airport',city:'Manchester'},
+  {c:'EDI',n:'Edinburgh Airport',city:'Edinburgh'},
+  {c:'GLA',n:'Glasgow International',city:'Glasgow'},
+  {c:'BHX',n:'Birmingham Airport',city:'Birmingham UK'},
+  {c:'DUB',n:'Dublin Airport',city:'Dublin'},
+  {c:'SNN',n:'Shannon Airport',city:'Shannon'},
+  // ── Western Europe ──
+  {c:'CDG',n:'Charles de Gaulle',city:'Paris'},
+  {c:'ORY',n:'Orly',city:'Paris'},
+  {c:'FRA',n:'Frankfurt am Main',city:'Frankfurt'},
+  {c:'MUC',n:'Munich Airport',city:'Munich'},
+  {c:'BER',n:'Brandenburg Airport',city:'Berlin'},
+  {c:'HAM',n:'Hamburg Airport',city:'Hamburg'},
+  {c:'DUS',n:'Düsseldorf Airport',city:'Düsseldorf'},
+  {c:'AMS',n:'Amsterdam Schiphol',city:'Amsterdam'},
+  {c:'BRU',n:'Brussels Airport',city:'Brussels'},
+  {c:'MAD',n:'Adolfo Suárez Madrid-Barajas',city:'Madrid'},
+  {c:'BCN',n:'Josep Tarradellas Barcelona-El Prat',city:'Barcelona'},
+  {c:'VLC',n:'Valencia Airport',city:'Valencia'},
+  {c:'LIS',n:'Humberto Delgado',city:'Lisbon'},
+  {c:'OPO',n:'Francisco de Sá Carneiro',city:'Porto'},
+  {c:'FCO',n:'Leonardo da Vinci-Fiumicino',city:'Rome'},
+  {c:'CIA',n:'Ciampino',city:'Rome'},
+  {c:'MXP',n:'Malpensa International',city:'Milan'},
+  {c:'LIN',n:'Linate Airport',city:'Milan'},
+  {c:'VCE',n:'Venice Marco Polo',city:'Venice'},
+  {c:'NAP',n:'Naples International',city:'Naples'},
+  {c:'ZRH',n:'Zürich Airport',city:'Zurich'},
+  {c:'GVA',n:'Geneva Airport',city:'Geneva'},
+  {c:'VIE',n:'Vienna International',city:'Vienna'},
+  {c:'CPH',n:'Copenhagen Airport',city:'Copenhagen'},
+  {c:'ARN',n:'Stockholm Arlanda',city:'Stockholm'},
+  {c:'OSL',n:'Oslo Gardermoen',city:'Oslo'},
+  {c:'HEL',n:'Helsinki-Vantaa',city:'Helsinki'},
+  {c:'ATH',n:'Athens International',city:'Athens'},
+  {c:'SKG',n:'Macedonia International',city:'Thessaloniki'},
+  {c:'LYS',n:'Lyon-Saint Exupéry',city:'Lyon'},
+  {c:'NCE',n:'Nice Côte d'Azur',city:'Nice'},
+  {c:'MRS',n:'Marseille Provence',city:'Marseille'},
+  {c:'PRG',n:'Václav Havel Prague',city:'Prague'},
+  {c:'WAW',n:'Warsaw Chopin',city:'Warsaw'},
+  {c:'KRK',n:'John Paul II International',city:'Krakow'},
+  {c:'BUD',n:'Budapest Ferenc Liszt International',city:'Budapest'},
+  {c:'OTP',n:'Henri Coandă International',city:'Bucharest'},
+  {c:'SOF',n:'Sofia Airport',city:'Sofia'},
+  {c:'ZAG',n:'Zagreb Airport',city:'Zagreb'},
+  {c:'BEG',n:'Belgrade Nikola Tesla',city:'Belgrade'},
+  // ── Middle East ──
+  {c:'DXB',n:'Dubai International',city:'Dubai'},
+  {c:'AUH',n:'Abu Dhabi International',city:'Abu Dhabi'},
+  {c:'DOH',n:'Hamad International',city:'Doha'},
+  {c:'IST',n:'Istanbul Airport',city:'Istanbul'},
+  {c:'SAW',n:'Sabiha Gökçen International',city:'Istanbul'},
+  {c:'TLV',n:'Ben Gurion International',city:'Tel Aviv'},
+  {c:'AMM',n:'Queen Alia International',city:'Amman'},
+  {c:'BEY',n:'Beirut-Rafic Hariri International',city:'Beirut'},
+  {c:'KWI',n:'Kuwait International',city:'Kuwait City'},
+  {c:'BAH',n:'Bahrain International',city:'Manama'},
+  {c:'MCT',n:'Muscat International',city:'Muscat'},
+  {c:'RUH',n:'King Khalid International',city:'Riyadh'},
+  {c:'JED',n:'King Abdulaziz International',city:'Jeddah'},
+  {c:'CAI',n:'Cairo International',city:'Cairo'},
+  {c:'THR',n:'Imam Khomeini International',city:'Tehran'},
+  // ── Africa ──
+  {c:'NBO',n:'Jomo Kenyatta International',city:'Nairobi'},
+  {c:'JNB',n:'O.R. Tambo International',city:'Johannesburg'},
+  {c:'CPT',n:'Cape Town International',city:'Cape Town'},
+  {c:'DUR',n:'King Shaka International',city:'Durban'},
+  {c:'CMN',n:'Mohammed V International',city:'Casablanca'},
+  {c:'ADD',n:'Addis Ababa Bole International',city:'Addis Ababa'},
+  {c:'LOS',n:'Murtala Muhammed International',city:'Lagos'},
+  {c:'ABV',n:'Nnamdi Azikiwe International',city:'Abuja'},
+  {c:'ACC',n:'Kotoka International',city:'Accra'},
+  {c:'DAR',n:'Julius Nyerere International',city:'Dar es Salaam'},
+  // ── South Asia ──
+  {c:'DEL',n:'Indira Gandhi International',city:'New Delhi'},
+  {c:'BOM',n:'Chhatrapati Shivaji Maharaj International',city:'Mumbai'},
+  {c:'BLR',n:'Kempegowda International',city:'Bangalore'},
+  {c:'MAA',n:'Chennai International',city:'Chennai'},
+  {c:'HYD',n:'Rajiv Gandhi International',city:'Hyderabad'},
+  {c:'CCU',n:'Netaji Subhas Chandra Bose International',city:'Kolkata'},
+  {c:'COK',n:'Cochin International',city:'Kochi'},
+  {c:'CMB',n:'Bandaranaike International',city:'Colombo'},
+  {c:'KTM',n:'Tribhuvan International',city:'Kathmandu'},
+  {c:'DAC',n:'Hazrat Shahjalal International',city:'Dhaka'},
+  {c:'KHI',n:'Jinnah International',city:'Karachi'},
+  {c:'LHE',n:'Allama Iqbal International',city:'Lahore'},
+  {c:'ISB',n:'Islamabad International',city:'Islamabad'},
+  // ── East & Southeast Asia ──
+  {c:'SIN',n:'Singapore Changi',city:'Singapore'},
+  {c:'HKG',n:'Hong Kong International',city:'Hong Kong'},
+  {c:'NRT',n:'Narita International',city:'Tokyo'},
+  {c:'HND',n:'Haneda Airport',city:'Tokyo'},
+  {c:'KIX',n:'Kansai International',city:'Osaka'},
+  {c:'ICN',n:'Incheon International',city:'Seoul'},
+  {c:'GMP',n:'Gimpo International',city:'Seoul'},
+  {c:'PEK',n:'Beijing Capital International',city:'Beijing'},
+  {c:'PKX',n:'Beijing Daxing International',city:'Beijing'},
+  {c:'PVG',n:'Shanghai Pudong International',city:'Shanghai'},
+  {c:'SHA',n:'Shanghai Hongqiao International',city:'Shanghai'},
+  {c:'CAN',n:'Guangzhou Baiyun International',city:'Guangzhou'},
+  {c:'SZX',n:'Shenzhen Bao'an International',city:'Shenzhen'},
+  {c:'CTU',n:'Chengdu Tianfu International',city:'Chengdu'},
+  {c:'BKK',n:'Suvarnabhumi',city:'Bangkok'},
+  {c:'DMK',n:'Don Mueang International',city:'Bangkok'},
+  {c:'KUL',n:'Kuala Lumpur International',city:'Kuala Lumpur'},
+  {c:'CGK',n:'Soekarno-Hatta International',city:'Jakarta'},
+  {c:'DPS',n:'Ngurah Rai International',city:'Bali'},
+  {c:'MNL',n:'Ninoy Aquino International',city:'Manila'},
+  {c:'SGN',n:'Tan Son Nhat International',city:'Ho Chi Minh City'},
+  {c:'HAN',n:'Noi Bai International',city:'Hanoi'},
+  {c:'REP',n:'Siem Reap International',city:'Siem Reap'},
+  {c:'PNH',n:'Phnom Penh International',city:'Phnom Penh'},
+  {c:'RGN',n:'Yangon International',city:'Yangon'},
+  {c:'KHH',n:'Kaohsiung International',city:'Kaohsiung'},
+  {c:'TPE',n:'Taiwan Taoyuan International',city:'Taipei'},
+  // ── Australia & Pacific ──
+  {c:'SYD',n:'Sydney Kingsford Smith',city:'Sydney'},
+  {c:'MEL',n:'Melbourne Airport',city:'Melbourne'},
+  {c:'BNE',n:'Brisbane Airport',city:'Brisbane'},
+  {c:'PER',n:'Perth Airport',city:'Perth'},
+  {c:'ADL',n:'Adelaide Airport',city:'Adelaide'},
+  {c:'AKL',n:'Auckland Airport',city:'Auckland'},
+  {c:'CHC',n:'Christchurch Airport',city:'Christchurch'},
+  {c:'NAN',n:'Nadi International',city:'Nadi Fiji'},
+  {c:'PPT',n:'Fa'a'ā International',city:'Papeete Tahiti'},
+];
+
+// Airline manage-booking lookup URLs
+const AIRLINE_LOOKUP_URLS = {
+  'American Airlines': 'https://www.aa.com/reservation/view/find-your-reservation.do',
+  'Delta Air Lines': 'https://www.delta.com/us/en/manage-my-trip/overview',
+  'United Airlines': 'https://www.united.com/en/us/manageres/mytrips',
+  'JetBlue': 'https://www.jetblue.com/manage-trips/',
+  'Southwest Airlines': 'https://www.southwest.com/air/manage-reservation/index.html',
+  'Alaska Airlines': 'https://www.alaskaair.com/booking/reservation-details',
+  'British Airways': 'https://www.britishairways.com/en-us/information/experience-and-howto/manage-booking',
+  'Lufthansa': 'https://www.lufthansa.com/us/en/manage-booking',
+  'Emirates': 'https://www.emirates.com/us/english/manage-booking/',
+  'Qatar Airways': 'https://www.qatarairways.com/en-us/manage-booking.html',
+  'Air France': 'https://wwws.airfrance.us/en/common/guidevoyageur/pratique/consultation-reservation-af.htm',
+  'Air Canada': 'https://www.aircanada.com/us/en/aco/home/book/manage-your-bookings.html',
+  'KLM': 'https://www.klm.com/us/en/manage-your-trip',
+};
+
+// ── Major US Airline lists for dropdown ──
 const MAJOR_US_AIRLINES = [
   'American Airlines', 'Delta Air Lines', 'JetBlue', 'Southwest Airlines', 'United Airlines',
 ];
@@ -194,7 +499,6 @@ const OTHER_AIRLINES = [
   'Sun Country Airlines', 'Swiss International Air Lines', 'TAP Air Portugal',
   'Thai Airways', 'Turkish Airlines', 'Virgin Atlantic', 'WestJet', 'Wizz Air',
 ];
-const AIRLINES = [...MAJOR_US_AIRLINES, ...OTHER_AIRLINES];
 
 // ── Auth helpers ──
 const getToken = () => localStorage.getItem('tr_token');
@@ -202,7 +506,6 @@ const setToken = t => localStorage.setItem('tr_token', t);
 const clearToken = () => { localStorage.removeItem('tr_token'); localStorage.removeItem('tr_user'); };
 const getUser = () => { try { return JSON.parse(localStorage.getItem('tr_user')); } catch { return null; } };
 const setUser = u => localStorage.setItem('tr_user', JSON.stringify(u));
-
 const authHeaders = () => ({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` });
 
 async function apiFetch(path, opts = {}) {
@@ -213,15 +516,105 @@ async function apiFetch(path, opts = {}) {
 }
 
 function render(html) { document.getElementById('root').innerHTML = html; }
-
-// ── Active tab ──
 let activeTab = 'flights';
 
-// ── Router ──
+// ═══════════════════════════════════════════
+// AIRPORT AUTOCOMPLETE
+// ═══════════════════════════════════════════
+let acActive = null; // currently focused autocomplete: 'origin' | 'dest'
+let acHighlight = -1;
+
+function searchAirports(q) {
+  if (!q || q.length < 1) return [];
+  const upper = q.toUpperCase();
+  const lower = q.toLowerCase();
+  const results = [];
+  // Exact code match first
+  AIRPORTS.forEach(a => { if (a.c === upper) results.push({...a, score: 100}); });
+  // City starts with
+  AIRPORTS.forEach(a => { if (a.city.toLowerCase().startsWith(lower) && a.c !== upper) results.push({...a, score: 80}); });
+  // City contains
+  AIRPORTS.forEach(a => { if (a.city.toLowerCase().includes(lower) && !a.city.toLowerCase().startsWith(lower) && a.c !== upper) results.push({...a, score: 60}); });
+  // Airport name contains
+  AIRPORTS.forEach(a => { if (a.n.toLowerCase().includes(lower) && !results.find(r => r.c === a.c)) results.push({...a, score: 40}); });
+  return results.slice(0, 8);
+}
+
+function openAcDropdown(id, results) {
+  closeAcDropdown();
+  if (!results.length) return;
+  acActive = id;
+  acHighlight = -1;
+  const wrap = document.getElementById(id + '-wrap');
+  if (!wrap) return;
+  const dd = document.createElement('div');
+  dd.className = 'airport-dropdown';
+  dd.id = 'ac-dd';
+  results.forEach((a, i) => {
+    const opt = document.createElement('div');
+    opt.className = 'airport-option';
+    opt.dataset.idx = i;
+    opt.innerHTML = `<span class="airport-code">${a.c}</span><span class="airport-info">${a.n} · ${a.city}</span>`;
+    opt.onmousedown = (e) => { e.preventDefault(); selectAirport(id, a); };
+    dd.appendChild(opt);
+  });
+  wrap.appendChild(dd);
+}
+
+function closeAcDropdown() {
+  const dd = document.getElementById('ac-dd');
+  if (dd) dd.remove();
+  acActive = null;
+  acHighlight = -1;
+}
+
+function selectAirport(id, airport) {
+  const input = document.getElementById(id);
+  if (input) { input.value = airport.c; input.dataset.selected = airport.c; }
+  closeAcDropdown();
+}
+
+function onAirportInput(id, val) {
+  const results = searchAirports(val);
+  openAcDropdown(id, results);
+  const input = document.getElementById(id);
+  if (input) { input.dataset.selected = ''; }
+}
+
+function onAirportKeydown(id, e, val) {
+  const dd = document.getElementById('ac-dd');
+  if (!dd) { if (e.key === 'Enter') e.preventDefault(); return; }
+  const opts = dd.querySelectorAll('.airport-option');
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    acHighlight = Math.min(acHighlight + 1, opts.length - 1);
+    opts.forEach((o, i) => o.classList.toggle('highlighted', i === acHighlight));
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    acHighlight = Math.max(acHighlight - 1, 0);
+    opts.forEach((o, i) => o.classList.toggle('highlighted', i === acHighlight));
+  } else if (e.key === 'Enter' || e.key === 'Tab') {
+    if (acHighlight >= 0 && opts[acHighlight]) {
+      e.preventDefault();
+      opts[acHighlight].onmousedown(e);
+    } else {
+      closeAcDropdown();
+    }
+  } else if (e.key === 'Escape') {
+    closeAcDropdown();
+  }
+}
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#ac-dd') && !e.target.closest('.airport-wrap')) closeAcDropdown();
+});
+
+// ═══════════════════════════════════════════
+// ROUTER
+// ═══════════════════════════════════════════
 async function init() {
   const params = new URLSearchParams(window.location.search);
   const token = params.get('token');
-
   if (token) {
     render(loadingScreen());
     try {
@@ -231,27 +624,18 @@ async function init() {
       setUser(data.user);
       window.history.replaceState({}, '', '/dashboard/');
       await renderApp();
-    } catch (e) {
-      renderAuth('Link expired or invalid. Request a new one below.');
-    }
+    } catch { renderAuth('Link expired or invalid. Request a new one below.'); }
     return;
   }
-
   if (getToken()) {
-    try {
-      const data = await apiFetch('/auth/me');
-      setUser(data);
-      await renderApp();
-    } catch {
-      clearToken();
-      renderAuth();
-    }
-  } else {
-    renderAuth();
-  }
+    try { const data = await apiFetch('/auth/me'); setUser(data); await renderApp(); }
+    catch { clearToken(); renderAuth(); }
+  } else { renderAuth(); }
 }
 
-// ── Auth screen ──
+// ═══════════════════════════════════════════
+// AUTH SCREEN
+// ═══════════════════════════════════════════
 function renderAuth(msg = '') {
   render(`
     <div class="auth-screen">
@@ -262,7 +646,7 @@ function renderAuth(msg = '') {
         <label>Email Address</label>
         <input type="email" id="auth-email" placeholder="you@example.com">
       </div>
-      <div id="auth-msg">${msg ? `<div class="alert alert-error">${msg}</div>` : ''}</div>
+      <div id="auth-msg">${msg ? `<div class="alert alert-error">${msg}</div>` : '' }</div>
       <button class="btn-primary" id="auth-btn" onclick="sendMagicLink()" style="width:100%;margin-top:16px;">Send Login Link →</button>
       <p style="margin-top:20px;font-size:0.82rem;color:#94a3b8;">Don't have an account? <a href="/" style="color:var(--blue);">Get started on the homepage</a></p>
     </div>
@@ -277,28 +661,20 @@ async function sendMagicLink() {
   const btn = document.getElementById('auth-btn');
   btn.disabled = true; btn.textContent = 'Sending...';
   try {
-    const r = await fetch(`${API}/auth/magic-link`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
-    });
-    const d = await r.json();
+    await fetch(`${API}/auth/magic-link`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
     document.getElementById('auth-msg').innerHTML = `<div class="alert alert-success">✅ Check your email for a login link!</div>`;
-  } catch (e) {
-    document.getElementById('auth-msg').innerHTML = `<div class="alert alert-error">Failed to send. Try again.</div>`;
-  }
+  } catch { document.getElementById('auth-msg').innerHTML = `<div class="alert alert-error">Failed to send. Try again.</div>`; }
   btn.disabled = false; btn.textContent = 'Send Login Link →';
 }
 
-// ── Main app ──
+// ═══════════════════════════════════════════
+// MAIN APP SHELL
+// ═══════════════════════════════════════════
 async function renderApp() {
   const user = getUser() || {};
   renderShell(user);
-  if (!user.onboardingComplete && !user.name) {
-    showOnboarding();
-  } else {
-    switchTab(activeTab);
-  }
+  if (!user.onboardingComplete && !user.name) showOnboarding();
+  else switchTab(activeTab);
 }
 
 function renderShell(user) {
@@ -307,18 +683,18 @@ function renderShell(user) {
     <nav class="navbar">
       <a href="/" class="nav-logo">✈️ <span>Trip</span>Reclaim</a>
       <div class="nav-user">
-        <span>${user.email || ''}</span>
+        <span>${user.email || '' }</span>
         <button class="nav-logout" onclick="logout()">Sign out</button>
       </div>
     </nav>
     <div class="page">
       <div class="welcome-bar">
-        <h1>Welcome back${user.name ? ', ' + user.name.split(' ')[0] : ''}! ✈️</h1>
+        <h1>Welcome back${user.name ? ', ' + user.name.split(' ')[0] : '' }! ✈️</h1>
         <p>Monitor your flight prices and claim refunds when they drop.</p>
       </div>
       <div class="tabs">
-        <button class="tab ${activeTab==='flights'?'active':''}" onclick="switchTab('flights')">✈ My Flights</button>
-        <button class="tab ${activeTab==='account'?'active':''}" onclick="switchTab('account')">👤 Account</button>
+        <button class="tab ${activeTab==='flights'?'active':'' }" onclick="switchTab('flights')">✈ My Flights</button>
+        <button class="tab ${activeTab==='account'?'active':'' }" onclick="switchTab('account')">👤 Account</button>
       </div>
       <div id="tab-content"></div>
     </div>
@@ -328,26 +704,17 @@ function renderShell(user) {
 
 function switchTab(tab) {
   activeTab = tab;
-  // Update tab buttons
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab')[tab === 'flights' ? 0 : 1]?.classList.add('active');
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', (tab==='flights' && i===0) || (tab==='account' && i===1)));
   if (tab === 'flights') renderFlightsTab();
   else renderAccountTab();
 }
 
-function logout() {
-  clearToken();
-  renderAuth();
-}
+function logout() { clearToken(); renderAuth(); }
+function loadingScreen() { return `<div class="loading-screen"><div class="spinner"></div></div>`; }
 
-// ── Loading ──
-function loadingScreen() {
-  return `<div class="loading-screen"><div class="spinner"></div></div>`;
-}
-
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════
 // ONBOARDING WIZARD
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════
 let obStep = 1;
 let obData = { name: '', phone: '', notifEmail: true, notifSms: false };
 
@@ -365,137 +732,151 @@ function renderOnboardingStep() {
     <div class="onboarding-box">
       <div class="onboarding-logo">✈️ TripReclaim</div>
       <div class="onboarding-progress">
-        <div class="prog-dot ${obStep >= 1 ? 'done' : ''}"></div>
-        <div class="prog-dot ${obStep >= 2 ? 'done' : ''}"></div>
-        <div class="prog-dot ${obStep >= 3 ? 'done' : ''}"></div>
+        <div class="prog-dot ${obStep >= 1 ? 'done' : '' }"></div>
+        <div class="prog-dot ${obStep >= 2 ? 'done' : '' }"></div>
+        <div class="prog-dot ${obStep >= 3 ? 'done' : '' }"></div>
       </div>
-      ${obStep === 1 ? renderObStep1() : ''}
-      ${obStep === 2 ? renderObStep2() : ''}
-      ${obStep === 3 ? renderObStep3() : ''}
+      ${obStep === 1 ? renderObStep1() : obStep === 2 ? renderObStep2() : renderObStep3()}
     </div>
   `;
 }
 
 function renderObStep1() {
-  return `
-    <div class="onboarding-step active">
-      <h2>Welcome to TripReclaim! 🎉</h2>
-      <p>Let's set up your account so we can personalize your price alerts and keep you informed when your fares drop.</p>
-      <div class="form-group" style="margin-bottom:20px;">
-        <label>Your Full Name *</label>
-        <input type="text" id="ob-name" placeholder="e.g. Jane Smith" value="${obData.name}">
-      </div>
-      <button class="btn-primary" style="width:100%;" onclick="obNext1()">Continue →</button>
+  return `<div class="onboarding-step active">
+    <h2>Welcome to TripReclaim! 🎉</h2>
+    <p>Let's set up your account so we can personalize your price alerts.</p>
+    <div class="form-group" style="margin-bottom:20px;">
+      <label>Your Full Name *</label>
+      <input type="text" id="ob-name" placeholder="e.g. Jane Smith" value="${obData.name}">
     </div>
-  `;
+    <button class="btn-primary" style="width:100%;" onclick="obNext1()">Continue →</button>
+  </div>`;
 }
 
 function renderObStep2() {
-  return `
-    <div class="onboarding-step active">
-      <h2>Notification Preferences</h2>
-      <p>How would you like to be notified when we detect a price drop on your flights?</p>
-      <div class="form-group" style="margin-bottom:16px;">
-        <label>Phone Number <span style="font-weight:400;color:#94a3b8">(optional — for SMS alerts)</span></label>
-        <input type="tel" id="ob-phone" placeholder="+1 (555) 000-0000" value="${obData.phone}">
-      </div>
-      <label style="font-size:0.85rem;font-weight:600;color:#374151;margin-bottom:8px;display:block;">Alert Methods</label>
-      <div class="toggle-group">
-        <div class="toggle-opt ${obData.notifEmail ? 'selected' : ''}" onclick="toggleOb('email')" id="tog-email">📧 Email</div>
-        <div class="toggle-opt ${obData.notifSms ? 'selected' : ''}" onclick="toggleOb('sms')" id="tog-sms">📱 SMS</div>
-      </div>
-      <p class="hint" style="margin-top:4px;">Email alerts are always on. SMS requires a phone number above.</p>
-      <div style="display:flex;gap:12px;margin-top:20px;">
-        <button class="btn-secondary" style="flex:1;" onclick="obBack()">← Back</button>
-        <button class="btn-primary" style="flex:2;" onclick="obNext2()">Continue →</button>
-      </div>
+  return `<div class="onboarding-step active">
+    <h2>Notification Preferences</h2>
+    <p>How would you like to be notified when we detect a price drop?</p>
+    <div class="form-group" style="margin-bottom:16px;">
+      <label>Phone Number <span style="font-weight:400;color:#94a3b8">(optional — for SMS alerts)</span></label>
+      <input type="tel" id="ob-phone" placeholder="+1 (555) 000-0000" value="${obData.phone}">
     </div>
-  `;
+    <label style="font-size:0.85rem;font-weight:600;color:#374151;margin-bottom:8px;display:block;">Alert Methods</label>
+    <div class="toggle-group">
+      <div class="toggle-opt ${obData.notifEmail ? 'selected' : '' }" onclick="toggleOb('email')" id="tog-email">📧 Email</div>
+      <div class="toggle-opt ${obData.notifSms ? 'selected' : '' }" onclick="toggleOb('sms')" id="tog-sms">📱 SMS</div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:20px;">
+      <button class="btn-secondary" style="flex:1;" onclick="obBack()">← Back</button>
+      <button class="btn-primary" style="flex:2;" onclick="obNext2()">Continue →</button>
+    </div>
+  </div>`;
 }
 
 function renderObStep3() {
-  return `
-    <div class="onboarding-step active">
-      <h2>You're all set, ${obData.name.split(' ')[0]}! 🚀</h2>
-      <p>Your account is ready. Add your first flight below and we'll start monitoring the price immediately.</p>
-      <div style="background:var(--blue-light);border-radius:10px;padding:16px;margin-bottom:20px;">
-        <div style="font-size:0.85rem;color:var(--blue);font-weight:600;margin-bottom:8px;">✅ Account Summary</div>
-        <div style="font-size:0.9rem;color:#1e40af;">Name: <strong>${obData.name}</strong></div>
-        ${obData.phone ? `<div style="font-size:0.9rem;color:#1e40af;">Phone: <strong>${obData.phone}</strong></div>` : ''}
-        <div style="font-size:0.9rem;color:#1e40af;">Alerts: <strong>${[obData.notifEmail?'Email':'',obData.notifSms?'SMS':''].filter(Boolean).join(' + ') || 'Email'}</strong></div>
-      </div>
-      <button class="btn-primary" style="width:100%;" onclick="obFinish()">Go to My Dashboard →</button>
+  return `<div class="onboarding-step active">
+    <h2>You're all set, ${obData.name.split(' ')[0]}! 🚀</h2>
+    <p>Your account is ready. Add your first flight below and we'll start monitoring the price immediately.</p>
+    <div style="background:var(--blue-light);border-radius:10px;padding:16px;margin-bottom:20px;">
+      <div style="font-size:0.85rem;color:var(--blue);font-weight:600;margin-bottom:8px;">✅ Account Summary</div>
+      <div style="font-size:0.9rem;color:#1e40af;">Name: <strong>${obData.name}</strong></div>
+      ${obData.phone ? `<div style="font-size:0.9rem;color:#1e40af;">Phone: <strong>${obData.phone}</strong></div>` : '' }
+      <div style="font-size:0.9rem;color:#1e40af;">Alerts: <strong>${[obData.notifEmail?'Email':'',obData.notifSms?'SMS':''].filter(Boolean).join(' + ') || 'Email'}</strong></div>
     </div>
-  `;
+    <button class="btn-primary" style="width:100%;" onclick="obFinish()">Go to My Dashboard →</button>
+  </div>`;
 }
 
 function toggleOb(type) {
-  if (type === 'email') {
-    obData.notifEmail = !obData.notifEmail;
-    document.getElementById('tog-email').classList.toggle('selected', obData.notifEmail);
-  } else {
-    obData.notifSms = !obData.notifSms;
-    document.getElementById('tog-sms').classList.toggle('selected', obData.notifSms);
-  }
+  if (type === 'email') { obData.notifEmail = !obData.notifEmail; document.getElementById('tog-email').classList.toggle('selected', obData.notifEmail); }
+  else { obData.notifSms = !obData.notifSms; document.getElementById('tog-sms').classList.toggle('selected', obData.notifSms); }
 }
 
 function obNext1() {
   const name = document.getElementById('ob-name').value.trim();
   if (!name) { document.getElementById('ob-name').focus(); return; }
-  obData.name = name;
-  obStep = 2;
-  renderOnboardingStep();
+  obData.name = name; obStep = 2; renderOnboardingStep();
 }
 
-function obBack() {
-  obStep = Math.max(1, obStep - 1);
-  renderOnboardingStep();
-}
+function obBack() { obStep = Math.max(1, obStep - 1); renderOnboardingStep(); }
 
-function obNext2() {
-  obData.phone = document.getElementById('ob-phone').value.trim();
-  obStep = 3;
-  renderOnboardingStep();
-}
+function obNext2() { obData.phone = document.getElementById('ob-phone').value.trim(); obStep = 3; renderOnboardingStep(); }
 
 async function obFinish() {
   try {
-    const data = await apiFetch('/auth/profile', {
-      method: 'PUT',
-      body: JSON.stringify({
-        name: obData.name,
-        phone: obData.phone,
-        notificationPrefs: { email: obData.notifEmail, sms: obData.notifSms },
-        onboardingComplete: true,
-      }),
-    });
+    const data = await apiFetch('/auth/profile', { method: 'PUT', body: JSON.stringify({ name: obData.name, phone: obData.phone, notificationPrefs: { email: obData.notifEmail, sms: obData.notifSms }, onboardingComplete: true }) });
     setUser(data);
-  } catch(e) { /* continue even if profile save fails */ }
+  } catch(e) {}
   document.getElementById('onboarding-overlay').style.display = 'none';
-  const user = getUser();
-  // Update welcome message
   const wb = document.querySelector('.welcome-bar h1');
   if (wb && obData.name) wb.textContent = `Welcome, ${obData.name.split(' ')[0]}! ✈️`;
   switchTab('flights');
 }
 
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════
 // FLIGHTS TAB
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════
 let bookings = [];
+let formStep = 1;
+let formData = {};
+let matchMode = 'exact';
 
 async function renderFlightsTab() {
-  const user = getUser() || {};
   const minDate = new Date(Date.now()+86400000).toISOString().split('T')[0];
   document.getElementById('tab-content').innerHTML = `
     <div id="savings-area"></div>
     <div class="card">
-      <div class="card-title">➕ Monitor a New Flight</div>
-      <form id="booking-form" onsubmit="submitBooking(event)">
+      <div class="card-title">➕ Monitor a New Flight
+        <span class="badge" id="form-step-badge">Step 1 of 2 — Your Booking</span>
+      </div>
+      <!-- Step indicator -->
+      <div class="step-indicator">
+        <div class="step-item">
+          <div class="step-num active" id="snum-1">1</div>
+          <div class="step-label active" id="slbl-1">Your Booking</div>
+        </div>
+        <div class="step-connector" id="sconn"></div>
+        <div class="step-item">
+          <div class="step-num pending" id="snum-2">2</div>
+          <div class="step-label pending" id="slbl-2">Monitoring Prefs</div>
+        </div>
+      </div>
+
+      <!-- STEP 1: Booking Details -->
+      <div class="form-step active" id="step1">
+        <!-- Confirmation lookup -->
+        <div class="lookup-banner">
+          <div class="lookup-banner-title">🔍 Already have a confirmation number? Look up your booking</div>
+          <div class="lookup-row">
+            <div class="form-group">
+              <label>Airline</label>
+              <select id="lookup-airline">
+                <option value="">Select airline...</option>
+                <optgroup label="── Major US Carriers ──">
+                  ${MAJOR_US_AIRLINES.map(a => `<option>${a}</option>`).join('')}
+                </optgroup>
+                <optgroup label="── All Airlines ──">
+                  ${OTHER_AIRLINES.map(a => `<option>${a}</option>`).join('')}
+                </optgroup>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Confirmation #</label>
+              <input type="text" id="lookup-conf" placeholder="e.g. ABC123" style="text-transform:uppercase">
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" id="lookup-lastname" placeholder="e.g. Smith">
+            </div>
+            <button class="btn-lookup" onclick="openAirlineLookup()">Look Up Booking →</button>
+          </div>
+          <div style="font-size:0.78rem;color:#64748b;margin-top:8px;">Opens your airline's manage booking page to retrieve your flight details, then fill in below.</div>
+        </div>
+
         <div class="form-grid">
           <div class="form-group">
             <label>Airline *</label>
-            <select name="airline" required>
+            <select id="f-airline" required>
               <option value="">Select airline...</option>
               <optgroup label="── Major US Carriers ──">
                 ${MAJOR_US_AIRLINES.map(a => `<option>${a}</option>`).join('')}
@@ -507,7 +888,7 @@ async function renderFlightsTab() {
           </div>
           <div class="form-group">
             <label>Cabin Class</label>
-            <select name="cabinClass">
+            <select id="f-cabin">
               <option value="economy">Economy</option>
               <option value="premium_economy">Premium Economy</option>
               <option value="business">Business</option>
@@ -515,197 +896,341 @@ async function renderFlightsTab() {
             </select>
           </div>
           <div class="form-group">
-            <label>From (Airport Code) *</label>
-            <input name="origin" placeholder="e.g. JFK" maxlength="3" style="text-transform:uppercase" required>
+            <label>From Airport *</label>
+            <div class="airport-wrap" id="origin-wrap">
+              <input id="f-origin" class="airport-input" placeholder="City or airport code (e.g. New York or JFK)" autocomplete="off"
+                oninput="onAirportInput('f-origin', this.value)"
+                onkeydown="onAirportKeydown('f-origin', event, this.value)"
+                onblur="setTimeout(closeAcDropdown, 200)"
+              >
+            </div>
           </div>
           <div class="form-group">
-            <label>To (Airport Code) *</label>
-            <input name="destination" placeholder="e.g. LAX" maxlength="3" style="text-transform:uppercase" required>
+            <label>To Airport *</label>
+            <div class="airport-wrap" id="f-dest-wrap">
+              <input id="f-dest" class="airport-input" placeholder="City or airport code (e.g. Los Angeles or LAX)" autocomplete="off"
+                oninput="onAirportInput('f-dest', this.value)"
+                onkeydown="onAirportKeydown('f-dest', event, this.value)"
+                onblur="setTimeout(closeAcDropdown, 200)"
+              >
+            </div>
           </div>
           <div class="form-group">
             <label>Departure Date *</label>
-            <input type="date" name="departureDate" required min="${minDate}">
+            <input type="date" id="f-depdate" required min="${minDate}">
           </div>
           <div class="form-group">
             <label>Return Date <span style="font-weight:400;color:#94a3b8">(optional)</span></label>
-            <input type="date" name="returnDate" min="${minDate}">
+            <input type="date" id="f-retdate" min="${minDate}">
           </div>
           <div class="form-group">
             <label>Price You Paid ($) *</label>
-            <input type="text" name="pricePaid" id="pricePaidInput" placeholder="e.g. $1,299.00" required oninput="formatPrice(this)">
+            <input type="text" id="f-price" placeholder="e.g. $1,299.00" required oninput="formatPrice(this)">
           </div>
           <div class="form-group">
             <label>Passengers</label>
-            <select name="passengers">
+            <select id="f-pax">
               ${[1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}">${n}</option>`).join('')}
             </select>
           </div>
           <div class="form-group">
-            <label>Alert me when price drops by ($)</label>
-            <input type="number" name="dropThreshold" value="10" min="5" step="1">
-            <span class="hint">Default: $10 minimum drop</span>
-          </div>
-          <div class="form-group">
-            <label>Booking Confirmation # <span style="font-weight:400;color:#94a3b8">(optional)</span></label>
-            <input name="confirmationNumber" placeholder="e.g. ABC123">
+            <label>Booking Confirmation # <span style="font-weight:400;color:#94a3b8">(recommended)</span></label>
+            <input type="text" id="f-conf" placeholder="e.g. ABC123" style="text-transform:uppercase">
+            <span class="hint">Used in your price drop refund email template</span>
           </div>
         </div>
         <div id="form-msg"></div>
-        <button type="submit" class="btn-primary" id="submit-btn" style="margin-top:20px;">Start Monitoring This Flight →</button>
-      </form>
+        <div class="form-actions">
+          <button class="btn-primary" onclick="goToStep2()">Next: Monitoring Preferences →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Monitoring Preferences -->
+      <div class="form-step" id="step2">
+        <div style="margin-bottom:16px;">
+          <label style="font-size:0.85rem;font-weight:600;color:#374151;display:block;margin-bottom:10px;">How should we match prices to your booking?</label>
+          <div class="match-mode-group">
+            <div class="match-mode-opt selected" id="mode-exact" onclick="setMatchMode('exact')">  
+              <div class="mode-title">🎯 Exact Flight Match</div>
+              <div class="mode-desc">Track only your specific flight number. Required for most airline refund policies.</div>
+            </div>
+            <div class="match-mode-opt" id="mode-flexible" onclick="setMatchMode('flexible')">  
+              <div class="mode-title">🔄 Flexible Match</div>
+              <div class="mode-desc">Find the cheapest equivalent option that meets your criteria.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Exact mode: flight number field -->
+        <div id="exact-prefs">
+          <div class="form-group" style="max-width:280px;">
+            <label>Flight Number <span style="color:var(--blue);font-weight:600;">(recommended)</span></label>
+            <input type="text" id="f-flightnum" placeholder="e.g. AA 202 or DL 412" style="text-transform:uppercase">
+            <span class="hint">We'll search for this exact flight in price results and compare directly.</span>
+          </div>
+        </div>
+
+        <!-- Flexible mode: additional prefs -->
+        <div class="flexible-prefs" id="flexible-prefs">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Maximum Stops</label>
+              <select id="f-stops">
+                <option value="0">Nonstop only</option>
+                <option value="1">Up to 1 stop</option>
+                <option value="2">Any number of stops</option>
+              </select>
+              <span class="hint">Match flights with at most this many connections</span>
+            </div>
+            <div class="form-group">
+              <label>Departure Time Window</label>
+              <select id="f-timewin">
+                <option value="exact">Exact time only</option>
+                <option value="2h" selected>Within ±2 hours</option>
+                <option value="4h">Within ±4 hours</option>
+                <option value="any">Any time of day</option>
+              </select>
+              <span class="hint">How much departure time flexibility is acceptable</span>
+            </div>
+            <div class="form-group">
+              <label>Airline</label>
+              <select id="f-airline-flex">
+                <option value="same">Same airline only</option>
+                <option value="any">Any airline</option>
+              </select>
+              <span class="hint">Same airline required for most refund claims</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="section-divider">
+
+        <div class="form-group" style="max-width:280px;">
+          <label>Alert me when price drops by at least ($)</label>
+          <input type="number" id="f-threshold" value="10" min="5" step="1">
+          <span class="hint">Default: $10 minimum drop per person</span>
+        </div>
+
+        <div id="step2-msg"></div>
+        <div class="form-actions">
+          <button class="btn-secondary" onclick="goToStep1()">← Back</button>
+          <button class="btn-primary" id="submit-btn" onclick="submitBooking()">Start Monitoring This Flight →</button>
+        </div>
+      </div>
     </div>
     <div id="bookings-list"><div class="loading-screen"><div class="spinner"></div></div></div>
   `;
   loadBookings();
 }
 
-async function loadBookings() {
+function openAirlineLookup() {
+  const airline = document.getElementById('lookup-airline').value;
+  const conf = document.getElementById('lookup-conf').value.trim();
+  const lastName = document.getElementById('lookup-lastname').value.trim();
+  if (!airline) { alert('Please select an airline first.'); return; }
+  // Copy confirmation to main form if provided
+  if (conf) { const fi = document.getElementById('f-conf'); if (fi) fi.value = conf.toUpperCase(); }
+  // Copy airline to main form
+  const fa = document.getElementById('f-airline'); if (fa) fa.value = airline;
+  // Open airline manage-booking page
+  const url = AIRLINE_LOOKUP_URLS[airline] || 'https://www.google.com/search?q=' + encodeURIComponent(airline + ' manage booking');
+  window.open(url, '_blank');
+}
+
+function setMatchMode(mode) {
+  matchMode = mode;
+  document.getElementById('mode-exact').classList.toggle('selected', mode === 'exact');
+  document.getElementById('mode-flexible').classList.toggle('selected', mode === 'flexible');
+  document.getElementById('exact-prefs').style.display = mode === 'exact' ? 'block' : 'none';
+  document.getElementById('flexible-prefs').classList.toggle('show', mode === 'flexible');
+}
+
+function goToStep2() {
+  // Validate step 1
+  const airline = document.getElementById('f-airline').value;
+  const origin = document.getElementById('f-origin').value.trim().toUpperCase().replace(/[^A-Z]/g,'').slice(0,3);
+  const dest = document.getElementById('f-dest').value.trim().toUpperCase().replace(/[^A-Z]/g,'').slice(0,3);
+  const depDate = document.getElementById('f-depdate').value;
+  const price = document.getElementById('f-price').value;
+
+  if (!airline) { showMsg('form-msg', 'Please select an airline.', 'error'); return; }
+  if (!origin || origin.length < 3) { showMsg('form-msg', 'Please enter a valid departure airport (3-letter code or city name).', 'error'); return; }
+  if (!dest || dest.length < 3) { showMsg('form-msg', 'Please enter a valid destination airport (3-letter code or city name).', 'error'); return; }
+  if (!depDate) { showMsg('form-msg', 'Please select a departure date.', 'error'); return; }
+  if (!price || price === '$') { showMsg('form-msg', 'Please enter the price you paid.', 'error'); return; }
+
+  // Save step 1 data
+  formData = {
+    airline, origin, destination: dest,
+    departureDate: depDate,
+    returnDate: document.getElementById('f-retdate').value || null,
+    cabinClass: document.getElementById('f-cabin').value,
+    passengers: parseInt(document.getElementById('f-pax').value),
+    pricePaid: parseFloat(price.replace(/[$,]/g, '' )),
+    confirmationNumber: document.getElementById('f-conf').value.trim().toUpperCase() || null,
+  };
+
+  document.getElementById('step1').classList.remove('active');
+  document.getElementById('step2').classList.add('active');
+  document.getElementById('form-step-badge').textContent = 'Step 2 of 2 — Monitoring Preferences';
+  document.getElementById('snum-1').className = 'step-num done';
+  document.getElementById('slbl-1').className = 'step-label done';
+  document.getElementById('snum-2').className = 'step-num active';
+  document.getElementById('slbl-2').className = 'step-label active';
+  document.getElementById('sconn').className = 'step-connector done';
+  document.getElementById('step2-msg').innerHTML = ''; 
+}
+
+function goToStep1() {
+  document.getElementById('step2').classList.remove('active');
+  document.getElementById('step1').classList.add('active');
+  document.getElementById('form-step-badge').textContent = 'Step 1 of 2 — Your Booking';
+  document.getElementById('snum-1').className = 'step-num active';
+  document.getElementById('slbl-1').className = 'step-label active';
+  document.getElementById('snum-2').className = 'step-num pending';
+  document.getElementById('slbl-2').className = 'step-label pending';
+  document.getElementById('sconn').className = 'step-connector';
+}
+
+function showMsg(elId, msg, type) {
+  const el = document.getElementById(elId);
+  if (el) el.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+}
+
+async function submitBooking() {
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = 'Submitting...';
+
+  const flightNum = document.getElementById('f-flightnum')?.value?.trim().toUpperCase() || null;
+  const stops = parseInt(document.getElementById('f-stops')?.value ?? 0);
+  const timeWindow = document.getElementById('f-timewin')?.value || '2h';
+  const airlineFlex = document.getElementById('f-airline-flex')?.value || 'same';
+  const threshold = parseFloat(document.getElementById('f-threshold').value) || 10;
+
+  const body = {
+    ...formData,
+    flightNumber: flightNum,
+    matchMode,
+    monitoringPrefs: matchMode === 'exact'
+      ? { flightNumber: flightNum }
+      : { maxStops: stops, timeWindow, airlinePreference: airlineFlex },
+    dropThreshold: threshold,
+  };
+
   try {
-    bookings = await apiFetch('/bookings');
-    renderBookingsList();
-    renderSavings();
-  } catch(e) {
-    document.getElementById('bookings-list').innerHTML = `<div class="alert alert-error">Could not load bookings.</div>`;
+    await apiFetch('/bookings', { method: 'POST', body: JSON.stringify(body) });
+    showMsg('step2-msg', `✅ Flight added! Now monitoring ${formData.origin} → ${formData.destination}.`, 'success');
+    // Reset form
+    goToStep1();
+    document.getElementById('f-airline').value = ''; document.getElementById('f-origin').value = ''; document.getElementById('f-dest').value = ''; document.getElementById('f-depdate').value = ''; document.getElementById('f-price').value = ''; document.getElementById('f-conf').value = ''; document.getElementById('f-flightnum').value = ''; formData = {};
+    loadBookings();
+  } catch (err) {
+    showMsg('step2-msg', `❌ ${err.message}`, 'error');
   }
+  btn.disabled = false; btn.textContent = 'Start Monitoring This Flight →';
+}
+
+// ── Price formatter ──
+function formatPrice(input) {
+  let raw = input.value.replace(/[^0-9.]/g, '' );
+  const parts = raw.split('.' );
+  if (raw) {
+    const intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',' );
+    const decPart = parts[1] !== undefined ? '.'  + parts[1].slice(0, 2) : '' ;
+    input.value = '$'  + intPart + decPart;
+  }
+}
+
+async function loadBookings() {
+  try { bookings = await apiFetch('/bookings' ); renderBookingsList(); renderSavings(); }
+  catch(e) { document.getElementById('bookings-list' ).innerHTML = `<div class="alert alert-error">Could not load bookings.</div>`; }
 }
 
 function renderSavings() {
-  const total = bookings.reduce((s, b) => {
-    if (b.lowestPriceSeen && b.pricePaid > b.lowestPriceSeen) return s + (b.pricePaid - b.lowestPriceSeen);
-    return s;
-  }, 0);
-  const el = document.getElementById('savings-area');
-  if (el && total > 0) {
-    el.innerHTML = `<div class="savings-banner"><div><div class="label">💰 Total savings found</div><div class="amount">$${total.toFixed(2)}</div></div><div style="font-size:0.85rem;opacity:0.85;text-align:right;">across ${bookings.filter(b=>b.lowestPriceSeen&&b.pricePaid>b.lowestPriceSeen).length} flight(s)</div></div>`;
-  }
+  const total = bookings.reduce((s, b) => (b.lowestPriceSeen && b.pricePaid > b.lowestPriceSeen) ? s + (b.pricePaid - b.lowestPriceSeen) : s, 0);
+  const el = document.getElementById('savings-area' );
+  if (el && total > 0) el.innerHTML = `<div class="savings-banner"><div><div class="label">💰 Total savings found</div><div class="amount">$${total.toFixed(2)}</div></div><div style="font-size:0.85rem;opacity:0.85;text-align:right;">${bookings.filter(b=>b.lowestPriceSeen&&b.pricePaid>b.lowestPriceSeen).length} flight(s)</div></div>`;
 }
 
 function renderBookingsList() {
-  const el = document.getElementById('bookings-list');
+  const el = document.getElementById('bookings-list' );
   if (!bookings.length) {
-    el.innerHTML = `<div class="empty-state"><div class="icon">✈️</div><h3>No flights monitored yet</h3><p>Add your first booking above and we'll start watching the price immediately.</p></div>`;
+    el.innerHTML = `<div class="empty-state"><div class="icon">✈️</div><h3>No flights monitored yet</h3><p>Use the form above to add your first booking.</p></div>`;
     return;
   }
   el.innerHTML = bookings.map(b => {
-    const dep = new Date(b.departureDate).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+    const dep = new Date(b.departureDate).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
     const daysLeft = Math.ceil((new Date(b.departureDate) - Date.now()) / 86400000);
     const drop = b.lowestPriceSeen ? b.pricePaid - b.lowestPriceSeen : null;
-    const lastChecked = b.lastCheckedAt ? new Date(b.lastCheckedAt).toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' }) : 'Pending';
-    const returnStr = b.returnDate ? ` · Return ${new Date(b.returnDate).toLocaleDateString('en-US', {month:'short', day:'numeric'})}` : '';
+    const lastChecked = b.lastCheckedAt ? new Date(b.lastCheckedAt).toLocaleString('en-US', {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : 'Pending';
+    const returnStr = b.returnDate ? ` · Return ${new Date(b.returnDate).toLocaleDateString('en-US',{month:'short',day:'numeric'})}` : '' ;
+    const flightStr = b.flightNumber ? ` · ${b.flightNumber}` : '' ;
+    const modeStr = b.matchMode === 'flexible' ? '🔄 flexible'  : '🎯 exact';
     return `
       <div class="booking-card ${b.status}">
         <div class="booking-route">
-          <span class="status-dot ${b.status === 'paused' ? 'paused' : b.status === 'expired' ? 'expired' : ''}"></span>
+          <span class="status-dot ${b.status === 'paused'  ? 'paused' : b.status === 'expired' ? 'expired' : '' }"></span>
           ${b.origin} → ${b.destination}
-          <span style="font-size:0.75rem;font-weight:500;padding:2px 8px;border-radius:20px;background:${b.status==='active'?'var(--green-light)':b.status==='paused'?'#f1f5f9':'#f1f5f9'};color:${b.status==='active'?'var(--green)':'#94a3b8'}">${b.status}</span>
+          <span style="font-size:0.75rem;font-weight:500;padding:2px 8px;border-radius:20px;background:${b.status==='active'?'var(--green-light)':'#f1f5f9'};color:${b.status==='active'?'var(--green)':'#94a3b8'}">  ${b.status}</span>
+          <span style="font-size:0.72rem;color:#94a3b8;">${modeStr}</span>
         </div>
-        <div class="booking-meta">${b.airline} · ${dep}${returnStr} · ${b.cabinClass.replace('_',' ')} · ${b.passengers} pax</div>
+        <div class="booking-meta">${b.airline}${flightStr} · ${dep}${returnStr} · ${b.cabinClass.replace('_'  ,' ' )} · ${b.passengers} pax</div>
         <div class="booking-stats">
           <div class="stat-box"><div class="stat-label">Price Paid</div><div class="stat-value">$${b.pricePaid.toFixed(2)}</div></div>
-          <div class="stat-box"><div class="stat-label">Lowest Seen</div><div class="stat-value">${b.lowestPriceSeen ? '$'+b.lowestPriceSeen.toFixed(2) : '—'}</div></div>
-          <div class="stat-box"><div class="stat-label">Savings</div><div class="stat-value ${drop && drop > 0 ? 'drop' : ''}">${drop && drop > 0 ? '$'+drop.toFixed(2) : '—'}</div></div>
+          <div class="stat-box"><div class="stat-label">Lowest Seen</div><div class="stat-value">${b.lowestPriceSeen ? '$' +b.lowestPriceSeen.toFixed(2) : '—'}</div></div>
+          <div class="stat-box"><div class="stat-label">Savings</div><div class="stat-value ${drop && drop > 0 ? 'drop'  : '' }">${drop && drop > 0 ? '$' +drop.toFixed(2) : '—'}</div></div>
         </div>
-        <div class="booking-footer">Last checked: ${lastChecked} · ${daysLeft > 0 ? daysLeft+' days until departure' : 'Travel date passed'} · Alert at $${b.dropThreshold} drop</div>
+        ${b.confirmationNumber ? `<div class="booking-footer">Booking ref: <strong>${b.confirmationNumber}</strong> · Last checked: ${lastChecked} · ${daysLeft > 0 ? daysLeft+' days until departure' : 'Travel date passed' } · Alert at $${b.dropThreshold} drop</div>` : `<div class="booking-footer">Last checked: ${lastChecked} · ${daysLeft > 0 ? daysLeft+' days until departure' : 'Travel date passed'} · Alert at $${b.dropThreshold} drop</div>`}
         <div class="booking-actions">
-          <button class="btn-sm" onclick="viewBookingHistory('${b._id}')">📈 History</button>
-          ${b.status === 'active' ? `<button class="btn-sm" onclick="toggleBooking('${b._id}','paused')">Pause</button>` : ''}
-          ${b.status === 'paused' ? `<button class="btn-sm" onclick="toggleBooking('${b._id}','active')">Resume</button>` : ''}
-          <button class="btn-sm danger" onclick="deleteBooking('${b._id}')">Remove</button>
+          <button class="btn-sm" onclick="viewBookingHistory('${b._id}' )">📈 History</button>
+          ${b.status === 'active'  ? `<button class="btn-sm" onclick="toggleBooking('${b._id}', 'paused')">Pause</button>` : '' }
+          ${b.status === 'paused'  ? `<button class="btn-sm" onclick="toggleBooking('${b._id}', 'active')">Resume</button>` : '' }
+          <button class="btn-sm danger" onclick="deleteBooking('${b._id}' )">Remove</button>
         </div>
       </div>`;
   }).join('');
 }
 
-// ── Price formatter ──
-function formatPrice(input) {
-  let raw = input.value.replace(/[^0-9.]/g, '');
-  const parts = raw.split('.');
-  if (raw) {
-    const intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    const decPart = parts[1] !== undefined ? '.' + parts[1].slice(0, 2) : '';
-    input.value = '$' + intPart + decPart;
-  }
-}
-
-async function submitBooking(e) {
-  e.preventDefault();
-  const form = e.target;
-  const btn = document.getElementById('submit-btn');
-  const msgEl = document.getElementById('form-msg');
-  btn.disabled = true; btn.textContent = 'Submitting...';
-  msgEl.innerHTML = '';
-
-  const body = {
-    airline: form.airline.value,
-    origin: form.origin.value.toUpperCase(),
-    destination: form.destination.value.toUpperCase(),
-    departureDate: form.departureDate.value,
-    returnDate: form.returnDate.value || null,
-    cabinClass: form.cabinClass.value,
-    passengers: parseInt(form.passengers.value),
-    pricePaid: parseFloat(form.pricePaid.value.replace(/[$,]/g, '')),
-    dropThreshold: parseFloat(form.dropThreshold.value) || 10,
-    confirmationNumber: form.confirmationNumber.value || null,
-  };
-
-  try {
-    await apiFetch('/bookings', { method: 'POST', body: JSON.stringify(body) });
-    msgEl.innerHTML = `<div class="alert alert-success">✅ Flight added! We're now monitoring ${body.origin} → ${body.destination}.</div>`;
-    form.reset();
-    loadBookings();
-  } catch (err) {
-    msgEl.innerHTML = `<div class="alert alert-error">❌ ${err.message}</div>`;
-  }
-  btn.disabled = false; btn.textContent = 'Start Monitoring This Flight →';
-}
-
 async function toggleBooking(id, status) {
-  try {
-    await apiFetch(`/bookings/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) });
-    loadBookings();
-  } catch(e) { alert('Failed to update booking.'); }
+  try { await apiFetch(`/bookings/${id}`, { method: 'PATCH' , body: JSON.stringify({ status }) }); loadBookings(); }
+  catch(e) { alert('Failed to update booking.' ); }
 }
 
 async function deleteBooking(id) {
-  if (!confirm('Remove this flight from monitoring?')) return;
-  try {
-    await apiFetch(`/bookings/${id}`, { method: 'DELETE' });
-    loadBookings();
-  } catch(e) { alert('Failed to remove booking.'); }
+  if (!confirm('Remove this flight from monitoring?' )) return;
+  try { await apiFetch(`/bookings/${id}`, { method: 'DELETE' }); loadBookings(); }
+  catch(e) { alert('Failed to remove booking.' ); }
 }
 
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════
 // ACCOUNT TAB
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════
 async function renderAccountTab() {
   const user = getUser() || {};
-  const planLabels = { per_trip: 'Per Trip', monthly: 'Monthly', annual: 'Annual' };
+  const planLabels = { per_trip: 'Per Trip' , monthly: 'Monthly' , annual: 'Annual' };
   const planLabel = planLabels[user.plan] || 'Free';
-  const planPrices = { per_trip: '$1.99 per trip', monthly: '$4.99/month', annual: '$39/year' };
+  const planPrices = { per_trip: '$1.99 per trip' , monthly: '$4.99/month' , annual: '$39/year' };
   const upgradeLinks = {
-    per_trip: 'https://buy.stripe.com/cNi7sDcw3g0V2iy2qT4wM01',
-    monthly: 'https://buy.stripe.com/9B628janV9Cx9L02qT4wM02',
-    annual: 'https://buy.stripe.com/dRmbIT67F5mh8GWe9B4wM03',
+    monthly: 'https://buy.stripe.com/9B628janV9Cx9L02qT4wM02' ,
+    annual: 'https://buy.stripe.com/dRmbIT67F5mh8GWe9B4wM03' ,
   };
 
-  document.getElementById('tab-content').innerHTML = `
-    <!-- Plan card -->
+  document.getElementById('tab-content' ).innerHTML = `
     <div class="plan-card">
       <div class="plan-name">✈️ ${planLabel} Plan</div>
       <div class="plan-detail">${planPrices[user.plan] || 'No active plan'}</div>
       <div class="plan-badges">
-        <span class="plan-badge">${user.planStatus === 'active' ? '✅ Active' : user.planStatus || 'Inactive'}</span>
-        ${user.plan === 'per_trip' ? `<span class="plan-badge ${user.tripsRemaining === 0 ? 'warn' : ''}">${user.tripsRemaining || 0} trip${user.tripsRemaining !== 1 ? 's' : ''} remaining</span>` : ''}
-        ${user.plan === 'monthly' || user.plan === 'annual' ? '<span class="plan-badge">Unlimited monitoring</span>' : ''}
+        <span class="plan-badge">${user.planStatus === 'active'  ? '✅ Active'  : user.planStatus || 'Inactive'}</span>
+        ${user.plan === 'per_trip'  ? `<span class="plan-badge ${user.tripsRemaining === 0 ? 'warn' : '' }">${user.tripsRemaining || 0} trip${user.tripsRemaining !== 1 ? 's'  : '' } remaining</span>` : '' }
+        ${(user.plan === 'monthly'  || user.plan === 'annual' ) ? '<span class="plan-badge">Unlimited monitoring</span>' : '' }
       </div>
       <div class="plan-actions">
         <button class="btn-plan" onclick="openBillingPortal()">Manage Billing</button>
-        ${user.plan === 'per_trip' ? `<a href="${upgradeLinks.monthly}" target="_blank" class="btn-plan upgrade">Upgrade to Monthly</a>` : ''}
-        ${user.plan === 'monthly' ? `<a href="${upgradeLinks.annual}" target="_blank" class="btn-plan upgrade">Upgrade to Annual (Save 35%)</a>` : ''}
+        ${user.plan === 'per_trip'  ? `<a href="${upgradeLinks.monthly}" target="_blank" class="btn-plan upgrade">Upgrade to Monthly</a>` : '' }
+        ${user.plan === 'monthly'  ? `<a href="${upgradeLinks.annual}" target="_blank" class="btn-plan upgrade">Upgrade to Annual (Save 35%)</a>` : '' }
       </div>
     </div>
 
-    <!-- Profile settings -->
     <div class="card">
       <div class="card-title">👤 Profile Settings</div>
       <div class="profile-section">
@@ -713,35 +1238,34 @@ async function renderAccountTab() {
         <div class="form-grid">
           <div class="form-group">
             <label>Full Name</label>
-            <input type="text" id="acc-name" value="${user.name || ''}" placeholder="Your full name">
+            <input type="text" id="acc-name" value="${user.name || '' }" placeholder="Your full name">
           </div>
           <div class="form-group">
             <label>Email Address</label>
-            <input type="email" value="${user.email || ''}" disabled style="background:#f8fafc;color:#94a3b8;">
+            <input type="email" value="${user.email || '' }" disabled style="background:#f8fafc;color:#94a3b8;">
             <span class="hint">Email cannot be changed</span>
           </div>
           <div class="form-group">
             <label>Phone Number <span style="font-weight:400;color:#94a3b8">(for SMS alerts)</span></label>
-            <input type="tel" id="acc-phone" value="${user.phone || ''}" placeholder="+1 (555) 000-0000">
+            <input type="tel" id="acc-phone" value="${user.phone || '' }" placeholder="+1 (555) 000-0000">
           </div>
         </div>
       </div>
-
       <div class="profile-section">
         <div class="section-title">Notification Preferences</div>
         <div class="form-grid">
           <div class="form-group">
             <label>Email Alerts</label>
             <select id="acc-notif-email">
-              <option value="true" ${user.notificationPrefs?.email !== false ? 'selected' : ''}>Enabled</option>
-              <option value="false" ${user.notificationPrefs?.email === false ? 'selected' : ''}>Disabled</option>
+              <option value="true" ${user.notificationPrefs?.email !== false ? 'selected'  : '' }>Enabled</option>
+              <option value="false" ${user.notificationPrefs?.email === false ? 'selected'  : '' }>Disabled</option>
             </select>
           </div>
           <div class="form-group">
             <label>SMS Alerts</label>
             <select id="acc-notif-sms">
-              <option value="false" ${!user.notificationPrefs?.sms ? 'selected' : ''}>Disabled</option>
-              <option value="true" ${user.notificationPrefs?.sms ? 'selected' : ''}>Enabled</option>
+              <option value="false" ${!user.notificationPrefs?.sms ? 'selected'  : '' }>Disabled</option>
+              <option value="true" ${user.notificationPrefs?.sms ? 'selected'  : '' }>Enabled</option>
             </select>
           </div>
           <div class="form-group">
@@ -751,20 +1275,17 @@ async function renderAccountTab() {
           </div>
         </div>
       </div>
-
       <div id="profile-msg"></div>
       <div class="form-actions">
         <button class="btn-primary" onclick="saveProfile()">Save Changes</button>
       </div>
     </div>
 
-    <!-- Referral program -->
     <div id="referral-section"></div>
 
-    <!-- Danger zone -->
     <div class="card" style="border: 1px solid #fecaca;">
       <div class="card-title" style="color:var(--red);">⚠️ Account</div>
-      <p style="color:var(--slate);font-size:0.9rem;margin-bottom:16px;">Need help or want to cancel? Contact us at <a href="mailto:hello@tripreclaim.com" style="color:var(--blue);">hello@tripreclaim.com</a></p>
+      <p style="color:var(--slate);font-size:0.9rem;margin-bottom:16px;">Need help? Contact us at <a href="mailto:hello@tripreclaim.com" style="color:var(--blue);">hello@tripreclaim.com</a></p>
       <button class="btn-danger" style="background:#fff;color:var(--red);border:1px solid var(--red);" onclick="logout()">Sign Out</button>
     </div>
   `;
@@ -772,205 +1293,125 @@ async function renderAccountTab() {
 }
 
 async function saveProfile() {
-  const name = document.getElementById('acc-name')?.value?.trim();
-  const phone = document.getElementById('acc-phone')?.value?.trim();
-  const notifEmail = document.getElementById('acc-notif-email')?.value === 'true';
-  const notifSms = document.getElementById('acc-notif-sms')?.value === 'true';
-  const threshold = parseFloat(document.getElementById('acc-threshold')?.value) || 10;
-
+  const name = document.getElementById('acc-name' )?.value?.trim();
+  const phone = document.getElementById('acc-phone' )?.value?.trim();
+  const notifEmail = document.getElementById('acc-notif-email' )?.value === 'true';
+  const notifSms = document.getElementById('acc-notif-sms' )?.value === 'true';
+  const threshold = parseFloat(document.getElementById('acc-threshold' )?.value) || 10;
   try {
-    const data = await apiFetch('/auth/profile', {
-      method: 'PUT',
-      body: JSON.stringify({
-        name, phone,
-        notificationPrefs: { email: notifEmail, sms: notifSms, dropThresholdDefault: threshold },
-        onboardingComplete: true,
-      }),
-    });
+    const data = await apiFetch('/auth/profile' , { method: 'PUT' , body: JSON.stringify({ name, phone, notificationPrefs: { email: notifEmail, sms: notifSms, dropThresholdDefault: threshold }, onboardingComplete: true }) });
     setUser(data);
-    document.getElementById('profile-msg').innerHTML = `<div class="alert alert-success">✅ Profile saved successfully.</div>`;
-    // Update welcome bar
-    const wb = document.querySelector('.welcome-bar h1');
-    if (wb && name) wb.textContent = `Welcome back, ${name.split(' ')[0]}! ✈️`;
-    setTimeout(() => {
-      const el = document.getElementById('profile-msg');
-      if (el) el.innerHTML = '';
-    }, 3000);
+    document.getElementById('profile-msg' ).innerHTML = `<div class="alert alert-success">✅ Profile saved successfully.</div>`;
+    const wb = document.querySelector('.welcome-bar h1' );
+    if (wb && name) wb.textContent = `Welcome back, ${name.split('' )[0]}! ✈️`;
+    setTimeout(() => { const el = document.getElementById('profile-msg' ); if (el) el.innerHTML = ''; }, 3000);
   } catch(e) {
-    document.getElementById('profile-msg').innerHTML = `<div class="alert alert-error">❌ Failed to save profile.</div>`;
+    document.getElementById('profile-msg' ).innerHTML = `<div class="alert alert-error">❌ Failed to save profile.</div>`;
   }
 }
 
 async function openBillingPortal() {
   const btn = event.target;
-  btn.textContent = 'Opening...';
-  btn.disabled = true;
-  try {
-    const data = await apiFetch('/billing/portal');
-    window.location.href = data.url;
-  } catch(e) {
-    alert('Could not open billing portal. Contact hello@tripreclaim.com for help.');
-    btn.textContent = 'Manage Billing';
-    btn.disabled = false;
-  }
+  btn.textContent = 'Opening...' ; btn.disabled = true;
+  try { const data = await apiFetch('/billing/portal' ); window.location.href = data.url; }
+  catch(e) { alert('Could not open billing portal. Contact hello@tripreclaim.com for help.' ); btn.textContent = 'Manage Billing' ; btn.disabled = false; }
 }
 
-
-// ══════════════════════════════════════
-// SPRINT 2 — PRICE HISTORY MODAL
-// ══════════════════════════════════════
-
+// ═══════════════════════════════════════════
+// PRICE HISTORY MODAL
+// ═══════════════════════════════════════════
 function renderPriceChart(priceHistory, pricePaid) {
-  if (!priceHistory || priceHistory.length < 2) {
-    return '<div style="text-align:center;padding:24px;color:#94a3b8;">Not enough data yet — check back after a few monitoring cycles.</div>';
-  }
-
+  if (!priceHistory || priceHistory.length < 2) return '<div style="text-align:center;padding:24px;color:#94a3b8;">Not enough data yet.</div>';
   const prices = priceHistory.map(p => p.price);
-  const dates = priceHistory.map(p => p.checkedAt);
   const min = Math.min(...prices, pricePaid * 0.7);
   const max = Math.max(...prices, pricePaid * 1.1);
   const range = max - min || 1;
-
   const W = 540, H = 140, PAD = 24;
   const pts = prices.map((p, i) => {
     const x = PAD + ((i / (prices.length - 1)) * (W - PAD * 2));
     const y = PAD + ((1 - (p - min) / range) * (H - PAD * 2));
     return [x, y, p];
   });
-
-  const line = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ');
+  const line = pts.map((p, i) => `${i===0?'M':'L'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join('' );
   const area = line + ` L${pts[pts.length-1][0].toFixed(1)},${H} L${PAD},${H} Z`;
-
-  // Paid price line
   const paidY = PAD + ((1 - (pricePaid - min) / range) * (H - PAD * 2));
-
-  const dots = pts.map(([x, y, price]) =>
-    `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="${price < pricePaid ? '#16a34a' : '#1d4ed8'}" />`
-  ).join('');
-
-  return `
-    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.2"/>
-          <stop offset="100%" stop-color="#1d4ed8" stop-opacity="0"/>
-        </linearGradient>
-      </defs>
-      <!-- Area fill -->
-      <path d="${area}" fill="url(#grad)"/>
-      <!-- Paid price reference line -->
-      <line x1="${PAD}" y1="${paidY.toFixed(1)}" x2="${W - PAD}" y2="${paidY.toFixed(1)}" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
-      <text x="${W - PAD - 2}" y="${(paidY - 4).toFixed(1)}" font-size="9" fill="#dc2626" text-anchor="end">paid $${pricePaid.toFixed(0)}</text>
-      <!-- Price line -->
-      <path d="${line}" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linejoin="round"/>
-      <!-- Dots -->
-      ${dots}
-      <!-- Y-axis labels -->
-      <text x="4" y="${PAD + 4}" font-size="9" fill="#94a3b8">$${max.toFixed(0)}</text>
-      <text x="4" y="${H - PAD + 4}" font-size="9" fill="#94a3b8">$${min.toFixed(0)}</text>
-    </svg>
-  `;
+  const dots = pts.map(([x,y,price]) => `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="${price < pricePaid ? '#16a34a'  : '#1d4ed8' }" />`).join('' );
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.2"/><stop offset="100%" stop-color="#1d4ed8" stop-opacity="0"/></linearGradient></defs>
+    <path d="${area}" fill="url(#grad)"/>
+    <line x1="${PAD}" y1="${paidY.toFixed(1)}" x2="${W-PAD}" y2="${paidY.toFixed(1)}" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
+    <text x="${W-PAD-2}" y="${(paidY-4).toFixed(1)}" font-size="9" fill="#dc2626" text-anchor="end">paid $${pricePaid.toFixed(0)}</text>
+    <path d="${line}" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linejoin="round"/>
+    ${dots}
+    <text x="4" y="${PAD+4}" font-size="9" fill="#94a3b8">$${max.toFixed(0)}</text>
+    <text x="4" y="${H-PAD+4}" font-size="9" fill="#94a3b8">$${min.toFixed(0)}</text>
+  </svg>`;
 }
 
 async function viewBookingHistory(id) {
-  // Create modal
-  let overlay = document.getElementById('history-modal');
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.id = 'history-modal';
-    document.body.appendChild(overlay);
-  }
+  let overlay = document.getElementById('history-modal' );
+  if (!overlay) { overlay = document.createElement('div' ); overlay.id = 'history-modal' ; document.body.appendChild(overlay); }
   overlay.className = 'modal-overlay';
   overlay.innerHTML = `<div class="modal-box"><div class="loading-screen" style="min-height:120px;"><div class="spinner"></div></div></div>`;
   overlay.style.display = 'flex';
-  overlay.addEventListener('click', e => { if (e.target === overlay) closeHistoryModal(); });
-
+  overlay.addEventListener('click' , e => { if (e.target === overlay) closeHistoryModal(); });
   try {
     const { booking } = await apiFetch(`/bookings/${id}`);
     const ph = booking.priceHistory || [];
-    const dep = new Date(booking.departureDate).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+    const dep = new Date(booking.departureDate).toLocaleDateString('en-US' , {month:'short',day:'numeric',year:'numeric'});
     const lowest = ph.length ? Math.min(...ph.map(p => p.price)) : null;
     const savings = lowest && lowest < booking.pricePaid ? booking.pricePaid - lowest : null;
-
-    overlay.querySelector('.modal-box').innerHTML = `
+    overlay.querySelector('.modal-box' ).innerHTML = `
       <div class="modal-header">
-        <div class="modal-title">📈 ${booking.origin} → ${booking.destination} · ${dep}</div>
+        <div class="modal-title">📈 ${booking.origin} → ${booking.destination} · ${dep}${booking.flightNumber ? ' · ' +booking.flightNumber : '' }</div>
         <button class="modal-close" onclick="closeHistoryModal()">×</button>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">
         <div class="stat-box"><div class="stat-label">Price Paid</div><div class="stat-value">$${booking.pricePaid.toFixed(2)}</div></div>
-        <div class="stat-box"><div class="stat-label">Lowest Seen</div><div class="stat-value">${lowest ? '$'+lowest.toFixed(2) : '—'}</div></div>
-        <div class="stat-box"><div class="stat-label">Potential Savings</div><div class="stat-value ${savings ? 'drop' : ''}">${savings ? '$'+savings.toFixed(2) : '—'}</div></div>
+        <div class="stat-box"><div class="stat-label">Lowest Seen</div><div class="stat-value">${lowest ? '$' +lowest.toFixed(2) : '—'}</div></div>
+        <div class="stat-box"><div class="stat-label">Potential Savings</div><div class="stat-value ${savings ? 'drop'  : '' }">${savings ? '$' +savings.toFixed(2) : '—'}</div></div>
       </div>
       <div class="chart-wrap">
-        <div class="chart-label">PRICE HISTORY · ${ph.length} data points · <span style="color:#dc2626;">— your paid price</span></div>
+        <div class="chart-label">PRICE HISTORY · ${ph.length} checks · <span style="color:#dc2626;">— your paid price</span></div>
         ${renderPriceChart(ph, booking.pricePaid)}
       </div>
-      ${ph.length > 0 ? `
-        <table class="history-table">
-          <thead><tr><th>Date & Time</th><th>Price Found</th><th>vs Paid</th></tr></thead>
-          <tbody>
-            ${ph.slice().reverse().slice(0, 20).map(p => {
-              const diff = booking.pricePaid - p.price;
-              const dt = new Date(p.checkedAt).toLocaleString('en-US', {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
-              return `<tr><td>${dt}</td><td>$${p.price.toFixed(2)}</td><td class="${diff > 0 ? 'price-drop' : ''}">$${diff > 0 ? '-'+diff.toFixed(2)+' savings' : '+'+Math.abs(diff).toFixed(2)+' higher'}</td></tr>`;
-            }).join('')}
-          </tbody>
-        </table>
-      ` : '<p style="text-align:center;color:#94a3b8;padding:16px;">No price checks yet — the cron job will check within 30 minutes.</p>'}
+      ${ph.length > 0 ? `<table class="history-table"><thead><tr><th>Date & Time</th><th>Price Found</th><th>vs Paid</th></tr></thead><tbody>${ph.slice().reverse().slice(0,20).map(p => { const diff = booking.pricePaid - p.price; const dt = new Date(p.checkedAt).toLocaleString('en-US' ,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}); return `<tr><td>${dt}</td><td>$${p.price.toFixed(2)}</td><td class="${diff>0?'price-drop':'' }">$${diff>0?'-'  +diff.toFixed(2)+' savings' :'+'  +Math.abs(diff).toFixed(2)+' higher'}</td></tr>`; }).join('' )}</tbody></table>` : '<p style="text-align:center;color:#94a3b8;padding:16px;">No price checks yet — the monitor checks every 30 minutes.</p>'}
     `;
   } catch(e) {
-    overlay.querySelector('.modal-box').innerHTML = `
-      <div class="modal-header">
-        <div class="modal-title">Price History</div>
-        <button class="modal-close" onclick="closeHistoryModal()">×</button>
-      </div>
-      <div class="alert alert-error">Failed to load price history.</div>
-    `;
+    overlay.querySelector('.modal-box' ).innerHTML = `<div class="modal-header"><div class="modal-title">Price History</div><button class="modal-close" onclick="closeHistoryModal()">×</button></div><div class="alert alert-error">Failed to load price history.</div>`;
   }
 }
 
-function closeHistoryModal() {
-  const m = document.getElementById('history-modal');
-  if (m) m.style.display = 'none';
-}
+function closeHistoryModal() { const m = document.getElementById('history-modal' ); if (m) m.style.display = 'none'; }
 
-// ══════════════════════════════════════
-// SPRINT 2 — REFERRAL SYSTEM
-// ══════════════════════════════════════
-
+// ═══════════════════════════════════════════
+// REFERRAL SYSTEM
+// ═══════════════════════════════════════════
 async function loadReferral() {
-  const el = document.getElementById('referral-section');
+  const el = document.getElementById('referral-section' );
   if (!el) return;
   el.innerHTML = '<div style="padding:16px;color:#94a3b8;">Loading referral info...</div>';
   try {
-    const data = await apiFetch('/auth/referral');
+    const data = await apiFetch('/auth/referral' );
     el.innerHTML = `
       <div class="referral-card">
-        <h3>🎁 Refer a Friend — Earn Free Trips</h3>
-        <p>Share your unique link. Share your link. When a friend subscribes to any plan, you both get <strong>1 free month of TripReclaim</strong> added to your account automatically.</p>
+        <h3>🎁 Refer a Friend — Earn a Free Month</h3>
+        <p>Share your unique link. When a friend subscribes to any plan, you both get <strong>1 free month of TripReclaim</strong> added automatically.</p>
         <div class="referral-stats">
           <div class="ref-stat"><div class="val">${data.referralCount}</div><div class="lbl">Referrals</div></div>
           <div class="ref-stat"><div class="val">${data.tripsEarned}</div><div class="lbl">Free months earned</div></div>
         </div>
         <div class="referral-link-box" id="ref-link-box">${data.referralLink}</div>
-        <button class="btn-copy" onclick="copyReferralLink('${data.referralLink}')">Copy Link</button>
+        <button class="btn-copy" onclick="copyReferralLink('${data.referralLink}' )">Copy Link</button>
       </div>
     `;
-  } catch(e) {
-    el.innerHTML = '<div class="alert alert-error">Could not load referral info.</div>';
-  }
+  } catch(e) { el.innerHTML = '<div class="alert alert-error">Could not load referral info.</div>'  ; }
 }
 
 function copyReferralLink(link) {
   navigator.clipboard.writeText(link).then(() => {
-    const btn = event.target;
-    btn.textContent = 'Copied! ✅';
-    setTimeout(() => btn.textContent = 'Copy Link', 2000);
-  }).catch(() => {
-    document.getElementById('ref-link-box').select?.();
-    alert('Copy this link: ' + link);
-  });
+    const btn = event.target; btn.textContent = 'Copied! ✅' ; setTimeout(() => btn.textContent = 'Copy Link' , 2000);
+  }).catch(() => alert('Copy this link: ' + link));
 }
 
 // ── Boot ──

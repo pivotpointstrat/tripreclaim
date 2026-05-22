@@ -83,6 +83,9 @@ router.post('/', requireAuth, async (req, res) => {
       pricePaid,
       dropThreshold,
       confirmationNumber,
+      flightNumber,
+      matchMode,
+      monitoringPrefs,
     } = req.body;
 
     // Validation
@@ -114,6 +117,9 @@ router.post('/', requireAuth, async (req, res) => {
       pricePaid: parseFloat(pricePaid),
       dropThreshold: dropThreshold || 10,
       confirmationNumber: confirmationNumber || null,
+      flightNumber: flightNumber || null,
+      matchMode: matchMode || 'exact',
+      monitoringPrefs: monitoringPrefs || {},
       planAtBooking: user.plan,
     });
 

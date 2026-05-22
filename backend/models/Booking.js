@@ -38,6 +38,14 @@ const bookingSchema = new mongoose.Schema({
 
   // Booking reference (optional but useful)
   confirmationNumber: { type: String, default: null },
+  flightNumber: { type: String, default: null },
+  matchMode: { type: String, enum: ['exact', 'flexible'], default: 'exact' },
+  monitoringPrefs: {
+    flightNumber: String,
+    maxStops: { type: Number, default: 0 },
+    timeWindow: { type: String, default: '2h' },
+    airlinePreference: { type: String, default: 'same' },
+  },
 
   // Monitoring state
   status: {
