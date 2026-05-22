@@ -1,7 +1,21 @@
 const { Resend } = require('resend');
+const { getPolicyForAirline } = require('./policyAgent');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = `${process.env.EMAIL_FROM_NAME || 'TripReclaim'} <${process.env.EMAIL_FROM || 'hello@tripreclaim.com'}>`;
+
+// Map airline display names → IATA codes for policy lookup
+const AIRLINE_TO_CODE = {
+  'American Airlines': 'AA',
+  'Delta Air Lines':   'DL',
+  'United Airlines':   'UA',
+  'Southwest Airlines': 'WN',
+  'JetBlue':           'B6',
+  'Alaska Airlines':   'AS',
+  'Lufthansa':         'LH',
+  'British Airways':   'BA',
+  'Qatar Airways':     'QR',
+};
 
 /**
  * Send magic link / login email
@@ -56,35 +70,178 @@ const sendWelcome = async (email, booking) => {
 };
 
 /**
- * Send price drop alert
+ * Build the policy claim-kit HTML block.
+ * Returns an HTML string with numbered steps, claim URL, and credit expiry.
  */
-const sendPriceDropAlert = async (email, booking, currentPrice) => {
+const buildClaimKitHtml = (policy, booking) => {
+  if (!policy) return '';
+  const p = policy.policies || {};
+
+  // Credit expiry: booking.createdAt + 1 year (fallback to policy text)
+  let creditExpiryStr = p.creditExpiry || '';
+  if (booking.createdAt) {
+    const expiry = new Date(booking.createdAt);
+    expiry.setFullYear(expiry.getFullYear() + 1);
+    creditExpiryStr = expiry.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  }
+
+  const steps = (p.claimSteps || []).map((step, i) => `<li style="margin:6px 0;">${step}</li>`).join('');
+  const stepsHtml = steps
+    ? `<ol style="margin:8px 0 12px 0;padding-left:20px;color:#1e3a5f;">${steps}</ol>`
+    : '';
+
+  const claimBtn = p.claimUrl
+    ? `<a href="${p.claimUrl}" style="display:inline-block;margin-top:8px;padding:10px 20px;background:#1d4ed8;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;font-size:14px;">Claim Now →</a>`
+    : '';
+
+  const expiryNote = creditExpiryStr
+    ? `<p style="margin:10px 0 0 0;font-size:13px;color:#475569;">⏰ Credit valid until: <strong>${creditExpiryStr}</strong></p>`
+    : '';
+
+  const phoneNote = p.claimPhone
+    ? `<p style="margin:6px 0 0 0;font-size:13px;color:#475569;">📞 Phone: <strong>${p.claimPhone}</strong></p>`
+    : '';
+
+  return `
+    <div style="border-left:4px solid #1d4ed8;padding:16px 20px;margin:20px 0;background:#eff6ff;border-radius:0 8px 8px 0;">
+      <h3 style="margin:0 0 10px 0;color:#1e3a5f;font-size:16px;">How to Claim Your Credit — ${policy.airline}</h3>
+      ${stepsHtml}
+      ${claimBtn}
+      ${expiryNote}
+      ${phoneNote}
+    </div>
+  `;
+};
+
+/**
+ * Build the "24-hour FULL CASH REFUND" banner.
+ * Shown when the booking was made within the last 24 hours.
+ */
+const buildTwentyFourHourBanner = (booking) => {
+  const hoursSinceBooking = (Date.now() - new Date(booking.createdAt).getTime()) / (1000 * 60 * 60);
+  if (hoursSinceBooking > 24) return '';
+  return `
+    <div style="background:#fef9c3;border:2px solid #ca8a04;border-radius:10px;padding:16px 20px;margin:16px 0;">
+      <p style="margin:0;font-size:15px;font-weight:700;color:#854d0e;">⚡ FULL CASH REFUND AVAILABLE</p>
+      <p style="margin:6px 0 0 0;font-size:14px;color:#713f12;">Your booking is within the 24-hour DOT cancellation window. You're entitled to a <strong>full cash refund to your original payment method</strong> — no credits, no hassle. Cancel now and rebook at the lower price.</p>
+    </div>
+  `;
+};
+
+/**
+ * Send price drop alert
+ *
+ * @param {string} email
+ * @param {object} booking
+ * @param {number} currentPrice
+ * @param {object} opts - { netSavings, rawDrop, notWorthClaiming }
+ */
+const sendPriceDropAlert = async (email, booking, currentPrice, opts = {}) => {
+  const { netSavings = null, rawDrop = null, notWorthClaiming = false } = opts;
   const route = `${booking.origin} → ${booking.destination}`;
-  const drop = booking.pricePaid - currentPrice;
+  const drop = rawDrop !== null ? rawDrop : booking.pricePaid - currentPrice;
+  const net  = netSavings !== null ? netSavings : drop;
   const date = new Date(booking.departureDate).toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
-  const refundGuide = getRefundGuide(booking.airline);
+
+  // Look up airline policy from DB
+  const airlineCode = AIRLINE_TO_CODE[booking.airline] || booking.airline.toUpperCase().slice(0, 2);
+  let policy = null;
+  try {
+    policy = await getPolicyForAirline(airlineCode);
+  } catch (e) {
+    console.warn('[email] Could not load policy for', booking.airline, e.message);
+  }
+
+  const claimKit   = buildClaimKitHtml(policy, booking);
+  const banner24h  = buildTwentyFourHourBanner(booking);
+
+  // ── Miles booking: adapted messaging ──
+  const isMiles = booking.bookingType !== 'cash' && booking.milesPaid;
+  const program = booking.milesProgram || 'miles';
+
+  // ── Subject line ──
+  let subject;
+  if (notWorthClaiming) {
+    subject = `ℹ️ Price dropped on ${route} — but not worth claiming (fee exceeds savings)`;
+  } else if (isMiles) {
+    subject = `💰 Miles drop alert! ${route} award ticket dropped in price`;
+  } else {
+    subject = `💰 Price drop alert! ${route} is now $${currentPrice} (you paid $${booking.pricePaid})`;
+  }
+
+  // ── Price table ──
+  const priceTableHtml = isMiles
+    ? `
+      <table style="width:100%;border-collapse:collapse;">
+        <tr><td style="padding:6px 0;color:#64748b;">Miles paid</td><td style="text-align:right;font-weight:600;">${booking.milesPaid.toLocaleString()} ${program}</td></tr>
+        <tr><td style="padding:6px 0;color:#64748b;">Current price</td><td style="text-align:right;font-weight:600;color:#22c55e;">$${currentPrice.toFixed(2)}</td></tr>
+      </table>`
+    : `
+      <table style="width:100%;border-collapse:collapse;">
+        <tr><td style="padding:6px 0;color:#64748b;">You paid</td><td style="text-align:right;font-weight:600;">$${booking.pricePaid.toFixed(2)}</td></tr>
+        <tr><td style="padding:6px 0;color:#64748b;">Current price</td><td style="text-align:right;font-weight:600;color:#22c55e;">$${currentPrice.toFixed(2)}</td></tr>
+        ${ rawDrop !== null && netSavings !== null && rawDrop !== netSavings ? `
+        <tr><td style="padding:6px 0;color:#64748b;">Cancellation fee</td><td style="text-align:right;font-weight:600;color:#ef4444;">−$${(rawDrop - netSavings).toFixed(2)}</td></tr>` : '' }
+        <tr style="border-top:1px solid #e2e8f0;">
+          <td style="padding:8px 0;font-weight:700;">Your ${notWorthClaiming ? 'gross drop' : 'net refund'}</td>
+          <td style="text-align:right;font-weight:800;color:${notWorthClaiming ? '#ef4444' : '#16a34a'};font-size:18px;">$${(notWorthClaiming ? drop : net).toFixed(2)}</td>
+        </tr>
+      </table>`;
+
+  // ── Hero section ──
+  const heroHtml = notWorthClaiming
+    ? `
+      <div style="background:#fef2f2;border:2px solid #fca5a5;border-radius:12px;padding:20px;margin:20px 0;text-align:center;">
+        <p style="color:#991b1b;font-size:14px;font-weight:600;margin:0 0 8px 0;">ℹ️ PRICE DROPPED — BUT NOT WORTH CLAIMING</p>
+        <p style="font-size:22px;font-weight:800;color:#0f172a;margin:0 0 4px 0;">Drop: $${drop.toFixed(2)} — Fee: $${(drop - net).toFixed(2)}</p>
+        <p style="color:#475569;margin:0;">${route} · ${date}</p>
+      </div>`
+    : `
+      <div style="background:#f0fdf4;border:2px solid #22c55e;border-radius:12px;padding:20px;margin:20px 0;text-align:center;">
+        <p style="color:#15803d;font-size:14px;font-weight:600;margin:0 0 8px 0;">💰 PRICE DROP DETECTED</p>
+        <p style="font-size:32px;font-weight:800;color:#0f172a;margin:0 0 4px 0;">Save $${net.toFixed(2)}</p>
+        <p style="color:#475569;margin:0;">${route} · ${date}</p>
+      </div>`;
+
+  // ── Not worth claiming explanation ──
+  const notWorthHtml = notWorthClaiming
+    ? `
+      <div style="background:#fff7ed;border-left:4px solid #f97316;padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0;">
+        <p style="margin:0;font-weight:600;color:#c2410c;">Why we're not recommending you claim this drop:</p>
+        <p style="margin:8px 0 0 0;color:#475569;font-size:14px;">
+          The price dropped <strong>$${drop.toFixed(2)}</strong>, but your fare type (${booking.cabinClass.replace('_', ' ')}) has a cancellation fee of
+          <strong>$${(drop - net).toFixed(2)}</strong>. Claiming would cost you more than you'd save.
+          We'll keep monitoring — if the price drops further and exceeds the fee, we'll alert you again.
+        </p>
+      </div>`
+    : '';
+
+  // ── Fallback refund guide (only if no DB policy available) ──
+  const fallbackGuide = !policy
+    ? `
+      <h3 style="color:#0f172a;">How to claim your refund from ${booking.airline}:</h3>
+      <div style="background:#f8fafc;border-radius:8px;padding:16px;color:#334155;line-height:1.7;">${getRefundGuide(booking.airline)}</div>`
+    : '';
 
   await resend.emails.send({
     from: FROM,
     to: email,
-    subject: `💰 Price drop alert! ${route} is now $${currentPrice} (you paid $${booking.pricePaid})`,
+    subject,
     html: `
       <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px;">
         <h1 style="color:#1d4ed8;">✈️ TripReclaim</h1>
-        <div style="background:#f0fdf4;border:2px solid #22c55e;border-radius:12px;padding:20px;margin:20px 0;text-align:center;">
-          <p style="color:#15803d;font-size:14px;font-weight:600;margin:0 0 8px 0;">💰 PRICE DROP DETECTED</p>
-          <p style="font-size:32px;font-weight:800;color:#0f172a;margin:0 0 4px 0;">Save $${drop.toFixed(2)}</p>
-          <p style="color:#475569;margin:0;">${route} · ${date}</p>
-        </div>
+
+        ${heroHtml}
+        ${banner24h}
+        ${notWorthHtml}
+
         <div style="background:#f8fafc;border-radius:8px;padding:16px;margin:16px 0;">
-          <table style="width:100%;border-collapse:collapse;">
-            <tr><td style="padding:6px 0;color:#64748b;">You paid</td><td style="text-align:right;font-weight:600;">$${booking.pricePaid.toFixed(2)}</td></tr>
-            <tr><td style="padding:6px 0;color:#64748b;">Current price</td><td style="text-align:right;font-weight:600;color:#22c55e;">$${currentPrice.toFixed(2)}</td></tr>
-            <tr style="border-top:1px solid #e2e8f0;"><td style="padding:8px 0;font-weight:700;">Your refund</td><td style="text-align:right;font-weight:800;color:#16a34a;font-size:18px;">$${drop.toFixed(2)}</td></tr>
-          </table>
+          ${priceTableHtml}
         </div>
-        <h3 style="color:#0f172a;">How to claim your refund from ${booking.airline}:</h3>
-        <div style="background:#f8fafc;border-radius:8px;padding:16px;color:#334155;line-height:1.7;">${refundGuide}</div>
+
+        ${claimKit}
+        ${fallbackGuide}
+
         <p style="color:#94a3b8;font-size:13px;margin-top:24px;">Act quickly — airline prices can change within hours. We'll keep monitoring until your travel date.</p>
         <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
         <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a> · <a href="https://tripreclaim.com/unsubscribe" style="color:#94a3b8;">Unsubscribe</a></p>
@@ -94,21 +251,92 @@ const sendPriceDropAlert = async (email, booking, currentPrice) => {
 };
 
 /**
- * Airline-specific refund guides
+ * Send travel credit expiry reminder.
+ * Triggered by cron when creditExpiryDate is approaching.
+ *
+ * @param {string} email
+ * @param {object} booking  - full booking document (with creditAmount, creditExpiryDate, airline)
+ * @param {number} daysLeft - days until credit expires
+ */
+const sendCreditExpiryReminder = async (email, booking, daysLeft) => {
+  const expiryDate = new Date(booking.creditExpiryDate).toLocaleDateString('en-US', {
+    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
+  });
+  const amount = booking.creditAmount ? `$${booking.creditAmount.toFixed(2)}` : 'your';
+  const route  = `${booking.origin} → ${booking.destination}`;
+  const urgencyColor = daysLeft <= 7 ? '#dc2626' : '#d97706';
+  const urgencyLabel = daysLeft <= 7 ? '🚨 URGENT' : '⏰ Reminder';
+
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: `${urgencyLabel}: Your ${amount} ${booking.airline} travel credit expires in ${daysLeft} days`,
+    html: `
+      <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px;">
+        <h1 style="color:#1d4ed8;">✈️ TripReclaim</h1>
+        <div style="background:#fff7ed;border:2px solid ${urgencyColor};border-radius:12px;padding:20px;margin:20px 0;text-align:center;">
+          <p style="color:${urgencyColor};font-size:14px;font-weight:600;margin:0 0 8px 0;">${urgencyLabel}: CREDIT EXPIRING SOON</p>
+          <p style="font-size:28px;font-weight:800;color:#0f172a;margin:0 0 4px 0;">${amount} ${booking.airline} credit</p>
+          <p style="color:#475569;margin:0;">Expires <strong>${expiryDate}</strong> (${daysLeft} days)</p>
+        </div>
+        <p style="color:#475569;">You claimed a travel credit for your <strong>${route}</strong> price drop. Don't let it go to waste — use it before it expires!</p>
+        <p style="color:#475569;">Book any ${booking.airline} flight using your credit before it's gone.</p>
+        <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
+        <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a></p>
+      </div>
+    `,
+  });
+};
+
+/**
+ * Send policy change notification to affected subscribers.
+ *
+ * @param {string} email
+ * @param {string} airlineName
+ * @param {string[]} affectedBookingRoutes  - e.g. ['JFK → LAX', 'ORD → MIA']
+ */
+const sendPolicyChangeAlert = async (email, airlineName, affectedBookingRoutes) => {
+  const routeList = affectedBookingRoutes
+    .map(r => `<li style="margin:4px 0;">${r}</li>`)
+    .join('');
+
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: `📋 ${airlineName} updated their refund policy — affects your monitored flights`,
+    html: `
+      <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px;">
+        <h1 style="color:#1d4ed8;">✈️ TripReclaim</h1>
+        <h2 style="color:#0f172a;">Policy Update Detected</h2>
+        <p style="color:#475569;"><strong>${airlineName}</strong> appears to have updated their refund or cancellation policy. This may affect how you claim price-drop credits on the following monitored flights:</p>
+        <ul style="color:#334155;">${routeList}</ul>
+        <p style="color:#475569;">We've updated our records. Your next price drop alert will include the latest claim instructions. You may also want to review the current policy directly on ${airlineName}'s website.</p>
+        <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
+        <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a></p>
+      </div>
+    `,
+  });
+};
+
+/**
+ * Airline-specific refund guides (static fallback when DB policy unavailable)
  */
 const getRefundGuide = (airline) => {
   const guides = {
-    'Delta': `<ol><li>Log into <strong>delta.com</strong> and go to <em>My Trips</em>.</li><li>Select your booking and click <strong>"Change or Cancel."</strong></li><li>Choose <strong>"Change Flight"</strong> (not cancel) to rebook at the lower fare.</li><li>If the price difference is more than $25, you may also call Delta at <strong>1-800-221-1212</strong> and request a fare adjustment.</li><li>Delta's <strong>Best Price Guarantee</strong> may apply — check delta.com/best-price-guarantee for eligibility.</li></ol>`,
-    'American Airlines': `<ol><li>Visit <strong>aa.com</strong>, log in, and find your booking under <em>My Trips</em>.</li><li>Click <strong>"Change trip"</strong> to rebook at the lower price.</li><li>The fare difference will be issued as an <strong>AAdvantage travel credit</strong>.</li><li>For immediate cash refunds, call American at <strong>1-800-433-7300</strong> and request a fare adjustment within 24 hours of the original booking if applicable.</li></ol>`,
-    'United': `<ol><li>Go to <strong>united.com</strong> → <em>My Trips</em> and select your booking.</li><li>Click <strong>"Change flight"</strong> and select the lower-priced option for the same date.</li><li>United will issue the difference as a <strong>travel credit (ETC)</strong>.</li><li>Call United at <strong>1-800-864-8331</strong> for same-day booking adjustments if within 24 hours.</li></ol>`,
-    'Southwest': `<ol><li>Southwest has a <strong>flexible fare policy</strong> — you can rebook at the lower price any time.</li><li>Go to <strong>southwest.com</strong> → <em>Manage Reservations</em>.</li><li>Cancel and rebook at the new lower price. <strong>The difference is issued as travel funds.</strong></li><li>Travel funds never expire for active Rapid Rewards members.</li></ol>`,
-    'JetBlue': `<ol><li>Log into <strong>jetblue.com</strong> and go to <em>Manage Trips</em>.</li><li>Select your flight and click <strong>"Change Flight."</strong></li><li>The price difference will be issued as a <strong>JetBlue travel credit.</strong></li><li>For Blue Flex or Mint fares, you may be eligible for a full refund to your original payment method.</li></ol>`,
-    'Alaska Airlines': `<ol><li>Visit <strong>alaskaair.com</strong> → <em>Manage My Reservation</em>.</li><li>Click <strong>"Change Flight"</strong> and select the lower fare.</li><li>Alaska will apply the difference as a <strong>credit certificate</strong>.</li><li>Saver fares are non-changeable — check your fare type first.</li></ol>`,
-    'Lufthansa': `<ol><li>Log into <strong>lufthansa.com</strong> and access <em>My Bookings</em>.</li><li>Request a fare adjustment through their customer service at <strong>1-800-645-3880</strong>.</li><li>Eligible tickets can be rebooked; fare difference issued as credit or to original card depending on fare class.</li></ol>`,
-    'British Airways': `<ol><li>Visit <strong>britishairways.com</strong> → <em>Manage My Booking</em>.</li><li>For flexible tickets, change to the new lower fare directly online.</li><li>Call British Airways at <strong>1-800-247-9297</strong> for fare adjustments on non-flexible tickets.</li><li>Avios members: check if the lower fare offers a better value in Avios.</li></ol>`,
-    'Qatar Airways': `<ol><li>Log into <strong>qatarairways.com</strong> → <em>Manage Booking</em>.</li><li>Select <strong>"Change Flight"</strong> to rebook at the lower price.</li><li>Fare difference credited based on ticket conditions.</li><li>Call Qatar Airways at <strong>1-877-777-2827</strong> for direct fare adjustment requests.</li></ol>`,
+    'Delta': `<ol><li>Log into <strong>delta.com</strong> and go to <em>My Trips</em>.</li><li>Select your booking and click <strong>"Change or Cancel."</strong></li><li>Choose <strong>"Change Flight"</strong> (not cancel) to rebook at the lower fare.</li><li>If the price difference is more than $25, you may also call Delta at <strong>1-800-221-1212</strong> and request a fare adjustment.</li></ol>`,
+    'Delta Air Lines': `<ol><li>Log into <strong>delta.com</strong> and go to <em>My Trips</em>.</li><li>Select your booking and click <strong>"Change or Cancel."</strong></li><li>Choose <strong>"Change Flight"</strong> to rebook at the lower fare.</li><li>Call Delta at <strong>1-800-221-1212</strong> for assistance.</li></ol>`,
+    'American Airlines': `<ol><li>Visit <strong>aa.com</strong>, log in, and find your booking under <em>My Trips</em>.</li><li>Click <strong>"Change trip"</strong> to rebook at the lower price.</li><li>The fare difference will be issued as an <strong>AAdvantage travel credit</strong>.</li><li>Call American at <strong>1-800-433-7300</strong> for 24-hour adjustments.</li></ol>`,
+    'United': `<ol><li>Go to <strong>united.com</strong> → <em>My Trips</em> and select your booking.</li><li>Click <strong>"Change flight"</strong> and select the lower-priced option.</li><li>United will issue the difference as a <strong>travel credit (ETC)</strong>.</li><li>Call United at <strong>1-800-864-8331</strong> for same-day adjustments.</li></ol>`,
+    'United Airlines': `<ol><li>Go to <strong>united.com</strong> → <em>My Trips</em>.</li><li>Click <strong>"Change flight"</strong> and select the lower-priced option.</li><li>United issues the difference as an ETC.</li><li>Call <strong>1-800-864-8331</strong> for help.</li></ol>`,
+    'Southwest': `<ol><li>Southwest has a <strong>flexible fare policy</strong> — rebook at the lower price any time.</li><li>Go to <strong>southwest.com</strong> → <em>Manage Reservations</em>.</li><li>Cancel and rebook at the new lower price. The difference is issued as travel funds.</li></ol>`,
+    'Southwest Airlines': `<ol><li>Go to <strong>southwest.com</strong> → <em>Manage Reservations</em>.</li><li>Rebook at the lower price — difference issued as travel funds or points.</li></ol>`,
+    'JetBlue': `<ol><li>Log into <strong>jetblue.com</strong> and go to <em>Manage Trips</em>.</li><li>Select your flight and click <strong>"Change Flight."</strong></li><li>The price difference will be issued as a <strong>JetBlue travel credit.</strong></li></ol>`,
+    'Alaska Airlines': `<ol><li>Visit <strong>alaskaair.com</strong> → <em>Manage My Reservation</em>.</li><li>Click <strong>"Change Flight"</strong> and select the lower fare.</li><li>Alaska will apply the difference as a <strong>credit certificate</strong>.</li></ol>`,
+    'Lufthansa': `<ol><li>Log into <strong>lufthansa.com</strong> and access <em>My Bookings</em>.</li><li>Request a fare adjustment via customer service at <strong>1-800-645-3880</strong>.</li></ol>`,
+    'British Airways': `<ol><li>Visit <strong>britishairways.com</strong> → <em>Manage My Booking</em>.</li><li>For flexible tickets, change online; otherwise call <strong>1-800-247-9297</strong>.</li></ol>`,
+    'Qatar Airways': `<ol><li>Log into <strong>qatarairways.com</strong> → <em>Manage Booking</em>.</li><li>Select <strong>"Change Flight"</strong> or call <strong>1-877-777-2827</strong>.</li></ol>`,
   };
-  return guides[airline] || `<p>Contact ${airline} customer service directly with your booking reference and current lower fare screenshot to request a price adjustment or rebooking at the lower rate.</p>`;
+  return guides[airline] || `<p>Contact ${airline} customer service directly with your booking reference and current lower fare screenshot to request a price adjustment.</p>`;
 };
 
-module.exports = { sendMagicLink, sendWelcome, sendPriceDropAlert };
+module.exports = { sendMagicLink, sendWelcome, sendPriceDropAlert, sendCreditExpiryReminder, sendPolicyChangeAlert };

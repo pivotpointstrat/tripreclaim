@@ -174,6 +174,57 @@ router.patch('/:id', requireAuth, async (req, res) => {
  * DELETE /bookings/:id
  * Remove a booking from monitoring
  */
+/**
+ * PATCH /bookings/:id/claim-credit
+ * Record that the user claimed a travel credit for a price-drop refund.
+ * Body: { creditAmount, creditExpiryDate }
+ * Sets: creditClaimed=true, creditAmount, creditExpiryDate, creditClaimedAt=now
+ */
+router.patch('/:id/claim-credit', requireAuth, async (req, res) => {
+  try {
+    const { creditAmount, creditExpiryDate } = req.body;
+
+    if (!creditAmount || creditAmount <= 0) {
+      return res.status(400).json({ error: 'creditAmount must be a positive number' });
+    }
+
+    const update = {
+      creditClaimed:    true,
+      creditClaimedAt:  new Date(),
+      creditAmount:     parseFloat(creditAmount),
+    };
+
+    if (creditExpiryDate) {
+      const expiry = new Date(creditExpiryDate);
+      if (isNaN(expiry.getTime())) {
+        return res.status(400).json({ error: 'Invalid creditExpiryDate' });
+      }
+      update.creditExpiryDate = expiry;
+    } else {
+      // Default: 1 year from now
+      const defaultExpiry = new Date();
+      defaultExpiry.setFullYear(defaultExpiry.getFullYear() + 1);
+      update.creditExpiryDate = defaultExpiry;
+    }
+
+    const booking = await Booking.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user._id },
+      update,
+      { new: true }
+    );
+
+    if (!booking) return res.status(404).json({ error: 'Booking not found' });
+
+    res.json({
+      message: 'Credit claim recorded. We\'ll remind you before it expires.',
+      booking,
+    });
+  } catch (err) {
+    console.error('[bookings] claim-credit error:', err.message);
+    res.status(500).json({ error: 'Failed to record credit claim' });
+  }
+});
+
 router.delete('/:id', requireAuth, async (req, res) => {
   try {
     const booking = await Booking.findOneAndDelete({
