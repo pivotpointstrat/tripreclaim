@@ -255,6 +255,13 @@
     .credit-row .cr-airline { font-weight: 600; font-size: 0.92rem; }
     .credit-row .cr-route { font-size: 0.78rem; color: var(--slate); }
     .credit-row .cr-amount { font-size: 1.1rem; font-weight: 800; color: var(--green); }
+
+    /* ── Sprint 4: Email Generator ── */
+    .email-gen-box { background: var(--slate-light); border-radius: 10px; padding: 16px; margin-top: 16px; }
+    .email-gen-subject { font-size: 0.82rem; font-weight: 700; color: var(--slate); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .email-subject-val { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.88rem; font-weight: 600; background: #fff; margin-bottom: 10px; }
+    .email-body-ta { width: 100%; min-height: 220px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.83rem; line-height: 1.6; resize: vertical; font-family: 'Inter', monospace; color: var(--text); background: #fff; }
+    .email-gen-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
   </style>
 </head>
 <body>
@@ -1581,7 +1588,11 @@ async function viewClaimKit(bookingId, airline) {
     if (claimUrl) html += '<a href="' + claimUrl + '" target="_blank" class="btn-primary" style="text-decoration:none;">Claim at ' + airline + ' &rarr;</a>';
     if (drop && drop > 0 && !b.creditClaimed) html += '<button class="btn-secondary" onclick="closePolicyModal(); openClaimCreditModal(\'' + b._id + '\', ' + drop.toFixed(2) + ')">\u2705 Mark as Claimed</button>';
     html += '<button onclick="closePolicyModal()" class="btn-secondary">Close</button></div>';
+    html += '<button id="claim-email-btn" class="btn-secondary" style="border-color:#7c3aed;color:#7c3aed;">&#x1F4E7; Generate Claim Email</button>';
+    html += '<button onclick="closePolicyModal()" class="btn-secondary">Close</button></div>';
+    html += '<div id="email-gen-area"></div>';
     mb.innerHTML = html;
+    document.getElementById('claim-email-btn') && document.getElementById('claim-email-btn').addEventListener('click', function() { generateClaimEmail(bookingId); });
   } catch(e) {
     const mb2 = overlay.querySelector('.modal-box');
     if (mb2) mb2.innerHTML = '<div class="modal-header"><div class="modal-title">Claim Kit</div><button class="modal-close" onclick="closePolicyModal()">&times;</button></div><div class="alert alert-error">Could not load claim kit.</div>';
@@ -1651,6 +1662,58 @@ async function loadTravelCredits() {
   } catch(e) { el.style.display = 'none'; }
 }
 
+
+// ── Refund Claim Email Generator ──
+async function generateClaimEmail(bookingId) {
+  const area = document.getElementById('email-gen-area');
+  if (!area) return;
+  area.innerHTML = '<div style="padding:16px;text-align:center;"><div class="spinner" style="margin:0 auto;"></div><div style="color:#94a3b8;font-size:0.88rem;margin-top:8px;">Generating your claim email...</div></div>';
+  try {
+    const data = await apiFetch('/bookings/' + bookingId + '/claim-email');
+    area.innerHTML = '<div class="email-gen-box">' +
+      '<div style="font-weight:700;color:var(--blue);margin-bottom:12px;">&#x1F4E7; Your Ready-to-Send Claim Email</div>' +
+      '<div class="email-gen-subject">Subject Line</div>' +
+      '<div class="email-subject-val" id="email-subject-val">' + (data.subject || '') + '</div>' +
+      '<div class="email-gen-subject" style="margin-top:8px;">Email Body</div>' +
+      '<textarea class="email-body-ta" id="email-body-ta" readonly>' + (data.body || '') + '</textarea>' +
+      '<div class="email-gen-actions">' +
+      '<button class="btn-primary" style="background:#7c3aed;" onclick="copyClaimEmail()">&#x1F4CB; Copy Email</button>' +
+      '<button class="btn-secondary" onclick="downloadClaimEmail()">&#x2B07; Download .txt</button>' +
+      (data.claimUrl ? '<a href="' + data.claimUrl + '" target="_blank" class="btn-secondary" style="text-decoration:none;">Open ' + (data.claimPhone ? 'Claim Page' : 'Airline Site') + ' &rarr;</a>' : '') +
+      '</div>' +
+      (data.claimPhone ? '<div style="font-size:0.8rem;color:#94a3b8;margin-top:8px;">&#x1F4DE; Phone: ' + data.claimPhone + '</div>' : '') +
+      '</div>';
+  } catch(e) {
+    area.innerHTML = '<div class="alert alert-error" style="margin-top:12px;">Could not generate email. Please try again.</div>';
+  }
+}
+
+function copyClaimEmail() {
+  const sub = document.getElementById('email-subject-val');
+  const bod = document.getElementById('email-body-ta');
+  if (!sub || !bod) return;
+  const full = 'Subject: ' + sub.textContent + '\n\n' + bod.value;
+  navigator.clipboard.writeText(full).then(function() {
+    const btn = event.target;
+    const orig = btn.innerHTML;
+    btn.innerHTML = '&#x2705; Copied!';
+    setTimeout(function() { btn.innerHTML = orig; }, 2000);
+  }).catch(function() { alert('Copy this email:\n\nSubject: ' + sub.textContent + '\n\n' + bod.value); });
+}
+
+function downloadClaimEmail() {
+  const sub = document.getElementById('email-subject-val');
+  const bod = document.getElementById('email-body-ta');
+  if (!sub || !bod) return;
+  const content = 'Subject: ' + sub.textContent + '\n\n' + bod.value;
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'tripreclaim-claim-email.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 // ── Boot ──
 init();
