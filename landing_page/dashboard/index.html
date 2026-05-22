@@ -1033,6 +1033,11 @@ async function renderFlightsTab() {
             <input type="date" id="f-retdate" min="${minDate}">
           </div>
           <div class="form-group">
+            <label>Time of Purchase <span style="font-weight:400;color:#e53e3e">&ast; helps detect 24h refund window</span></label>
+            <input type="datetime-local" id="f-purchasedat">
+            <span class="hint">u26a1 Enter the exact date &amp; time you bought this ticket. Within 24 hours of purchase = <strong>full cash refund</strong> eligible under DOT rules.</span>
+          </div>
+          <div class="form-group">
             <label>Price You Paid ($) *</label>
             <input type="text" id="f-price" placeholder="e.g. $1,299.00" required oninput="formatPrice(this)">
           </div>
@@ -1234,6 +1239,7 @@ function goToStep2() {
     passengers: parseInt(document.getElementById('f-pax').value),
     pricePaid: parseFloat(price.replace(/[$,]/g, '' )),
     confirmationNumber: document.getElementById('f-conf').value.trim().toUpperCase() || null,
+    purchasedAt: document.getElementById('f-purchasedat').value || null,
   };
   formData.bookingType = currentBookingType;
   if (currentBookingType === 'miles') {
@@ -1293,7 +1299,7 @@ async function submitBooking() {
     showMsg('step2-msg', `✅ Flight added! Now monitoring ${formData.origin} → ${formData.destination}.`, 'success');
     // Reset form
     goToStep1();
-    document.getElementById('f-airline').value = ''; document.getElementById('f-origin').value = ''; document.getElementById('f-dest').value = ''; document.getElementById('f-depdate').value = ''; document.getElementById('f-price').value = ''; document.getElementById('f-conf').value = ''; document.getElementById('f-flightnum').value = ''; formData = {};
+    document.getElementById('f-airline').value = ''; document.getElementById('f-origin').value = ''; document.getElementById('f-dest').value = ''; document.getElementById('f-depdate').value = ''; document.getElementById('f-price').value = ''; document.getElementById('f-conf').value = ''; document.getElementById('f-purchasedat').value = ''; document.getElementById('f-flightnum').value = ''; formData = {};
     loadBookings();
   } catch (err) {
     showMsg('step2-msg', `❌ ${err.message}`, 'error');
@@ -1320,6 +1326,12 @@ async function submitBooking() {
 }
 
 // ── Price formatter ──
+// ── Currency formatter ──────────────────────────────────────────────
+function formatCurrency(n) {
+  if (n == null || isNaN(n)) return '—';
+  return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 function formatPrice(input) {
   let raw = input.value.replace(/[^0-9.]/g, '' );
   const parts = raw.split('.' );
@@ -1338,7 +1350,7 @@ async function loadBookings() {
 function renderSavings() {
   const total = bookings.reduce((s, b) => (b.lowestPriceSeen && b.pricePaid > b.lowestPriceSeen) ? s + (b.pricePaid - b.lowestPriceSeen) : s, 0);
   const el = document.getElementById('savings-area' );
-  if (el && total > 0) el.innerHTML = `<div class="savings-banner"><div><div class="label">💰 Total savings found</div><div class="amount">$${total.toFixed(2)}</div></div><div style="font-size:0.85rem;opacity:0.85;text-align:right;">${bookings.filter(b=>b.lowestPriceSeen&&b.pricePaid>b.lowestPriceSeen).length} flight(s)</div></div>`;
+  if (el && total > 0) el.innerHTML = `<div class="savings-banner"><div><div class="label">💰 Total savings found</div><div class="amount">${formatCurrency(total)}</div></div><div style="font-size:0.85rem;opacity:0.85;text-align:right;">${bookings.filter(b=>b.lowestPriceSeen&&b.pricePaid>b.lowestPriceSeen).length} flight(s)</div></div>`;
 }
 
 function renderBookingsList() {
@@ -1350,7 +1362,7 @@ function renderBookingsList() {
   el.innerHTML = bookings.map(b => {
     const dep = new Date(b.departureDate).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
     const daysLeft = Math.ceil((new Date(b.departureDate) - Date.now()) / 86400000);
-    const hoursOld = b.createdAt ? (Date.now() - new Date(b.createdAt)) / 3600000 : 999;
+    const hoursOld = b.purchasedAt ? (Date.now() - new Date(b.purchasedAt)) / 3600000 : (b.createdAt ? (Date.now() - new Date(b.createdAt)) / 3600000 : 999);
     const is24h = hoursOld < 24 && daysLeft >= 7;
     const hoursLeft = is24h ? Math.max(0, Math.ceil(24 - hoursOld)) : 0;
     const drop = b.lowestPriceSeen ? b.pricePaid - b.lowestPriceSeen : null;
@@ -1369,11 +1381,11 @@ function renderBookingsList() {
         </div>
         <div class="booking-meta">${b.airline}${flightStr} · ${dep}${returnStr} · ${b.cabinClass.replace('_'  ,' ' )} · ${b.passengers} pax</div>
         <div class="booking-stats">
-          <div class="stat-box"><div class="stat-label">Price Paid</div><div class="stat-value">$${b.pricePaid.toFixed(2)}</div></div>
-          <div class="stat-box"><div class="stat-label">Lowest Seen</div><div class="stat-value">${b.lowestPriceSeen ? '$' +b.lowestPriceSeen.toFixed(2) : '—'}</div></div>
-          <div class="stat-box"><div class="stat-label">Savings</div><div class="stat-value ${drop && drop > 0 ? 'drop'  : '' }">${drop && drop > 0 ? '$' +drop.toFixed(2) : '—'}</div></div>
+          <div class="stat-box"><div class="stat-label">Price Paid</div><div class="stat-value">${formatCurrency(b.pricePaid)}</div></div>
+          <div class="stat-box"><div class="stat-label">Lowest Seen</div><div class="stat-value">${formatCurrency(b.lowestPriceSeen)}</div></div>
+          <div class="stat-box"><div class="stat-label">Savings</div><div class="stat-value ${drop && drop > 0 ? 'drop'  : '' }">${drop && drop > 0 ? formatCurrency(drop) : '—'}</div></div>
         </div>
-        ${b.confirmationNumber ? `<div class="booking-footer">Booking ref: <strong>${b.confirmationNumber}</strong> · Last checked: ${lastChecked} · ${daysLeft > 0 ? daysLeft+' days until departure' : 'Travel date passed' } · Alert at $${b.dropThreshold} drop</div>` : `<div class="booking-footer">Last checked: ${lastChecked} · ${daysLeft > 0 ? daysLeft+' days until departure' : 'Travel date passed'} · Alert at $${b.dropThreshold} drop</div>`}
+        ${b.confirmationNumber ? `<div class="booking-footer">Booking ref: <strong>${b.confirmationNumber}</strong> · Last checked: ${lastChecked} · ${daysLeft > 0 ? daysLeft+' days until departure' : 'Travel date passed' } · Alert at ${formatCurrency(b.dropThreshold)} drop</div>` : `<div class="booking-footer">Last checked: ${lastChecked} · ${daysLeft > 0 ? daysLeft+' days until departure' : 'Travel date passed'} · Alert at ${formatCurrency(b.dropThreshold)} drop</div>`}
         <div class="booking-actions">
           <button class="btn-sm" onclick="viewBookingHistory('${b._id}' )">📈 History</button>
           <button class="btn-sm policy" onclick="viewClaimKit('${b._id}','${b.airline.replace(/'/g,"\\'")}')">📋 Claim Kit</button>
@@ -1382,7 +1394,7 @@ function renderBookingsList() {
           ${b.status === 'paused'  ? `<button class="btn-sm" onclick="toggleBooking('${b._id}', 'active')">Resume</button>` : '' }
           <button class="btn-sm danger" onclick="deleteBooking('${b._id}' )">Remove</button>
         </div>
-        ${b.creditClaimed ? `<div style="margin-top:8px;"><span class="credit-claimed-badge">✅ Credit claimed: $${(b.creditAmount||0).toFixed(2)} ${b.creditExpiryDate ? '<span class="expiry-pill ' + (new Date(b.creditExpiryDate) - Date.now() < 30*86400000 ? (new Date(b.creditExpiryDate) - Date.now() < 7*86400000 ? 'expiry-urgent' : 'expiry-soon') : 'expiry-ok') + '">Expires ' + new Date(b.creditExpiryDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + '</span>' : ''}</span></div>` : ''}
+        ${b.creditClaimed ? `<div style="margin-top:8px;"><span class="credit-claimed-badge">✅ Credit claimed: ${formatCurrency(b.creditAmount||0)} ${b.creditExpiryDate ? '<span class="expiry-pill ' + (new Date(b.creditExpiryDate) - Date.now() < 30*86400000 ? (new Date(b.creditExpiryDate) - Date.now() < 7*86400000 ? 'expiry-urgent' : 'expiry-soon') : 'expiry-ok') + '">Expires ' + new Date(b.creditExpiryDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + '</span>' : ''}</span></div>` : ''}
       </div>`;
   }).join('');
 }
@@ -1539,7 +1551,7 @@ function renderPriceChart(priceHistory, pricePaid) {
     <defs><linearGradient id="grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.2"/><stop offset="100%" stop-color="#1d4ed8" stop-opacity="0"/></linearGradient></defs>
     <path d="${area}" fill="url(#grad)"/>
     <line x1="${PAD}" y1="${paidY.toFixed(1)}" x2="${W-PAD}" y2="${paidY.toFixed(1)}" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
-    <text x="${W-PAD-2}" y="${(paidY-4).toFixed(1)}" font-size="9" fill="#dc2626" text-anchor="end">paid $${pricePaid.toFixed(0)}</text>
+    <text x="${W-PAD-2}" y="${(paidY-4).toFixed(1)}" font-size="9" fill="#dc2626" text-anchor="end">paid ${formatCurrency(pricePaid)}</text>
     <path d="${line}" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linejoin="round"/>
     ${dots}
     <text x="4" y="${PAD+4}" font-size="9" fill="#94a3b8">$${max.toFixed(0)}</text>
@@ -1566,7 +1578,7 @@ async function viewBookingHistory(id) {
         <button class="modal-close" onclick="closeHistoryModal()">×</button>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">
-        <div class="stat-box"><div class="stat-label">Price Paid</div><div class="stat-value">$${booking.pricePaid.toFixed(2)}</div></div>
+        <div class="stat-box"><div class="stat-label">Price Paid</div><div class="stat-value">${formatCurrency(booking.pricePaid)}</div></div>
         <div class="stat-box"><div class="stat-label">Lowest Seen</div><div class="stat-value">${lowest ? '$' +lowest.toFixed(2) : '—'}</div></div>
         <div class="stat-box"><div class="stat-label">Potential Savings</div><div class="stat-value ${savings ? 'drop'  : '' }">${savings ? '$' +savings.toFixed(2) : '—'}</div></div>
       </div>
@@ -1574,7 +1586,7 @@ async function viewBookingHistory(id) {
         <div class="chart-label">PRICE HISTORY · ${ph.length} checks · <span style="color:#dc2626;">— your paid price</span></div>
         ${renderPriceChart(ph, booking.pricePaid)}
       </div>
-      ${ph.length > 0 ? `<table class="history-table"><thead><tr><th>Date & Time</th><th>Price Found</th><th>vs Paid</th></tr></thead><tbody>${ph.slice().reverse().slice(0,20).map(p => { const diff = booking.pricePaid - p.price; const dt = new Date(p.checkedAt).toLocaleString('en-US' ,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}); return `<tr><td>${dt}</td><td>$${p.price.toFixed(2)}</td><td class="${diff>0?'price-drop':'' }">$${diff>0?'-'  +diff.toFixed(2)+' savings' :'+'  +Math.abs(diff).toFixed(2)+' higher'}</td></tr>`; }).join('' )}</tbody></table>` : '<p style="text-align:center;color:#94a3b8;padding:16px;">No price checks yet — the monitor checks every 30 minutes.</p>'}
+      ${ph.length > 0 ? `<table class="history-table"><thead><tr><th>Date & Time</th><th>Price Found</th><th>vs Paid</th></tr></thead><tbody>${ph.slice().reverse().slice(0,20).map(p => { const diff = booking.pricePaid - p.price; const dt = new Date(p.checkedAt).toLocaleString('en-US' ,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}); return `<tr><td>${dt}</td><td>${formatCurrency(p.price)}</td><td class="${diff>0?'price-drop':'' }">$${diff>0?'-'  +diff.toFixed(2)+' savings' :'+'  +Math.abs(diff).toFixed(2)+' higher'}</td></tr>`; }).join('' )}</tbody></table>` : '<p style="text-align:center;color:#94a3b8;padding:16px;">No price checks yet — the monitor checks every 30 minutes.</p>'}
     `;
   } catch(e) {
     overlay.querySelector('.modal-box' ).innerHTML = `<div class="modal-header"><div class="modal-title">Price History</div><button class="modal-close" onclick="closeHistoryModal()">×</button></div><div class="alert alert-error">Failed to load price history.</div>`;

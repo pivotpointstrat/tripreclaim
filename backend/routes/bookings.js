@@ -106,6 +106,7 @@ router.post('/', requireAuth, async (req, res) => {
       flightNumber,
       matchMode,
       monitoringPrefs,
+      purchasedAt,
     } = req.body;
 
     // Validation
@@ -138,6 +139,7 @@ router.post('/', requireAuth, async (req, res) => {
       dropThreshold: dropThreshold || 10,
       confirmationNumber: confirmationNumber || null,
       flightNumber: flightNumber || null,
+      purchasedAt: purchasedAt ? new Date(purchasedAt) : null,
       matchMode: matchMode || 'exact',
       monitoringPrefs: monitoringPrefs || {},
       planAtBooking: user.plan,

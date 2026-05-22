@@ -271,7 +271,8 @@ const checkBooking = async (booking) => {
     // NOTE: lean() objects don't have methods — reconstruct interval from timestamps
     const intervalMinutes = _getCheckIntervalMinutes(
       booking.createdAt,
-      booking.departureDate
+      booking.departureDate,
+      booking.purchasedAt
     );
 
     if (intervalMinutes === null) {
@@ -294,13 +295,15 @@ const checkBooking = async (booking) => {
  * Pure function mirror of Booking.methods.getCheckIntervalMinutes.
  * Used here because runMonitoringCycle uses lean() objects (no instance methods).
  */
-const _getCheckIntervalMinutes = (createdAt, departureDate) => {
+const _getCheckIntervalMinutes = (createdAt, departureDate, purchasedAt) => {
   const now = new Date();
   const daysUntilDeparture = Math.ceil((new Date(departureDate) - now) / (1000 * 60 * 60 * 24));
 
   if (daysUntilDeparture <= 0) return null; // expired
 
-  const hoursSinceBooking = (now - new Date(createdAt)) / (1000 * 60 * 60);
+  // Use purchasedAt (actual ticket purchase time) for 24h DOT window — falls back to createdAt
+  const purchaseTime = purchasedAt ? new Date(purchasedAt) : new Date(createdAt);
+  const hoursSinceBooking = (now - purchaseTime) / (1000 * 60 * 60);
 
   // 24-hour front-loaded window
   if (hoursSinceBooking < 1)  return 15;

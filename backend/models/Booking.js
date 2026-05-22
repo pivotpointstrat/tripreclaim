@@ -54,6 +54,7 @@ const bookingSchema = new mongoose.Schema({
   // Booking reference (optional but useful)
   confirmationNumber: { type: String, default: null },
   flightNumber: { type: String, default: null },
+  purchasedAt: { type: Date, default: null },   // exact date+time of purchase (for 24h DOT window)
   matchMode: { type: String, enum: ['exact', 'flexible'], default: 'exact' },
   monitoringPrefs: {
     flightNumber: String,
