@@ -5,13 +5,13 @@
 const express  = require('express');
 const router   = express.Router();
 const Booking  = require('../models/Booking');
-const authMiddleware = require('../middleware/auth');
+const { requireAuth } = require('../middleware/auth');
 
 /**
  * GET /bookings/:id/evidence
  * Returns all price evidence entries for a booking belonging to the authenticated user.
  */
-router.get('/:id/evidence', authMiddleware, async (req, res) => {
+router.get('/:id/evidence', requireAuth, async (req, res) => {
   try {
     const booking = await Booking.findOne({
       _id: req.params.id,
