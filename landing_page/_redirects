@@ -2,3 +2,4 @@
 /dashboard/*  /dashboard/index.html  200
 /privacy  /privacy/  301
 /terms  /terms/  301
+/sms-consent  /sms-consent/  301

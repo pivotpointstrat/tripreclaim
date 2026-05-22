@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMS Price Drop Alerts — Opt-In | TripReclaim</title>
+  <meta name="description" content="TripReclaim SMS opt-in information — how to receive flight price drop text alerts and how to opt out.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; line-height: 1.7; }
+    .navbar { background: #1d4ed8; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { color: #fff; font-weight: 700; font-size: 1.1rem; text-decoration: none; }
+    .nav-back { color: #bfdbfe; font-size: 0.88rem; text-decoration: none; }
+    .nav-back:hover { color: #fff; }
+    .container { max-width: 680px; margin: 0 auto; padding: 48px 24px 80px; }
+    h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; color: #0f172a; }
+    .subtitle { color: #64748b; font-size: 1rem; margin-bottom: 40px; }
+    h2 { font-size: 1rem; font-weight: 700; margin: 28px 0 10px; color: #1d4ed8; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8rem; }
+    p { margin-bottom: 14px; color: #374151; font-size: 0.97rem; }
+    ul { margin: 0 0 14px 20px; }
+    ul li { margin-bottom: 6px; color: #374151; font-size: 0.97rem; }
+    a { color: #1d4ed8; }
+    .optin-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 28px; margin: 32px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .optin-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+    .optin-card .desc { color: #64748b; font-size: 0.92rem; margin-bottom: 20px; }
+    .toggle-row { display: flex; align-items: center; gap: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; }
+    .toggle-icon { font-size: 1.4rem; }
+    .toggle-label { flex: 1; }
+    .toggle-label strong { display: block; font-size: 0.95rem; color: #0f172a; }
+    .toggle-label span { font-size: 0.82rem; color: #64748b; }
+    .toggle-switch { width: 44px; height: 24px; background: #1d4ed8; border-radius: 12px; position: relative; flex-shrink: 0; }
+    .toggle-switch::after { content: ''; position: absolute; right: 3px; top: 3px; width: 18px; height: 18px; background: #fff; border-radius: 50%; }
+    .phone-row { margin-bottom: 16px; }
+    .phone-row label { display: block; font-size: 0.88rem; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    .phone-row input { width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; font-size: 0.95rem; color: #374151; background: #fff; pointer-events: none; }
+    .consent-text { font-size: 0.82rem; color: #64748b; line-height: 1.6; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; }
+    .consent-text strong { color: #374151; }
+    .save-btn { display: inline-block; background: #1d4ed8; color: #fff; font-weight: 600; font-size: 0.95rem; padding: 10px 24px; border-radius: 8px; border: none; cursor: default; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+    .info-cell { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; }
+    .info-cell .label { font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .info-cell .value { font-size: 0.95rem; color: #0f172a; font-weight: 500; }
+    .optout-box { background: #fff7ed; border-left: 4px solid #f97316; border-radius: 6px; padding: 16px 18px; margin: 24px 0; }
+    .optout-box h3 { font-size: 0.95rem; font-weight: 700; color: #c2410c; margin-bottom: 8px; }
+    .optout-box p { font-size: 0.92rem; color: #374151; margin-bottom: 6px; }
+    .optout-box p:last-child { margin-bottom: 0; }
+    .keyword { display: inline-block; background: #0f172a; color: #fff; font-family: monospace; font-size: 0.85rem; padding: 2px 8px; border-radius: 4px; margin: 0 2px; }
+    .divider { border: none; border-top: 1px solid #e2e8f0; margin: 32px 0; }
+    .legal { font-size: 0.82rem; color: #94a3b8; line-height: 1.6; }
+    .footer { text-align: center; margin-top: 60px; padding-top: 24px; border-top: 1px solid #e2e8f0; color: #94a3b8; font-size: 0.85rem; }
+    @media (max-width: 480px) { .info-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="/" class="nav-logo"><img src="/logos/logo.png" alt="TripReclaim" style="height:32px;"></a>
+  <a href="/" class="nav-back">&larr; Back to Home</a>
+</nav>
+<div class="container">
+
+  <h1>✈️ SMS Price Drop Alerts</h1>
+  <p class="subtitle">How TripReclaim collects your consent to send flight price drop SMS notifications</p>
+
+  <h2>How Users Opt In</h2>
+  <p>After creating a TripReclaim account, users visit their account settings inside the dashboard at <a href="https://tripreclaim.com/dashboard/">tripreclaim.com/dashboard/</a>. The SMS opt-in toggle appears in the <strong>Notification Preferences</strong> section, shown below exactly as users see it:</p>
+
+  <!-- Exact replica of the opt-in UI from the dashboard -->
+  <div class="optin-card">
+    <h3>📲 Notification Preferences</h3>
+    <p class="desc">Choose how you want to receive flight price drop alerts</p>
+
+    <div class="toggle-row">
+      <span class="toggle-icon">✉️</span>
+      <div class="toggle-label">
+        <strong>Email Alerts</strong>
+        <span>Price drop notifications sent to your email</span>
+      </div>
+      <div class="toggle-switch"></div>
+    </div>
+
+    <div class="toggle-row">
+      <span class="toggle-icon">📱</span>
+      <div class="toggle-label">
+        <strong>SMS / Text Alerts</strong>
+        <span>Instant text message when your flight drops in price</span>
+      </div>
+      <div class="toggle-switch"></div>
+    </div>
+
+    <div class="phone-row">
+      <label>Mobile Phone Number (for SMS alerts)</label>
+      <input type="tel" value="(202) 555-0100" readonly placeholder="(555) 555-5555">
+    </div>
+
+    <div class="consent-text">
+      <strong>SMS Consent:</strong> By enabling SMS alerts and clicking Save, you expressly consent to receive recurring automated flight price drop text messages from TripReclaim at the mobile number provided, sent from (888) 516-5777. Message &amp; data rates may apply. Message frequency varies based on your monitored flights. Reply <strong>STOP</strong> to unsubscribe at any time. Reply <strong>HELP</strong> for help. Consent is not a condition of purchase. View our <a href="/privacy/">Privacy Policy</a> and <a href="/terms/">Terms of Service</a>.
+    </div>
+
+    <button class="save-btn">Save Preferences</button>
+  </div>
+
+  <h2>Program Details</h2>
+  <div class="info-grid">
+    <div class="info-cell">
+      <div class="label">Program Name</div>
+      <div class="value">TripReclaim Price Drop Alerts</div>
+    </div>
+    <div class="info-cell">
+      <div class="label">Sender Number</div>
+      <div class="value">(888) 516-5777</div>
+    </div>
+    <div class="info-cell">
+      <div class="label">Message Types</div>
+      <div class="value">Flight price drop alerts, 24-hour refund window notifications</div>
+    </div>
+    <div class="info-cell">
+      <div class="label">Message Frequency</div>
+      <div class="value">Varies — 1 to 5 messages per booking per monitoring period</div>
+    </div>
+    <div class="info-cell">
+      <div class="label">Message &amp; Data Rates</div>
+      <div class="value">Standard carrier rates may apply</div>
+    </div>
+    <div class="info-cell">
+      <div class="label">Opt-In Method</div>
+      <div class="value">Web form toggle in account dashboard settings</div>
+    </div>
+  </div>
+
+  <h2>Sample Messages</h2>
+  <div class="optin-card" style="background:#f8fafc;">
+    <p style="font-family:monospace;font-size:0.92rem;color:#374151;margin-bottom:12px;">✈️ TripReclaim: Your AA 202 JFK&rarr;LAX dropped $127. Travel credit available. Claim kit ready: tripreclaim.com/dashboard/ Reply STOP to opt out.</p>
+    <p style="font-family:monospace;font-size:0.92rem;color:#c2410c;margin-bottom:0;">⚡ TripReclaim URGENT: Your United 453 dropped $89 — 3h left for FULL CASH REFUND (DOT 24hr rule). Claim now: tripreclaim.com/dashboard/ Reply STOP to opt out.</p>
+  </div>
+
+  <h2>How to Opt Out</h2>
+  <div class="optout-box">
+    <h3>Stop Receiving Messages Anytime</h3>
+    <p>Reply <span class="keyword">STOP</span>, <span class="keyword">CANCEL</span>, <span class="keyword">END</span>, <span class="keyword">QUIT</span>, or <span class="keyword">UNSUBSCRIBE</span> to any TripReclaim text message.</p>
+    <p>You will receive one final confirmation: <em>&ldquo;TripReclaim: You have been unsubscribed and will receive no further messages.&rdquo;</em></p>
+    <p>You can also disable SMS in your <a href="/dashboard/">account settings</a> or email <a href="mailto:hello@tripreclaim.com">hello@tripreclaim.com</a>.</p>
+  </div>
+
+  <h2>Need Help?</h2>
+  <p>Reply <span class="keyword">HELP</span> to any message. Our response:</p>
+  <div class="optin-card" style="background:#f8fafc;">
+    <p style="font-family:monospace;font-size:0.92rem;color:#374151;margin-bottom:0;">TripReclaim: Flight price drop alerts from (888) 516-5777. For support visit tripreclaim.com or email hello@tripreclaim.com. Reply STOP to unsubscribe.</p>
+  </div>
+
+  <hr class="divider">
+
+  <p class="legal">TripReclaim is operated by Pivot Point Media Holdings LLC. Our SMS program complies with the Telephone Consumer Protection Act (TCPA), 47 U.S.C. &sect; 227, and all applicable FCC regulations. We obtain express written consent before sending any automated text messages. Consent records are retained for a minimum of 4 years. Supported carriers include AT&amp;T, T-Mobile, Verizon, and most major US carriers. Carrier coverage is not guaranteed for all MVNOs.</p>
+
+  <p class="legal" style="margin-top:12px;">Questions? Contact us at <a href="mailto:hello@tripreclaim.com">hello@tripreclaim.com</a> &middot; <a href="/privacy/">Privacy Policy</a> &middot; <a href="/terms/">Terms of Service</a></p>
+
+  <div class="footer">&copy; 2026 TripReclaim &middot; Pivot Point Media Holdings LLC</div>
+</div>
+</body>
+</html>
