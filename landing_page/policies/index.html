@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Airline Refund Policies &mdash; TripReclaim Policy Hub</title>
+  <meta name="description" content="Up-to-date airline price drop and refund policies for American, Delta, United, JetBlue, Alaska, British Airways and more.">
+  <link rel="canonical" href="https://tripreclaim.com/policies/">
+  <style>
+    :root{--blue:#1d4ed8;--green:#16a34a;--yellow:#d97706;--gray:#64748b;--border:#e2e8f0;--text:#0f172a}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);background:#f8fafc}
+    nav{background:#fff;border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:16px}
+    nav img{height:34px}
+    nav a.nl{margin-left:auto;color:var(--blue);text-decoration:none;font-weight:600;font-size:14px}
+    .hero{background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 100%);color:#fff;padding:48px 24px;text-align:center}
+    .hero h1{font-size:2rem;font-weight:800;margin-bottom:12px}
+    .hero p{font-size:1.1rem;opacity:.9;max-width:560px;margin:0 auto}
+    .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:600;margin-top:16px}
+    .container{max-width:960px;margin:0 auto;padding:40px 24px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;margin-bottom:48px}
+    .card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px;transition:box-shadow .2s}
+    .card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
+    .ch{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+    .ch img{height:28px;object-fit:contain}
+    .ch h3{font-size:15px;font-weight:700}
+    .age{font-size:11px;color:var(--gray);margin-left:auto;white-space:nowrap}
+    .age.fresh{color:var(--green)}
+    .age.stale{color:var(--yellow)}
+    .det{font-size:13px;color:#475569;line-height:1.6;margin-bottom:8px}
+    .det strong{color:var(--text)}
+    .win{display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;color:var(--green);border:1px solid #86efac;border-radius:4px;font-size:11px;font-weight:600;padding:3px 8px;margin-bottom:10px}
+    .steps{list-style:none}
+    .steps li{font-size:12px;color:#475569;padding:2px 0 2px 16px;position:relative}
+    .steps li::before{content:'\2192';position:absolute;left:0;color:var(--blue)}
+    .box{background:#fff;border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:40px}
+    .box h2{font-size:1.2rem;font-weight:700;margin-bottom:8px}
+    .box p{font-size:14px;color:#475569;line-height:1.7}
+    .hl{background:#f0fdf4;border-left:4px solid var(--green);padding:12px 16px;margin-top:14px;border-radius:0 8px 8px 0;font-size:14px}
+    footer{background:#1e293b;color:#94a3b8;text-align:center;padding:32px 24px;font-size:13px}
+    footer a{color:#cbd5e1;text-decoration:none;margin:0 8px}
+    .spin{width:32px;height:32px;border:3px solid #e2e8f0;border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:600px){.grid{grid-template-columns:1fr}.hero h1{font-size:1.5rem}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/"><img src="/logos/logo.png" alt="TripReclaim"></a>
+  <a class="nl" href="/dashboard/">My Dashboard &rarr;</a>
+</nav>
+<div class="hero">
+  <h1>Airline Refund Policy Hub</h1>
+  <p>Real-time airline price drop and refund policies &mdash; automatically monitored and updated weekly so you always know your rights.</p>
+  <div class="badge">&#x1F504; Policies auto-updated weekly via AI monitoring</div>
+</div>
+<div class="container">
+  <div class="box">
+    <h2>&#x26A1; The 24-Hour Rule &mdash; Your Most Powerful Tool</h2>
+    <p>Under <strong>DOT regulations</strong>, all US airlines must offer a <strong>full cash refund</strong> if you cancel within <strong>24 hours of booking</strong>, regardless of fare type &mdash; as long as the flight is at least 7 days away.</p>
+    <p style="margin-top:8px">If the price drops within 24 hours of booking, cancel and rebook at the lower fare for a <strong>free full refund</strong>.</p>
+    <div class="hl">&#x2705; TripReclaim monitors your flights <strong>every 15 minutes</strong> during this 24-hour window &mdash; 4 checks per hour to catch every drop.</div>
+  </div>
+  <p style="font-size:13px;color:var(--gray);margin-bottom:20px">Policies sourced from official airline websites and verified weekly. <span id="lr"></span></p>
+  <div id="pc" class="grid">
+    <div style="grid-column:1/-1;text-align:center;padding:48px"><div class="spin"></div><p style="color:var(--gray)">Loading latest policies...</p></div>
+  </div>
+  <div class="box">
+    <h2>&#x1F4CB; How Policy Monitoring Works</h2>
+    <p>TripReclaim&rsquo;s Policy Agent automatically scrapes each airline&rsquo;s refund and change fee pages every week. When a policy changes, subscribers with active bookings on that airline receive an email notification.</p>
+    <p style="margin-top:10px">Every Claim Kit includes the &ldquo;last verified&rdquo; date so you always know how current the instructions are.</p>
+  </div>
+</div>
+<footer>
+  <p>&copy; 2026 TripReclaim &middot; <a href="/">Home</a> &middot; <a href="/dashboard/">Dashboard</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></p>
+  <p style="margin-top:8px">Always confirm directly with the airline for the most current rules.</p>
+</footer>
+<script>
+const API='https://tripreclaim-production.up.railway.app';
+const LOGOS={AA:'/logos/american.png',DL:'/logos/delta.png',UA:'/logos/united.png',WN:'/logos/southwest.png',B6:'/logos/jetblue.png',AS:'/logos/alaska.png',BA:'/logos/british.png',LH:'/logos/lufthansa.png',QR:'/logos/qatar.png'};
+const FB=[
+  {c:'AA',n:'American Airlines',p:'Basic Economy non-refundable after 24h. Main Cabin and above: $0 change fee and travel credit.',f:'$0 (Main Cabin+)',v:'12 months',s:['aa.com/refunds or 800-433-7300','Enter confirmation code and last name','Request price adjustment or travel credit','Allow 7 business days for processing'],dot:true},
+  {c:'DL',n:'Delta Air Lines',p:'eCredits for non-refundable cancellations. $0 change fee on most fares. Medallion members get same-day changes.',f:'$0 most fares',v:'12 months',s:['delta.com/refunds or 800-221-1212','Enter booking confirmation number','Select Request eCredit option','Credit issued within 7 days'],dot:true},
+  {c:'UA',n:'United Airlines',p:'Future Flight Credits for non-refundable tickets. $0 change fee on most Economy and above.',f:'$0 Economy and above',v:'12 months',s:['united.com/refunds or 800-864-8331','Look up reservation by confirmation','Request future travel credit','Allow 7-10 business days'],dot:true},
+  {c:'WN',n:'Southwest Airlines',p:'Never charges change fees. Travel Funds valid 12 months. Anytime/Business Select fares get full cash refund.',f:'$0 always',v:'12 months',s:['southwest.com or 800-435-9792','Cancel to receive Travel Funds','Rebook at lower fare using Travel Funds','Funds applied automatically at checkout'],dot:true},
+  {c:'B6',n:'JetBlue',p:'Blue Basic: $100 cancellation fee. Blue and above: $0. Travel credits valid 12 months in TrueBlue account.',f:'$0 (Blue+), $100 Basic',v:'12 months',s:['jetblue.com/manage-trips or 800-538-2583','Cancel booking (fee may apply for Basic)','Travel credit issued to TrueBlue account','Rebook at lower fare with credit'],dot:true},
+  {c:'AS',n:'Alaska Airlines',p:'Saver fares: $125 cancellation fee. Main Cabin and above: $0. Credits valid 12 months.',f:'$0 Main+, $125 Saver',v:'12 months',s:['alaskaair.com or 800-252-7522','Request price match or cancel and rebook','Credit to Mileage Plan account','Use within 12 months of issue'],dot:true},
+  {c:'BA',n:'British Airways',p:'Cash refund depends on fare conditions. Avios credited for award cancellations. Change fees vary by cabin class.',f:'35-50 GBP Economy, 0 GBP Business',v:'12 months',s:['ba.com/managebooking or +44 344 493 0787','Enter booking reference and last name','Request fare adjustment or eVoucher','eVoucher issued within 14 days'],dot:false},
+  {c:'LH',n:'Lufthansa',p:'Voucher credits for non-refundable fares. Fully Flexible fares are fully refundable. Light fares have rebooking fees.',f:'Light: fee applies, Flex: free',v:'12 months',s:['lufthansa.com or regional hotline','Navigate to My Bookings','Request rebooking at lower fare or voucher','Processing takes 5-7 business days'],dot:false},
+  {c:'QR',n:'Qatar Airways',p:'Economy Saver non-refundable. Business and First Class generally fully refundable. Credits valid 12 months.',f:'$200 Saver, lower or free Flex',v:'12 months',s:['qatarairways.com or regional office','Access Manage Booking with reference number','Request credit or fare adjustment','Allow 14-21 days for international processing'],dot:false},
+];
+function ago(d){if(!d)return null;const diff=Date.now()-new Date(d);const days=Math.floor(diff/86400000);if(days===0)return'Updated today';if(days===1)return'Updated yesterday';if(days<7)return'Updated '+days+' days ago';return'Updated '+Math.floor(days/7)+' weeks ago';}
+function card(p,live){
+  const l=live||{};
+  const age=l.lastUpdated?ago(l.lastUpdated):null;
+  const fresh=age&&(age.includes('today')||age.includes('yesterday')||age.includes('days'));
+  return `<div class="card">
+    <div class="ch">
+      <img src="${LOGOS[p.c]||''}" alt="${p.n}">
+      <h3>${p.n}</h3>
+      <span class="age ${fresh?'fresh':'stale'}">${age||'&#x23F0; Pending verify'}</span>
+    </div>
+    ${p.dot?'<div class="win">&#x26A1; 24h DOT refund eligible</div>':''}
+    <div class="det"><strong>Policy:</strong> ${l.refundPolicy||p.p}</div>
+    <div class="det"><strong>Change fee:</strong> ${l.changeFee||p.f}</div>
+    <div class="det"><strong>Credit validity:</strong> ${l.creditValidity||p.v}</div>
+    <div class="det"><strong>How to claim:</strong></div>
+    <ul class="steps">${p.s.map(s=>`<li>${s}</li>`).join('')}</ul>
+  </div>`;
+}
+async function load(){
+  const pc=document.getElementById('pc');
+  let lm={};
+  try{
+    const r=await fetch(API+'/policy/all');
+    if(r.ok){
+      const data=await r.json();
+      const arr=data.policies||data||[];
+      arr.forEach(p=>{lm[p.airlineCode||p.code]=p;});
+      const latest=arr.reduce((m,p)=>p.lastUpdated&&new Date(p.lastUpdated)>new Date(m)?p.lastUpdated:m,null);
+      if(latest)document.getElementById('lr').textContent='Last batch: '+ago(latest);
+    }
+  }catch(e){}
+  pc.innerHTML=FB.map(p=>card(p,lm[p.c])).join('');
+}
+load();
+</script>
+</body>
+</html>

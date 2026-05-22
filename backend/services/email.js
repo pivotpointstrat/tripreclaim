@@ -138,7 +138,7 @@ const buildTwentyFourHourBanner = (booking) => {
  * @param {object} opts - { netSavings, rawDrop, notWorthClaiming }
  */
 const sendPriceDropAlert = async (email, booking, currentPrice, opts = {}) => {
-  const { netSavings = null, rawDrop = null, notWorthClaiming = false } = opts;
+  const { netSavings = null, rawDrop = null, notWorthClaiming = false, googleFlightsUrl = null, evidenceUrl = null } = opts;
   const route = `${booking.origin} → ${booking.destination}`;
   const drop = rawDrop !== null ? rawDrop : booking.pricePaid - currentPrice;
   const net  = netSavings !== null ? netSavings : drop;
@@ -243,6 +243,17 @@ const sendPriceDropAlert = async (email, booking, currentPrice, opts = {}) => {
         ${claimKit}
         ${fallbackGuide}
 
+        ${ googleFlightsUrl ? `
+        <div style="margin:20px 0;">
+          <a href="${googleFlightsUrl}" target="_blank" style="display:inline-block;background:#1d4ed8;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;margin-right:10px;">🔍 Verify Current Price on Google Flights →</a>
+        </div>` : '' }
+        ${ evidenceUrl ? `
+        <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:14px 18px;margin:16px 0;">
+          <p style="margin:0;font-size:13px;color:#0369a1;">
+            📄 <strong>Price Evidence Report</strong> — timestamped proof of this price drop for your records and any airline claim forms.
+            <br><a href="${evidenceUrl}" style="color:#1d4ed8;font-weight:600;">View Evidence Report →</a>
+          </p>
+        </div>` : '' }
         <p style="color:#94a3b8;font-size:13px;margin-top:24px;">Act quickly — airline prices can change within hours. We'll keep monitoring until your travel date.</p>
         <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
         <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a> · <a href="https://tripreclaim.com/unsubscribe" style="color:#94a3b8;">Unsubscribe</a></p>

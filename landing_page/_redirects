@@ -1,5 +1,9 @@
 /dashboard  /dashboard/  301
 /dashboard/*  /dashboard/index.html  200
+/evidence  /evidence/  301
+/evidence/*  /evidence/index.html  200
+/policies  /policies/  301
+/policies/*  /policies/index.html  200
 /privacy  /privacy/  301
 /terms  /terms/  301
 /sms-consent  /sms-consent/  301

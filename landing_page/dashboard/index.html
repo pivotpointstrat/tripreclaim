@@ -155,7 +155,7 @@
     /* ── Onboarding wizard ── */
     .onboarding-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
     .onboarding-box { background: #fff; border-radius: 16px; padding: 36px 32px; max-width: 480px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-    .onboarding-logo { font-size: 1.3rem; font-weight: 800; color: var(--blue); margin-bottom: 20px; }
+    .onboarding-logo { margin-bottom: 20px; text-align: center; }
     .onboarding-step { display: none; }
     .onboarding-step.active { display: block; }
     .onboarding-box h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
@@ -184,7 +184,7 @@
 
     /* ── Auth screen ── */
     .auth-screen { max-width: 400px; margin: 60px auto; background: #fff; border-radius: 16px; box-shadow: var(--card-shadow); padding: 36px 32px; text-align: center; }
-    .auth-screen .logo { font-size: 1.5rem; font-weight: 800; color: var(--blue); margin-bottom: 20px; }
+    .auth-screen .logo { margin-bottom: 20px; text-align: center; }
     .auth-screen h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
     .auth-screen p { color: var(--slate); font-size: 0.9rem; margin-bottom: 24px; }
 
@@ -687,7 +687,7 @@ async function init() {
 function renderAuth(msg = '') {
   render(`
     <div class="auth-screen">
-      <div class="logo">✈️ <span>Trip</span>Reclaim</div>
+      <div class="logo"><img src="/logos/trip-reclaim-white.png" alt="TripReclaim" style="height:48px;width:auto;"></div>
       <h2>Sign in to your dashboard</h2>
       <p>Enter your email and we'll send you a secure login link.</p>
       <div class="form-group" style="text-align:left">
@@ -729,7 +729,7 @@ function renderShell(user) {
   const firstName = user.name ? user.name.split(' ')[0] : (user.email ? user.email.split('@')[0] : 'there');
   render(`
     <nav class="navbar">
-      <a href="/" class="nav-logo"><img src="/logos/logo.png" alt="TripReclaim" style="height:36px;width:auto;display:block;"></a>
+      <a href="/" class="nav-logo"><img src="/logos/trip-reclaim-white.png" alt="TripReclaim" style="height:36px;width:auto;display:block;"></a>
       <div class="nav-user">
         <span>${user.email || '' }</span>
         <button class="nav-logout" onclick="logout()">Sign out</button>
@@ -778,7 +778,7 @@ function renderOnboardingStep() {
   overlay.className = 'onboarding-overlay';
   overlay.innerHTML = `
     <div class="onboarding-box">
-      <div class="onboarding-logo">✈️ TripReclaim</div>
+      <div class="onboarding-logo"><img src="/logos/trip-reclaim-white.png" alt="TripReclaim" style="height:40px;width:auto;"></div>
       <div class="onboarding-progress">
         <div class="prog-dot ${obStep >= 1 ? 'done' : '' }"></div>
         <div class="prog-dot ${obStep >= 2 ? 'done' : '' }"></div>

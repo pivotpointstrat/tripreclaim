@@ -88,6 +88,18 @@ const bookingSchema = new mongoose.Schema({
   },
   parsedFrom:      { type: String, default: null },
   parseConfidence: { type: Number, default: null },
+
+  // Price evidence archive — saved when a price drop alert fires
+  priceEvidence: [{
+    detectedAt:        { type: Date,   required: true },
+    currentPrice:      { type: Number, required: true },
+    pricePaid:         { type: Number, required: true },
+    savings:           { type: Number, required: true },
+    googleFlightsUrl:  { type: String, default: null },
+    evidenceUrl:       { type: String, default: null },
+    serpApiSummary:    { type: Object, default: null }, // top 5 results from Serpapi
+    alertType:         { type: String, default: 'price_drop' }, // price_drop | not_worth_it | miles_drop
+  }],
 }, {
   timestamps: true,
 });

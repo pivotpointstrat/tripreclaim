@@ -5,6 +5,39 @@ const { getLowestPrice } = require('./monitor');
 const { sendPriceDropAlert } = require('./email');
 const { getPolicyForAirline } = require('./policyAgent');
 
+// ── Helpers ──────────────────────────────────────────────────────────────
+
+/** Build a Google Flights search URL for a given route and date. */
+const buildGoogleFlightsUrl = (origin, destination, departureDate) => {
+  try {
+    const d = typeof departureDate === 'string'
+      ? departureDate
+      : new Date(departureDate).toISOString().split('T')[0];
+    return `https://www.google.com/travel/flights?q=Flights+from+${origin}+to+${destination}+on+${d}`;
+  } catch (_) {
+    return 'https://www.google.com/travel/flights';
+  }
+};
+
+/** Extract compact evidence summary from Serpapi raw results (top 5). */
+const buildEvidenceSummary = (rawResults) => {
+  if (!rawResults) return null;
+  const all = [
+    ...(rawResults.best_flights  || []),
+    ...(rawResults.other_flights || []),
+  ];
+  return all
+    .filter(f => f.price && f.price > 0)
+    .sort((a, b) => a.price - b.price)
+    .slice(0, 5)
+    .map(f => ({
+      price:    f.price,
+      airline:  f.flights && f.flights[0] ? f.flights[0].airline : 'Unknown',
+      duration: f.total_duration || null,
+      stops:    f.flights ? f.flights.length - 1 : 0,
+    }));
+};
+
 // Map airline display names → IATA codes for policy lookup
 const AIRLINE_TO_CODE = {
   'American Airlines': 'AA',
@@ -95,7 +128,7 @@ const checkBooking = async (booking) => {
 
   try {
     const departureDate = booking.departureDate.toISOString().split('T')[0];
-    const { price } = await getLowestPrice(
+    const { price, rawResults } = await getLowestPrice(
       booking.origin,
       booking.destination,
       departureDate,
@@ -232,10 +265,14 @@ const checkBooking = async (booking) => {
 
             if (shouldAlert) {
               try {
+                const gFlightsUrl = buildGoogleFlightsUrl(booking.origin, booking.destination, booking.departureDate);
+                const evidencePageUrl = `https://tripreclaim.com/evidence/?id=${booking._id}`;
                 await sendPriceDropAlert(booking.email, booking, price, {
                   netSavings,
                   rawDrop,
                   notWorthClaiming: false,
+                  googleFlightsUrl: gFlightsUrl,
+                  evidenceUrl: evidencePageUrl,
                 });
                 // Send SMS if user has it enabled
                 try {
@@ -256,6 +293,18 @@ const checkBooking = async (booking) => {
                   `$${booking.pricePaid} → $${price} ` +
                   `(gross drop: $${rawDrop.toFixed(2)}, net: $${netSavings.toFixed(2)})`
                 );
+                // ── Save price evidence archive ──
+                const evidenceEntry = {
+                  detectedAt:       now,
+                  currentPrice:     price,
+                  pricePaid:        booking.pricePaid,
+                  savings:          netSavings,
+                  googleFlightsUrl: gFlightsUrl,
+                  serpApiSummary:   buildEvidenceSummary(rawResults),
+                  alertType:        'price_drop',
+                };
+                if (!update.$push) update.$push = {};
+                update.$push.priceEvidence = evidenceEntry;
               } catch (emailErr) {
                 console.error(`[alerts] Failed to send alert email: ${emailErr.message}`);
               }

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Price Drop Evidence &mdash; TripReclaim</title>
+  <style>
+    :root{--blue:#1d4ed8;--green:#16a34a;--red:#dc2626;--gray:#64748b;--border:#e2e8f0;--text:#0f172a}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);background:#f8fafc}
+    nav{background:#fff;border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:16px}
+    nav img{height:34px}
+    nav a.nl{margin-left:auto;color:var(--blue);text-decoration:none;font-weight:600;font-size:14px}
+    .container{max-width:800px;margin:0 auto;padding:40px 24px}
+    h1{font-size:1.6rem;font-weight:800;margin-bottom:4px}
+    .subtitle{color:var(--gray);font-size:14px;margin-bottom:32px}
+    .card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
+    .card h2{font-size:1rem;font-weight:700;margin-bottom:16px;color:var(--gray);text-transform:uppercase;letter-spacing:.05em;font-size:11px}
+    .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-bottom:4px}
+    .stat{text-align:center}
+    .stat .val{font-size:1.6rem;font-weight:800;color:var(--text)}
+    .stat .val.green{color:var(--green)}
+    .stat .val.red{color:var(--red)}
+    .stat .lbl{font-size:12px;color:var(--gray);margin-top:4px}
+    .evidence-item{border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:14px}
+    .ev-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+    .ev-date{font-size:13px;font-weight:700;color:var(--text)}
+    .ev-savings{background:#f0fdf4;color:var(--green);border:1px solid #86efac;border-radius:6px;padding:4px 10px;font-size:12px;font-weight:700}
+    .ev-prices{display:flex;gap:24px;margin-bottom:12px;flex-wrap:wrap}
+    .ev-price{text-align:center}
+    .ev-price .pv{font-size:1.1rem;font-weight:700}
+    .ev-price .pl{font-size:11px;color:var(--gray)}
+    .ev-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+    .ev-table th{background:#f8fafc;padding:6px 10px;text-align:left;font-weight:600;color:var(--gray);border-bottom:1px solid var(--border)}
+    .ev-table td{padding:6px 10px;border-bottom:1px solid #f1f5f9}
+    .ev-table tr:last-child td{border:none}
+    .btn{display:inline-block;padding:10px 18px;border-radius:8px;font-weight:600;font-size:13px;text-decoration:none;cursor:pointer;border:none}
+    .btn-primary{background:var(--blue);color:#fff}
+    .btn-outline{background:#fff;color:var(--blue);border:1px solid var(--blue)}
+    .btn-print{background:#1e293b;color:#fff}
+    .action-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+    .no-evidence{text-align:center;padding:48px;color:var(--gray)}
+    .no-evidence p{font-size:14px;margin-top:8px}
+    .spin{width:32px;height:32px;border:3px solid #e2e8f0;border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .err{background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;padding:24px;text-align:center;color:#991b1b}
+    .certified{background:#f0fdf4;border:2px solid #22c55e;border-radius:10px;padding:14px 20px;display:flex;align-items:center;gap:12px;margin-bottom:20px}
+    .certified p{font-size:13px;color:#15803d;line-height:1.5}
+    @media print{nav,#action-bar,.btn{display:none!important}.container{padding:20px}}
+    @media(max-width:600px){.stat-row{grid-template-columns:1fr 1fr}.ev-prices{gap:12px}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/"><img src="/logos/logo.png" alt="TripReclaim"></a>
+  <a class="nl" href="/dashboard/">My Dashboard &rarr;</a>
+</nav>
+<div class="container">
+  <div id="root"><div style="text-align:center;padding:80px"><div class="spin"></div><p style="color:var(--gray)">Loading evidence report...</p></div></div>
+</div>
+<script>
+const API='https://tripreclaim-production.up.railway.app';
+
+function fmt(n){if(n==null)return'--';return'$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtDate(d){if(!d)return'--';return new Date(d).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});}
+function fmtDateShort(d){if(!d)return'--';return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+
+function renderRoot(data){
+  const b=data.booking;
+  const s=data.evidenceSummary;
+  const ev=data.evidence||[];
+  const root=document.getElementById('root');
+  root.innerHTML=`
+    <div style="margin-bottom:8px"><a href="/dashboard/" style="color:var(--blue);font-size:13px;text-decoration:none">&larr; Back to Dashboard</a></div>
+    <h1>Price Drop Evidence Report</h1>
+    <p class="subtitle">${b.route} &middot; ${b.airline} &middot; Departing ${fmtDateShort(b.departureDate)}</p>
+    <div class="certified">
+      <span style="font-size:24px">&#x2705;</span>
+      <p><strong>Certified by TripReclaim</strong> &mdash; All price drops below are sourced directly from Google Flights via the Serpapi API, timestamped at detection, and stored immutably in TripReclaim&rsquo;s database. This report constitutes verifiable evidence of price changes for airline refund and credit claims.</p>
+    </div>
+    <div id="action-bar" class="action-bar">
+      ${s.latestGoogleFlights?`<a class="btn btn-primary" href="${s.latestGoogleFlights}" target="_blank">&#x1F50D; Verify Current Price on Google Flights</a>`:''}
+      <button class="btn btn-print" onclick="window.print()">&#x1F5A8; Print / Save PDF</button>
+      <a class="btn btn-outline" href="/policies/">View Refund Policies</a>
+    </div>
+    <div class="card">
+      <h2>Booking Details</h2>
+      <div class="stat-row">
+        <div class="stat"><div class="val">${b.airline}</div><div class="lbl">Airline</div></div>
+        <div class="stat"><div class="val">${b.route}</div><div class="lbl">Route</div></div>
+        <div class="stat"><div class="val">${fmtDateShort(b.departureDate)}</div><div class="lbl">Departure</div></div>
+        <div class="stat"><div class="val">${fmt(b.pricePaid)}</div><div class="lbl">Price Paid</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Price Drop Summary</h2>
+      <div class="stat-row">
+        <div class="stat"><div class="val">${s.totalAlerts}</div><div class="lbl">Price Drops Detected</div></div>
+        <div class="stat"><div class="val green">${fmt(s.totalSavingsDetected)}</div><div class="lbl">Total Savings Found</div></div>
+        <div class="stat"><div class="val">${fmt(s.latestDropPrice)}</div><div class="lbl">Latest Drop Price</div></div>
+        <div class="stat"><div class="val">${s.latestDropAt?fmtDate(s.latestDropAt):'--'}</div><div class="lbl">Last Detected</div></div>
+      </div>
+    </div>
+    ${ev.length===0?`<div class="no-evidence"><p style="font-size:32px">&#x1F4CB;</p><p>No price drops detected yet for this booking.</p><p>TripReclaim is actively monitoring &mdash; you&rsquo;ll be notified the moment a price drop is found.</p></div>`:
+      ev.map((e,i)=>`
+        <div class="evidence-item">
+          <div class="ev-header">
+            <div>
+              <div class="ev-date">&#x1F4C5; Drop #${ev.length-i} &mdash; Detected ${fmtDate(e.detectedAt)}</div>
+            </div>
+            <div class="ev-savings">Save ${fmt(e.savings)}</div>
+          </div>
+          <div class="ev-prices">
+            <div class="ev-price"><div class="pv">${fmt(e.pricePaid)}</div><div class="pl">Original Price Paid</div></div>
+            <div class="ev-price" style="color:var(--green)"><div class="pv">${fmt(e.currentPrice)}</div><div class="pl">Price at Detection</div></div>
+            <div class="ev-price" style="color:var(--green)"><div class="pv">${fmt(e.savings)}</div><div class="pl">Net Savings</div></div>
+          </div>
+          ${e.googleFlightsUrl?`<a href="${e.googleFlightsUrl}" target="_blank" class="btn btn-outline" style="font-size:11px;padding:5px 10px;margin-bottom:10px">&#x1F50D; Verify on Google Flights</a>`:''}
+          ${e.serpApiSummary&&e.serpApiSummary.length?`
+          <table class="ev-table">
+            <thead><tr><th>Airline</th><th>Price</th><th>Stops</th><th>Duration (min)</th></tr></thead>
+            <tbody>${e.serpApiSummary.map(r=>`<tr><td>${r.airline||'--'}</td><td style="font-weight:600;color:var(--green)">${fmt(r.price)}</td><td>${r.stops||0}</td><td>${r.duration||'--'}</td></tr>`).join('')}</tbody>
+          </table>`:''}
+          <p style="font-size:11px;color:var(--gray);margin-top:10px">Source: Google Flights via Serpapi API &middot; Recorded ${fmtDate(e.detectedAt)} UTC &middot; TripReclaim Evidence ID: ${e.detectedAt?new Date(e.detectedAt).getTime():''}</p>
+        </div>`).join('')
+    }
+    <div class="card" style="margin-top:24px">
+      <h2>How to Use This Report</h2>
+      <p style="font-size:13px;color:#475569;line-height:1.7">
+        This evidence report documents verified price drops on your flight. When contacting your airline to request a refund, credit, or price adjustment:
+      </p>
+      <ol style="font-size:13px;color:#475569;margin:10px 0 0 20px;line-height:2">
+        <li>Print or save this page as a PDF using the button above</li>
+        <li>Reference the detection timestamp and price comparison</li>
+        <li>Include the Google Flights verification link showing the current lower price</li>
+        <li>Check the <a href="/policies/" style="color:var(--blue)">Policy Hub</a> for your airline&rsquo;s exact refund claim process</li>
+      </ol>
+    </div>`;
+}
+
+async function init(){
+  const params=new URLSearchParams(window.location.search);
+  const id=params.get('id');
+  const root=document.getElementById('root');
+  if(!id){root.innerHTML='<div class="err"><strong>No booking ID provided.</strong><br>Access this page from a TripReclaim price drop alert email.</div>';return;}
+  const token=localStorage.getItem('tr_token');
+  if(!token){
+    sessionStorage.setItem('tr_redirect',window.location.href);
+    window.location.href='/dashboard/';
+    return;
+  }
+  try{
+    const r=await fetch(API+'/bookings/'+id+'/evidence',{headers:{'Authorization':'Bearer '+token}});
+    if(r.status===401){localStorage.removeItem('tr_token');sessionStorage.setItem('tr_redirect',window.location.href);window.location.href='/dashboard/';return;}
+    if(!r.ok){root.innerHTML='<div class="err"><strong>Could not load evidence report.</strong><br>The booking may not exist or may not belong to your account.</div>';return;}
+    const data=await r.json();
+    renderRoot(data);
+  }catch(e){
+    root.innerHTML='<div class="err"><strong>Connection error.</strong><br>Could not reach TripReclaim servers. Please try again.</div>';
+  }
+}
+init();
+</script>
+</body>
+</html>

@@ -52,6 +52,7 @@ app.use(express.json());
 // ── Routes ──
 app.use('/auth', require('./routes/auth'));
 app.use('/bookings', require('./routes/bookings'));
+app.use('/bookings', require('./routes/evidence'));
 app.use('/lookup', require('./routes/lookup'));
 const policyRoutes = require('./routes/policy');
 app.use('/policy', policyRoutes);
