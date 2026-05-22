@@ -214,6 +214,47 @@
     .ref-stat { text-align: center; }
     .ref-stat .val { font-size: 1.4rem; font-weight: 800; }
     .ref-stat .lbl { font-size: 0.78rem; opacity: 0.8; }
+
+    /* ── Sprint 3: Miles / Booking type toggle ── */
+    .booking-type-toggle { display: flex; gap: 8px; margin-bottom: 16px; }
+    .btype-opt { flex: 1; padding: 10px 12px; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.88rem; font-weight: 600; transition: all 0.15s; color: var(--slate); }
+    .btype-opt.selected { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
+    .miles-fields { display: none; background: var(--blue-light); border-radius: 10px; padding: 14px 16px; margin-bottom: 4px; }
+    .miles-fields.show { display: block; }
+
+    /* ── Sprint 3: Basic economy warning ── */
+    .be-warning { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; color: #92400e; margin-top: 6px; display: none; }
+    .be-warning.show { display: block; }
+
+    /* ── Sprint 3: 24-hour window banner ── */
+    .window-24h { background: linear-gradient(135deg, #d97706, #b45309); color: #fff; border-radius: 8px; padding: 10px 14px; margin-bottom: 10px; font-size: 0.85rem; display: flex; align-items: center; gap: 10px; }
+    .window-24h strong { font-size: 0.9rem; }
+    .window-24h .time-left { background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; white-space: nowrap; }
+
+    /* ── Sprint 3: Claim kit / credits ── */
+    .btn-sm.claim { border-color: var(--green); color: var(--green); }
+    .btn-sm.claim:hover { background: var(--green-light); }
+    .btn-sm.policy { border-color: var(--blue); color: var(--blue); }
+    .btn-sm.policy:hover { background: var(--blue-light); }
+    .credit-claimed-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--green-light); color: var(--green); border-radius: 20px; padding: 3px 10px; font-size: 0.78rem; font-weight: 600; margin-top: 6px; }
+    .expiry-pill { font-size: 0.72rem; padding: 1px 7px; border-radius: 20px; font-weight: 600; }
+    .expiry-ok { background: #d1fae5; color: #065f46; }
+    .expiry-soon { background: #fef3c7; color: #92400e; }
+    .expiry-urgent { background: #fee2e2; color: #991b1b; }
+
+    /* ── Sprint 3: Policy changes banner ── */
+    .policy-changes-banner { background: linear-gradient(135deg, #7c3aed, #5b21b6); color: #fff; border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .policy-changes-banner .pcb-text { font-size: 0.88rem; }
+    .policy-changes-banner .pcb-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
+    .btn-pcb { background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 6px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .btn-pcb:hover { background: rgba(255,255,255,0.3); }
+
+    /* ── Sprint 3: Credits tracker ── */
+    .credit-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .credit-row:last-child { border-bottom: none; }
+    .credit-row .cr-airline { font-weight: 600; font-size: 0.92rem; }
+    .credit-row .cr-route { font-size: 0.78rem; color: var(--slate); }
+    .credit-row .cr-amount { font-size: 1.1rem; font-weight: 800; color: var(--green); }
   </style>
 </head>
 <body>
@@ -825,11 +866,46 @@ async function renderFlightsTab() {
   const minDate = new Date(Date.now()+86400000).toISOString().split('T')[0];
   document.getElementById('tab-content').innerHTML = `
     <div id="savings-area"></div>
+    <div id="policy-changes-area"></div>
     <div class="card">
       <div class="card-title">➕ Monitor a New Flight
         <span class="badge" id="form-step-badge">Step 1 of 2 — Your Booking</span>
       </div>
       <!-- Step indicator -->
+        <!-- Booking type toggle -->
+        <div style="margin-bottom:16px;">
+          <label style="font-size:0.85rem;font-weight:600;color:#374151;display:block;margin-bottom:8px;">Booking Type</label>
+          <div class="booking-type-toggle">
+            <div class="btype-opt selected" id="btype-cash" onclick="setBookingType('cash')">💳 Paid with Cash/Card</div>
+            <div class="btype-opt" id="btype-miles" onclick="setBookingType('miles')">✈️ Paid with Miles/Points</div>
+          </div>
+          <div class="miles-fields" id="miles-fields">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Miles / Points Paid</label>
+                <input type="number" id="f-miles" placeholder="e.g. 45000" min="1">
+                <span class="hint">Number of miles or points used</span>
+              </div>
+              <div class="form-group">
+                <label>Loyalty Program</label>
+                <select id="f-miles-program">
+                  <option value="">Select program...</option>
+                  <option>AAdvantage (American)</option>
+                  <option>SkyMiles (Delta)</option>
+                  <option>MileagePlus (United)</option>
+                  <option>TrueBlue (JetBlue)</option>
+                  <option>Rapid Rewards (Southwest)</option>
+                  <option>Mileage Plan (Alaska)</option>
+                  <option>Avios (British Airways)</option>
+                  <option>Skywards (Emirates)</option>
+                  <option>Privilege Club (Qatar)</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+            <div style="font-size:0.82rem;color:#1e40af;margin-top:4px;">💡 Award ticket price drops are the easiest to claim — airlines refund miles difference immediately with no fees.</div>
+          </div>
+        </div>
       <div class="step-indicator">
         <div class="step-item">
           <div class="step-num active" id="snum-1">1</div>
@@ -890,10 +966,12 @@ async function renderFlightsTab() {
             <label>Cabin Class</label>
             <select id="f-cabin">
               <option value="economy">Economy</option>
+              <option value="basic_economy">Basic Economy ⚠️</option>
               <option value="premium_economy">Premium Economy</option>
               <option value="business">Business</option>
               <option value="first">First Class</option>
             </select>
+            <div class="be-warning" id="be-warning">⚠️ <strong>Basic Economy tickets are non-refundable</strong> on most airlines after the 24-hour window. You may not be able to claim credits for price drops. Consider upgrading to Main Cabin for full price drop protection.</div>
           </div>
           <div class="form-group">
             <label>From Airport *</label>
@@ -1021,6 +1099,7 @@ async function renderFlightsTab() {
     <div id="bookings-list"><div class="loading-screen"><div class="spinner"></div></div></div>
   `;
   loadBookings();
+  setTimeout(loadPolicyChanges, 200);
 }
 
 function openAirlineLookup() {
@@ -1069,6 +1148,11 @@ function goToStep2() {
     pricePaid: parseFloat(price.replace(/[$,]/g, '' )),
     confirmationNumber: document.getElementById('f-conf').value.trim().toUpperCase() || null,
   };
+  formData.bookingType = currentBookingType;
+  if (currentBookingType === 'miles') {
+    formData.milesPaid = parseInt(document.getElementById('f-miles')?.value) || null;
+    formData.milesProgram = document.getElementById('f-miles-program')?.value || null;
+  }
 
   document.getElementById('step1').classList.remove('active');
   document.getElementById('step2').classList.add('active');
@@ -1161,6 +1245,9 @@ function renderBookingsList() {
   el.innerHTML = bookings.map(b => {
     const dep = new Date(b.departureDate).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
     const daysLeft = Math.ceil((new Date(b.departureDate) - Date.now()) / 86400000);
+    const hoursOld = b.createdAt ? (Date.now() - new Date(b.createdAt)) / 3600000 : 999;
+    const is24h = hoursOld < 24 && daysLeft >= 7;
+    const hoursLeft = is24h ? Math.max(0, Math.ceil(24 - hoursOld)) : 0;
     const drop = b.lowestPriceSeen ? b.pricePaid - b.lowestPriceSeen : null;
     const lastChecked = b.lastCheckedAt ? new Date(b.lastCheckedAt).toLocaleString('en-US', {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : 'Pending';
     const returnStr = b.returnDate ? ` · Return ${new Date(b.returnDate).toLocaleDateString('en-US',{month:'short',day:'numeric'})}` : '' ;
@@ -1168,6 +1255,7 @@ function renderBookingsList() {
     const modeStr = b.matchMode === 'flexible' ? '🔄 flexible'  : '🎯 exact';
     return `
       <div class="booking-card ${b.status}">
+        ${is24h ? `<div class="window-24h">⚡ <div><strong>24-Hour Full Refund Window Active!</strong> DOT rules give you a full cash refund if you cancel now. <a href="#" onclick="viewClaimKit('${b._id}','${b.airline}'); return false;" style="color:#fff;text-decoration:underline;">See how →</a></div><div class="time-left">${hoursLeft}h left</div></div>` : ''}
         <div class="booking-route">
           <span class="status-dot ${b.status === 'paused'  ? 'paused' : b.status === 'expired' ? 'expired' : '' }"></span>
           ${b.origin} → ${b.destination}
@@ -1183,10 +1271,13 @@ function renderBookingsList() {
         ${b.confirmationNumber ? `<div class="booking-footer">Booking ref: <strong>${b.confirmationNumber}</strong> · Last checked: ${lastChecked} · ${daysLeft > 0 ? daysLeft+' days until departure' : 'Travel date passed' } · Alert at $${b.dropThreshold} drop</div>` : `<div class="booking-footer">Last checked: ${lastChecked} · ${daysLeft > 0 ? daysLeft+' days until departure' : 'Travel date passed'} · Alert at $${b.dropThreshold} drop</div>`}
         <div class="booking-actions">
           <button class="btn-sm" onclick="viewBookingHistory('${b._id}' )">📈 History</button>
+          <button class="btn-sm policy" onclick="viewClaimKit('${b._id}','${b.airline.replace(/'/g,"\\'")}')">📋 Claim Kit</button>
+          ${drop && drop > 0 && !b.creditClaimed ? `<button class="btn-sm claim" onclick="openClaimCreditModal('${b._id}', ${drop.toFixed(2)})">✅ Mark Credit Claimed</button>` : ''}
           ${b.status === 'active'  ? `<button class="btn-sm" onclick="toggleBooking('${b._id}', 'paused')">Pause</button>` : '' }
           ${b.status === 'paused'  ? `<button class="btn-sm" onclick="toggleBooking('${b._id}', 'active')">Resume</button>` : '' }
           <button class="btn-sm danger" onclick="deleteBooking('${b._id}' )">Remove</button>
         </div>
+        ${b.creditClaimed ? `<div style="margin-top:8px;"><span class="credit-claimed-badge">✅ Credit claimed: $${(b.creditAmount||0).toFixed(2)} ${b.creditExpiryDate ? '<span class="expiry-pill ' + (new Date(b.creditExpiryDate) - Date.now() < 30*86400000 ? (new Date(b.creditExpiryDate) - Date.now() < 7*86400000 ? 'expiry-urgent' : 'expiry-soon') : 'expiry-ok') + '">Expires ' + new Date(b.creditExpiryDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + '</span>' : ''}</span></div>` : ''}
       </div>`;
   }).join('');
 }
@@ -1282,6 +1373,7 @@ async function renderAccountTab() {
     </div>
 
     <div id="referral-section"></div>
+    <div id="travel-credits-section"></div>
 
     <div class="card" style="border: 1px solid #fecaca;">
       <div class="card-title" style="color:var(--red);">⚠️ Account</div>
@@ -1290,6 +1382,7 @@ async function renderAccountTab() {
     </div>
   `;
   setTimeout(loadReferral, 50);
+  setTimeout(loadTravelCredits, 100);
 }
 
 async function saveProfile() {
@@ -1413,6 +1506,138 @@ function copyReferralLink(link) {
     const btn = event.target; btn.textContent = 'Copied! ✅' ; setTimeout(() => btn.textContent = 'Copy Link' , 2000);
   }).catch(() => alert('Copy this link: ' + link));
 }
+
+// ═══════════════════════════════════════════
+// SPRINT 3 FEATURES
+// ═══════════════════════════════════════════
+
+// Booking type toggle
+let currentBookingType = 'cash';
+function setBookingType(type) {
+  currentBookingType = type;
+  document.getElementById('btype-cash').classList.toggle('selected', type === 'cash');
+  document.getElementById('btype-miles').classList.toggle('selected', type === 'miles');
+  document.getElementById('miles-fields').classList.toggle('show', type === 'miles');
+  const priceInput = document.getElementById('f-price');
+  if (priceInput) priceInput.placeholder = type === 'miles' ? 'Cash co-pay (if any, else $0)' : 'e.g. $1,299.00';
+}
+
+// Basic economy warning
+document.addEventListener('change', function(e) {
+  if (e.target && e.target.id === 'f-cabin') {
+    const warn = document.getElementById('be-warning');
+    if (warn) warn.classList.toggle('show', e.target.value === 'basic_economy');
+  }
+});
+
+// Policy Changes Banner
+async function loadPolicyChanges() {
+  const area = document.getElementById('policy-changes-area');
+  if (!area) return;
+  try {
+    const data = await apiFetch('/policy/changes');
+    const changes = data.changes || data;
+    if (Array.isArray(changes) && changes.length > 0) {
+      const names = changes.slice(0,3).map(c => c.airline || c.code).join(', ');
+      area.innerHTML = '<div class="policy-changes-banner"><div class="pcb-text"><div class="pcb-title">\uD83D\uDD14 Airline Policy Update</div><div>' + names + ' ' + (changes.length === 1 ? 'has' : 'have') + ' updated their price drop policies.</div></div><button class="btn-pcb" onclick="viewPolicyChanges()">View Changes &rarr;</button></div>';
+    }
+  } catch(e) { }
+}
+
+function viewPolicyChanges() { window.open(API + '/policy/changes', '_blank'); }
+
+// Claim Kit Modal
+async function viewClaimKit(bookingId, airline) {
+  let overlay = document.getElementById('policy-modal');
+  if (!overlay) { overlay = document.createElement('div'); overlay.id = 'policy-modal'; document.body.appendChild(overlay); }
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = '<div class="modal-box"><div class="loading-screen" style="min-height:120px;"><div class="spinner"></div></div></div>';
+  overlay.style.display = 'flex';
+  overlay.onclick = function(e) { if (e.target === overlay) closePolicyModal(); };
+  try {
+    const { booking } = await apiFetch('/bookings/' + bookingId);
+    const b = booking;
+    let policy = null;
+    try { const pd = await apiFetch('/policy/' + encodeURIComponent(airline)); policy = pd.policy || pd; } catch(e) {}
+    const drop = b.lowestPriceSeen ? b.pricePaid - b.lowestPriceSeen : null;
+    const isIn24h = b.createdAt && (Date.now() - new Date(b.createdAt)) / 3600000 < 24;
+    const expiry = (policy && policy.policies && policy.policies.creditExpiry) || '1 year from original purchase';
+    const steps = (policy && policy.policies && policy.policies.claimSteps) || [];
+    const claimUrl = (policy && policy.policies && policy.policies.claimUrl) || (AIRLINE_LOOKUP_URLS[airline] || '');
+    const claimPhone = (policy && policy.policies && policy.policies.claimPhone) || '';
+    const mb = overlay.querySelector('.modal-box');
+    let html = '<div class="modal-header"><div class="modal-title">\uD83D\uDCCB Claim Kit &mdash; ' + b.origin + ' &rarr; ' + b.destination + ' &middot; ' + airline + '</div><button class="modal-close" onclick="closePolicyModal()">&times;</button></div>';
+    if (isIn24h) html += '<div style="background:linear-gradient(135deg,#d97706,#b45309);color:#fff;border-radius:10px;padding:14px 16px;margin-bottom:16px;"><strong>\u26A1 24-Hour Full Cash Refund Available!</strong><br><span style="font-size:0.88rem;opacity:0.9;">DOT rules entitle you to a FULL CASH REFUND right now. Cancel and rebook at the lower price.</span></div>';
+    if (drop && drop > 0) html += '<div style="background:var(--green-light);border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;margin-bottom:16px;"><div style="font-weight:700;color:var(--green);margin-bottom:4px;">\uD83D\uDCB0 $' + drop.toFixed(2) + ' savings detected</div><div style="font-size:0.88rem;color:#166534;">Paid: $' + b.pricePaid.toFixed(2) + ' &rarr; Current: $' + b.lowestPriceSeen.toFixed(2) + '</div></div>';
+    html += '<div style="border-left:4px solid var(--blue);padding:16px;background:var(--blue-light);border-radius:0 10px 10px 0;margin-bottom:16px;"><div style="font-weight:700;color:var(--blue);margin-bottom:10px;">How to Claim &mdash; ' + airline + '</div>';
+    if (steps.length > 0) {
+      html += '<ol style="margin:0;padding-left:18px;">' + steps.map(function(s){ return '<li style="margin-bottom:8px;font-size:0.9rem;color:#1e40af;">' + s + '</li>'; }).join('') + '</ol>';
+    } else {
+      html += '<p style="font-size:0.9rem;color:#1e40af;">Contact ' + airline + ' customer service to request a price adjustment for booking ' + (b.confirmationNumber || 'your booking') + '.</p>';
+    }
+    html += '<div style="margin-top:12px;font-size:0.82rem;color:#1e40af;">\uD83D\uDCC5 Credit valid: <strong>' + expiry + '</strong>' + (claimPhone ? ' &middot; \uD83D\uDCDE ' + claimPhone : '') + '</div></div>';
+    if (b.confirmationNumber) html += '<div style="background:var(--slate-light);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:0.88rem;"><strong>Booking:</strong> ' + airline + ' &middot; ' + b.origin + '&rarr;' + b.destination + ' &middot; Ref: <strong>' + b.confirmationNumber + '</strong>' + (b.flightNumber ? ' &middot; Flight: <strong>' + b.flightNumber + '</strong>' : '') + '</div>';
+    html += '<div style="display:flex;gap:10px;flex-wrap:wrap;">';
+    if (claimUrl) html += '<a href="' + claimUrl + '" target="_blank" class="btn-primary" style="text-decoration:none;">Claim at ' + airline + ' &rarr;</a>';
+    if (drop && drop > 0 && !b.creditClaimed) html += '<button class="btn-secondary" onclick="closePolicyModal(); openClaimCreditModal(\'' + b._id + '\', ' + drop.toFixed(2) + ')">\u2705 Mark as Claimed</button>';
+    html += '<button onclick="closePolicyModal()" class="btn-secondary">Close</button></div>';
+    mb.innerHTML = html;
+  } catch(e) {
+    const mb2 = overlay.querySelector('.modal-box');
+    if (mb2) mb2.innerHTML = '<div class="modal-header"><div class="modal-title">Claim Kit</div><button class="modal-close" onclick="closePolicyModal()">&times;</button></div><div class="alert alert-error">Could not load claim kit.</div>';
+  }
+}
+
+function closePolicyModal() { const m = document.getElementById('policy-modal'); if (m) m.style.display = 'none'; }
+
+// Mark Credit Claimed Modal
+function openClaimCreditModal(bookingId, suggestedAmount) {
+  let overlay = document.getElementById('claim-credit-modal');
+  if (!overlay) { overlay = document.createElement('div'); overlay.id = 'claim-credit-modal'; document.body.appendChild(overlay); }
+  const expDefault = new Date(Date.now() + 365*86400000).toISOString().split('T')[0];
+  overlay.className = 'modal-overlay';
+  overlay.style.display = 'flex';
+  overlay.innerHTML = '<div class="modal-box" style="max-width:420px;"><div class="modal-header"><div class="modal-title">\u2705 Record Travel Credit</div><button class="modal-close" onclick="document.getElementById(\'claim-credit-modal\').style.display=\'none\'.toString()">&times;</button></div><p style="color:var(--slate);font-size:0.9rem;margin-bottom:20px;">Record the travel credit so we can track its expiry and remind you before it expires.</p><div class="form-group" style="margin-bottom:14px;"><label>Credit Amount ($)</label><input type="number" id="cc-amount" value="' + suggestedAmount + '" step="0.01" min="0.01"></div><div class="form-group" style="margin-bottom:20px;"><label>Credit Expiry Date</label><input type="date" id="cc-expiry" value="' + expDefault + '"><span class="hint">Usually 1 year from original ticket purchase date</span></div><div style="display:flex;gap:10px;"><button class="btn-primary" style="flex:2;" onclick="saveClaimedCredit(\'' + bookingId + \')">Save Credit</button><button class="btn-secondary" style="flex:1;" onclick="document.getElementById(\'claim-credit-modal\').style.display=\'none\'">Cancel</button></div></div>';
+  overlay.onclick = function(e) { if (e.target === overlay) overlay.style.display = 'none'; };
+}
+
+async function saveClaimedCredit(bookingId) {
+  const amount = parseFloat(document.getElementById('cc-amount').value);
+  const expiryDate = document.getElementById('cc-expiry').value;
+  if (!amount || amount <= 0) { alert('Please enter a valid credit amount.'); return; }
+  try {
+    await apiFetch('/bookings/' + bookingId + '/claim-credit', { method: 'PATCH', body: JSON.stringify({ creditAmount: amount, creditExpiryDate: expiryDate }) });
+    document.getElementById('claim-credit-modal').style.display = 'none';
+    loadBookings();
+  } catch(e) { alert('Failed to save credit. Please try again.'); }
+}
+
+// Travel Credits in Account Tab
+async function loadTravelCredits() {
+  const el = document.getElementById('travel-credits-section');
+  if (!el) return;
+  try {
+    const bs = await apiFetch('/bookings');
+    const claimed = bs.filter(function(b){ return b.creditClaimed; });
+    const pending = bs.filter(function(b){ return !b.creditClaimed && b.lowestPriceSeen && b.pricePaid > b.lowestPriceSeen; });
+    if (claimed.length === 0 && pending.length === 0) { el.style.display = 'none'; return; }
+    const totalClaimed = claimed.reduce(function(s,b){ return s + (b.creditAmount||0); }, 0);
+    const totalPending = pending.reduce(function(s,b){ return s + (b.pricePaid - b.lowestPriceSeen); }, 0);
+    let html = '<div class="card"><div class="card-title">\uD83D\uDCB3 Travel Credits Tracker</div>';
+    if (pending.length > 0) html += '<div class="alert alert-info" style="margin-bottom:14px;">\uD83D\uDCB0 <strong>$' + totalPending.toFixed(2) + '</strong> in unclaimed savings across ' + pending.length + ' flight(s). <a href="#" onclick="switchTab(\'flights\'); return false;" style="color:var(--blue);">View &rarr;</a></div>';
+    if (claimed.length > 0) {
+      html += '<div class="section-title" style="margin-bottom:12px;">Claimed &mdash; Total: <span style="color:var(--green);">$' + totalClaimed.toFixed(2) + '</span></div>';
+      claimed.forEach(function(b) {
+        const dte = b.creditExpiryDate ? Math.ceil((new Date(b.creditExpiryDate) - Date.now()) / 86400000) : null;
+        const ec = dte !== null ? (dte < 7 ? 'expiry-urgent' : dte < 30 ? 'expiry-soon' : 'expiry-ok') : 'expiry-ok';
+        html += '<div class="credit-row"><div><div class="cr-airline">' + b.airline + ' &middot; ' + b.origin + '&rarr;' + b.destination + '</div><div class="cr-route">' + new Date(b.departureDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + (b.creditExpiryDate ? ' &middot; <span class="expiry-pill ' + ec + '">Expires ' + new Date(b.creditExpiryDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + (dte !== null && dte <= 30 ? ' &mdash; ' + dte + 'd left!' : '') + '</span>' : '') + '</div></div><div class="cr-amount">$' + (b.creditAmount||0).toFixed(2) + '</div></div>';
+      });
+    }
+    html += '</div>';
+    el.innerHTML = html;
+  } catch(e) { el.style.display = 'none'; }
+}
+
 
 // ── Boot ──
 init();

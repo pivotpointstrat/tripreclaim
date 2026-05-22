@@ -34,3 +34,41 @@
 ---
 *All future changes logged below with: Date | Change | Version tag*
 ---
+
+## Sprint 3 Backend — 2026-05-21
+
+### New Files
+- `backend/models/AirlinePolicy.js` — Mongoose schema for airline policy knowledge base
+- `backend/services/policyAgent.js` — Policy agent: seed data, Firecrawl scraping, change detection
+- `backend/routes/policy.js` — REST endpoints: GET /policy/:code, POST /policy/refresh, GET /policy/changes
+
+### Modified Files
+- `backend/models/Booking.js`
+  - Added `bookingType` (cash/miles/points), `milesPaid`, `milesProgram` for award booking support
+  - Added `creditClaimed`, `creditAmount`, `creditExpiryDate`, `creditClaimedAt` for credit tracking
+  - Added `basic_economy` to `cabinClass` enum
+  - Updated `getCheckIntervalMinutes()` with 24h front-loaded monitoring (15min → 30min → 1hr → adaptive)
+- `backend/services/alerts.js`
+  - Added `calculateNetSavings()` — subtracts cancellation fees before alerting
+  - Added `_getCheckIntervalMinutes()` pure function (lean() compatible)
+  - Net savings gate: only alert when netSavings > 0
+  - "Not worth claiming" alert path when fees > drop
+  - Miles bookings: deferred dollar alerting, logs miles drop
+- `backend/services/email.js`
+  - `sendPriceDropAlert()` upgraded with policy claim kit, 24h banner, fee row, not-worth-it variant
+  - `buildClaimKitHtml()` — numbered steps from DB, claim URL button, credit expiry date
+  - `buildTwentyFourHourBanner()` — DOT 24h full cash refund alert
+  - `sendCreditExpiryReminder()` — 30-day and 7-day urgency emails
+  - `sendPolicyChangeAlert()` — notifies affected subscribers on policy changes
+- `backend/cron.js`
+  - Cron interval: 30min → 15min (supports front-loaded new bookings)
+  - Seeds policies on startup
+  - Daily 9am UTC: credit expiry reminders
+  - Monday 3am UTC: weekly Firecrawl policy refresh + subscriber notifications
+- `backend/routes/bookings.js`
+  - Added `PATCH /bookings/:id/claim-credit` endpoint
+- `backend/server.js`
+  - Registered `GET|POST /policy` routes
+
+### New Env Vars
+- `FIRECRAWL_API_KEY` — for weekly airline policy scraping (optional; gracefully skipped if absent)
