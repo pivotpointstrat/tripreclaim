@@ -965,7 +965,7 @@ async function renderFlightsTab() {
             </div>
             <button class="btn-lookup" onclick="openAirlineLookup()">Look Up Booking →</button>
           </div>
-          <div style="font-size:0.78rem;color:#64748b;margin-top:8px;">Opens your airline's manage booking page to retrieve your flight details, then fill in below.</div>
+          <div id="lookup-hint" style="font-size:0.78rem;color:#64748b;margin-top:8px;">✨ We'll automatically retrieve your flight details — no copying needed. Supported: American, Delta, United, JetBlue, Alaska.</div>
         </div>
 
         <div class="form-grid">
@@ -1121,18 +1121,67 @@ async function renderFlightsTab() {
   setTimeout(loadPolicyChanges, 200);
 }
 
-function openAirlineLookup() {
+async function openAirlineLookup() {
   const airline = document.getElementById('lookup-airline').value;
-  const conf = document.getElementById('lookup-conf').value.trim();
+  const conf = document.getElementById('lookup-conf').value.trim().toUpperCase();
   const lastName = document.getElementById('lookup-lastname').value.trim();
+  const btn = document.querySelector('.btn-lookup');
+  const hint = document.getElementById('lookup-hint');
+
   if (!airline) { alert('Please select an airline first.'); return; }
-  // Copy confirmation to main form if provided
-  if (conf) { const fi = document.getElementById('f-conf'); if (fi) fi.value = conf.toUpperCase(); }
-  // Copy airline to main form
-  const fa = document.getElementById('f-airline'); if (fa) fa.value = airline;
-  // Open airline manage-booking page
-  const url = AIRLINE_LOOKUP_URLS[airline] || 'https://www.google.com/search?q=' + encodeURIComponent(airline + ' manage booking');
-  window.open(url, '_blank');
+  if (!conf)    { alert('Please enter your confirmation number.'); return; }
+  if (!lastName){ alert('Please enter your last name.'); return; }
+
+  // Check if this airline supports auto-lookup
+  const supported = ['American Airlines','Delta','United','JetBlue','Alaska Airlines'];
+  if (!supported.includes(airline)) {
+    // Fallback: open manage booking page for unsupported airlines
+    const fa = document.getElementById('f-airline'); if (fa) fa.value = airline;
+    const fi = document.getElementById('f-conf');    if (fi) fi.value = conf;
+    hint.innerHTML = `⚠️ Auto-lookup isn't available for ${airline} yet. <a href="${AIRLINE_LOOKUP_URLS[airline] || 'https://www.google.com/search?q='+encodeURIComponent(airline+' manage booking')}" target="_blank" style="color:#1d4ed8;">Open manage booking →</a> and enter details below.`;
+    return;
+  }
+
+  // Show loading state
+  btn.disabled = true;
+  btn.textContent = '🔍 Looking up...';
+  hint.innerHTML = '<span style="color:#1d4ed8;">⏳ Connecting to ' + airline + '...</span>';
+
+  try {
+    const result = await apiFetch('/lookup/booking', {
+      method: 'POST',
+      body: JSON.stringify({ airline, confirmationNumber: conf, lastName })
+    });
+
+    if (result && result.data) {
+      const d = result.data;
+      // Auto-fill main booking form
+      const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+      set('f-airline',   d.airline);
+      set('f-origin',    d.origin);
+      set('f-dest',      d.destination);
+      set('f-depdate',   d.departureDate);
+      set('f-cabin',     d.cabinClass || 'economy');
+      set('f-conf',      d.confirmationNumber);
+      set('f-flightnum', d.flightNumber || '');
+      // Passengers
+      const paxEl = document.getElementById('f-passengers');
+      if (paxEl && d.passengers) paxEl.value = d.passengers;
+      // Show success + prompt for price
+      hint.innerHTML = '<span style="color:#16a34a;">✅ Booking found! One last thing — enter the price you paid below (check your confirmation email).</span>';
+      // Scroll to main form
+      document.getElementById('f-price').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.getElementById('f-price').focus();
+    } else {
+      hint.innerHTML = '<span style="color:#dc2626;">❌ Could not retrieve booking. Please enter details manually below.</span>';
+    }
+  } catch (err) {
+    const msg = err.message || 'Lookup failed';
+    hint.innerHTML = '<span style="color:#dc2626;">❌ ' + msg + '</span>';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Look Up Booking →';
+  }
 }
 
 function setMatchMode(mode) {
