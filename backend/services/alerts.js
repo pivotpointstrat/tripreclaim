@@ -305,16 +305,21 @@ const _getCheckIntervalMinutes = (createdAt, departureDate, purchasedAt) => {
   const purchaseTime = purchasedAt ? new Date(purchasedAt) : new Date(createdAt);
   const hoursSinceBooking = (now - purchaseTime) / (1000 * 60 * 60);
 
-  // 24-hour front-loaded window
-  if (hoursSinceBooking < 1)  return 15;
-  if (hoursSinceBooking < 6)  return 30;
-  if (hoursSinceBooking < 24) return 60;
+  // Within 24h of purchase: aggressive — check every 15 min (4x/hour)
+  // Fares can change 30+ times per day — maximum value delivered here
+  if (hoursSinceBooking < 24) return 15;
 
-  // After 24h: adaptive
-  if (daysUntilDeparture <= 3)  return 60;
-  if (daysUntilDeparture <= 14) return 180;
-  if (daysUntilDeparture <= 30) return 360;
-  return 1440;
+  // Hours 24–36 post-purchase (first 12h after DOT window closes): every 1 hour
+  if (hoursSinceBooking < 36) return 60;
+
+  // Hours 36–48 post-purchase (second 12h after DOT window closes): every 2 hours
+  if (hoursSinceBooking < 48) return 120;
+
+  // After 48h: adaptive based on days until departure
+  if (daysUntilDeparture <= 3)  return 60;   // <3 days: hourly
+  if (daysUntilDeparture <= 14) return 180;  // 3-14 days: every 3 hours
+  if (daysUntilDeparture <= 30) return 360;  // 14-30 days: every 6 hours
+  return 720;                                 // >30 days: every 12 hours
 };
 
 /**
