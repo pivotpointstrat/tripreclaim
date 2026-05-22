@@ -813,6 +813,9 @@ function renderObStep2() {
     <div class="toggle-group">
       <div class="toggle-opt ${obData.notifEmail ? 'selected' : '' }" onclick="toggleOb('email')" id="tog-email">📧 Email</div>
       <div class="toggle-opt ${obData.notifSms ? 'selected' : '' }" onclick="toggleOb('sms')" id="tog-sms">📱 SMS</div>
+      <p style="font-size:0.78rem;color:#94a3b8;margin:6px 0 0;line-height:1.5;">
+        By enabling SMS, you consent to receive recurring automated flight price drop text messages from TripReclaim at the number above, sent from (888)&nbsp;516-5777. Msg &amp; data rates may apply. Frequency varies. Reply <strong>STOP</strong> to unsubscribe. <a href="/privacy/" target="_blank">Privacy Policy</a>
+      </p>
     </div>
     <div style="display:flex;gap:12px;margin-top:20px;">
       <button class="btn-secondary" style="flex:1;" onclick="obBack()">← Back</button>
@@ -872,6 +875,14 @@ let matchMode = 'exact';
 async function renderFlightsTab() {
   const minDate = new Date(Date.now()+86400000).toISOString().split('T')[0];
   document.getElementById('tab-content').innerHTML = `
+    ${user.plan === 'per_trip' ? `
+    <div style="background:linear-gradient(135deg,#1d4ed8,#7c3aed);border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div style="color:#fff;">
+        <div style="font-weight:700;font-size:1rem;">🚀 You're on Per Trip — ${user.tripsRemaining || 0} trip${user.tripsRemaining !== 1 ? 's' : ''} remaining</div>
+        <div style="font-size:0.85rem;opacity:0.85;margin-top:2px;">Upgrade to Monthly for unlimited monitoring on all your flights</div>
+      </div>
+      <a href="https://buy.stripe.com/aEU5nH3Yf2wf5XqcN6" target="_blank" style="background:#fff;color:#1d4ed8;font-weight:700;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:0.9rem;white-space:nowrap;">Upgrade to Monthly →</a>
+    </div>` : ''}
     <div id="savings-area"></div>
     <div id="policy-changes-area"></div>
     <div class="card">
@@ -1365,6 +1376,7 @@ async function renderAccountTab() {
               <option value="false" ${!user.notificationPrefs?.sms ? 'selected'  : '' }>Disabled</option>
               <option value="true" ${user.notificationPrefs?.sms ? 'selected'  : '' }>Enabled</option>
             </select>
+            <p style="font-size:0.78rem;color:#94a3b8;margin:4px 0 0;line-height:1.5;">By enabling SMS, you consent to receive recurring automated flight price drop text messages from TripReclaim at the number above, sent from (888)&nbsp;516-5777. Msg &amp; data rates may apply. Reply <strong>STOP</strong> to unsubscribe. <a href="/privacy/" target="_blank">Privacy Policy</a></p>
           </div>
           <div class="form-group">
             <label>Default Alert Threshold ($)</label>

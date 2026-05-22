@@ -397,4 +397,110 @@ const sendSmsPriceDropAlert = async (phone, booking, currentPrice, opts = {}) =>
   await sendSmsAlert(phone, body);
 };
 
-module.exports = { sendMagicLink, sendWelcome, sendPriceDropAlert, sendCreditExpiryReminder, sendPolicyChangeAlert, sendSmsAlert, sendSmsPriceDropAlert };
+/**
+ * Onboarding Email — Day 0 (Welcome after purchase)
+ */
+const sendOnboardingDay0 = async (email, user) => {
+  const planLabel = { per_trip: 'Per Trip ($1.99)', monthly: 'Monthly ($4.99/mo)', annual: 'Annual ($39/yr)' }[user.plan] || user.plan;
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: '✈️ Welcome to TripReclaim — here\'s how to save on your next flight',
+    html: `
+      <div style="font-family:sans-serif;max-width:580px;margin:0 auto;padding:32px;color:#0f172a;">
+        <h1 style="color:#1d4ed8;">✈️ TripReclaim</h1>
+        <h2>Welcome${user.name ? ', ' + user.name : ''}! You\'re protected.</h2>
+        <p style="color:#475569;">You\'re now on the <strong>${planLabel}</strong> plan. Every flight you add to TripReclaim is monitored 24/7 — the moment the price drops, we\'ll tell you exactly how to get your money back.</p>
+        <div style="background:#f0f9ff;border-radius:12px;padding:20px;margin:24px 0;">
+          <p style="margin:0 0 10px 0;"><strong>🚀 3 steps to start saving:</strong></p>
+          <p style="margin:0 0 8px 0;">1️⃣ <strong>Add your booking</strong> — Go to your dashboard and enter your flight details</p>
+          <p style="margin:0 0 8px 0;">2️⃣ <strong>We monitor 24/7</strong> — We check prices every 15–60 minutes depending on urgency</p>
+          <p style="margin:0;">3️⃣ <strong>Get your refund</strong> — When prices drop, we send a complete Claim Kit with step-by-step instructions</p>
+        </div>
+        <div style="background:#fff7ed;border-radius:12px;padding:20px;margin:24px 0;border-left:4px solid #f97316;">
+          <p style="margin:0 0 8px 0;"><strong>⚡ Pro tip: The 24-hour rule</strong></p>
+          <p style="margin:0;color:#374151;">Just booked? Add your flight to TripReclaim <em>right now</em>. In the first 24 hours after booking, DOT regulations give you the right to cancel for a <strong>full cash refund</strong> if prices drop — not just a credit. We monitor every 15 minutes during this window.</p>
+        </div>
+        <a href="https://tripreclaim.com/dashboard/" style="display:inline-block;margin:8px 0 24px;padding:14px 28px;background:#1d4ed8;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">Add Your First Flight →</a>
+        <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
+        <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a> · <a href="https://tripreclaim.com/dashboard/" style="color:#94a3b8;">Manage account</a></p>
+      </div>
+    `,
+  });
+};
+
+/**
+ * Onboarding Email — Day 3 (Example alert preview)
+ */
+const sendOnboardingDay3 = async (email, user) => {
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: '📬 Here\'s exactly what a TripReclaim price drop alert looks like',
+    html: `
+      <div style="font-family:sans-serif;max-width:580px;margin:0 auto;padding:32px;color:#0f172a;">
+        <h1 style="color:#1d4ed8;">✈️ TripReclaim</h1>
+        <h2>This is what a price drop alert looks like</h2>
+        <p style="color:#475569;">When TripReclaim detects a price drop on one of your flights, here\'s the email you\'ll receive — complete with everything you need to claim your refund:</p>
+
+        <!-- Mock alert email -->
+        <div style="border:2px solid #1d4ed8;border-radius:12px;padding:24px;margin:24px 0;background:#f8fafc;">
+          <p style="color:#64748b;font-size:12px;margin:0 0 12px 0;">EXAMPLE ALERT EMAIL ↓</p>
+          <h3 style="color:#16a34a;margin:0 0 4px 0;">💰 Price dropped $127 on your flight</h3>
+          <p style="color:#374151;margin:0 0 16px 0;">AA 202 · JFK → LAX · July 15</p>
+          <div style="background:#fff;border-radius:8px;padding:16px;margin-bottom:16px;">
+            <p style="margin:0 0 6px 0;">You paid: <strong>$489</strong></p>
+            <p style="margin:0 0 6px 0;">Current price: <strong style="color:#16a34a;">$342</strong></p>
+            <p style="margin:0;">Net savings: <strong style="color:#16a34a;">$127</strong> (after any fees)</p>
+          </div>
+          <p style="font-size:0.95rem;margin:0 0 8px 0;"><strong>How to claim your American Airlines credit:</strong></p>
+          <p style="font-size:0.9rem;color:#374151;margin:0 0 6px 0;">1. Go to aa.com → My Trips → Find booking GHABCD</p>
+          <p style="font-size:0.9rem;color:#374151;margin:0 0 6px 0;">2. Select \'Change Trip\'</p>
+          <p style="font-size:0.9rem;color:#374151;margin:0 0 6px 0;">3. Re-select same flight — $127 credit applied automatically</p>
+          <p style="font-size:0.9rem;color:#374151;margin:0;">4. Credit valid until: July 2027</p>
+        </div>
+
+        <p style="color:#475569;">Every alert includes step-by-step claim instructions, a pre-written refund email you can forward to the airline, and the exact credit expiry date.</p>
+        ${!user.onboardingComplete ? '<p style="color:#475569;"><strong>Haven\'t added a flight yet?</strong> You can add any upcoming booking — even flights you booked weeks ago.</p>' : ''}
+        <a href="https://tripreclaim.com/dashboard/" style="display:inline-block;margin:8px 0 24px;padding:14px 28px;background:#1d4ed8;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">View My Dashboard →</a>
+        <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
+        <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a> · <a href="https://tripreclaim.com/dashboard/" style="color:#94a3b8;">Manage account</a></p>
+      </div>
+    `,
+  });
+};
+
+/**
+ * Onboarding Email — Day 7 (24-hour DOT rule education + re-engagement)
+ */
+const sendOnboardingDay7 = async (email, user) => {
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: '🚨 The 24-hour refund rule most travelers don\'t know about',
+    html: `
+      <div style="font-family:sans-serif;max-width:580px;margin:0 auto;padding:32px;color:#0f172a;">
+        <h1 style="color:#1d4ed8;">✈️ TripReclaim</h1>
+        <h2>The rule airlines don\'t advertise</h2>
+        <div style="background:#fff7ed;border-left:4px solid #f97316;border-radius:8px;padding:20px;margin:24px 0;">
+          <p style="margin:0;font-size:1.05rem;"><strong>Under DOT regulations</strong>, any flight originating to or from the US can be cancelled for a <strong>full cash refund</strong> — back to your card — within 24 hours of booking, as long as the flight departs 7+ days away.</p>
+        </div>
+        <p style="color:#475569;">This means: if you book a flight today and the price drops in the next 24 hours, you can cancel for a complete refund and rebook at the lower price. Airlines are legally required to honor this.</p>
+        <p style="color:#475569;"><strong>The catch?</strong> Airlines change prices up to 35 times per day. The first 24 hours after booking is the most volatile — and the most valuable — window.</p>
+        <div style="background:#f0f9ff;border-radius:12px;padding:20px;margin:24px 0;">
+          <p style="margin:0 0 8px 0;"><strong>How TripReclaim handles this:</strong></p>
+          <p style="margin:0 0 6px 0;">⚡ Checks every <strong>15 minutes</strong> in the first hour after booking</p>
+          <p style="margin:0 0 6px 0;">🔍 Every <strong>30 minutes</strong> through hour 6</p>
+          <p style="margin:0 0 6px 0;">📊 Every <strong>hour</strong> through the 24-hour window</p>
+          <p style="margin:0;">If a price drops — even by $20 — we alert you <em>immediately</em> with your remaining refund window countdown.</p>
+        </div>
+        <p style="color:#475569;">The next time you book a flight, add it to TripReclaim the moment you confirm your booking. That\'s when it matters most.</p>
+        <a href="https://tripreclaim.com/dashboard/" style="display:inline-block;margin:8px 0 24px;padding:14px 28px;background:#1d4ed8;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">Open My Dashboard →</a>
+        <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
+        <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a> · You\'re receiving this because you subscribed to TripReclaim. <a href="https://tripreclaim.com/dashboard/" style="color:#94a3b8;">Manage preferences</a></p>
+      </div>
+    `,
+  });
+};
+
+module.exports = { sendMagicLink, sendWelcome, sendPriceDropAlert, sendCreditExpiryReminder, sendPolicyChangeAlert, sendSmsAlert, sendSmsPriceDropAlert, sendOnboardingDay0, sendOnboardingDay3, sendOnboardingDay7 };

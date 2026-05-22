@@ -3,7 +3,7 @@ const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const User = require('../models/User');
 const { generateMagicToken } = require('../middleware/auth');
-const { sendMagicLink } = require('../services/email');
+const { sendMagicLink, sendOnboardingDay0 } = require('../services/email');
 
 // Plan mapping from Stripe price IDs
 const PRICE_TO_PLAN = {
@@ -140,6 +140,13 @@ async function handleNewUser(email, stripeCustomerId, plan, subscriptionId) {
 
   // Send welcome email with dashboard link
   await sendMagicLink(email, magicUrl, plan);
+  // Send Day 0 onboarding welcome email
+  try {
+    await sendOnboardingDay0(email, user);
+    await User.findByIdAndUpdate(user._id, { onboardingEmailStep: 1 });
+  } catch (e) {
+    console.error('[webhook] Day 0 email failed:', e.message);
+  }
   console.log(`[webhook] ✅ New user onboarded: ${email} (${plan}) — magic link sent`);
 }
 

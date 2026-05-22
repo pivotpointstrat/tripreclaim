@@ -17,7 +17,7 @@ const http = require('http');
 const cron = require('node-cron');
 const connectDB = require('./db');
 const { runMonitoringCycle } = require('./services/alerts');
-const { sendCreditExpiryReminder, sendPolicyChangeAlert } = require('./services/email');
+const { sendCreditExpiryReminder, sendPolicyChangeAlert, sendOnboardingDay3, sendOnboardingDay7 } = require('./services/email');
 const { refreshAllPolicies, getRecentPolicyChanges } = require('./services/policyAgent');
 const { seedPolicies } = require('./services/policyAgent');
 const Booking = require('./models/Booking');
@@ -76,6 +76,50 @@ const start = async () => {
   // ── Every Monday at 3am UTC: Weekly policy refresh ──
   // Scrapes all airline policy pages via Firecrawl.
   // If a policy change is detected, notifies affected active subscribers.
+  
+  // ── Daily onboarding sequence check (Day 3 and Day 7 emails) ──
+  cron.schedule('0 10 * * *', async () => {
+    try {
+      const now = new Date();
+
+      // Day 3 email: users where onboardingEmailStep=1 and createdAt >= 3 days ago
+      const day3Threshold = new Date(now - 3 * 24 * 60 * 60 * 1000);
+      const day3Users = await User.find({
+        onboardingEmailStep: 1,
+        createdAt: { $lte: day3Threshold },
+      }).limit(50);
+
+      for (const user of day3Users) {
+        try {
+          await sendOnboardingDay3(user.email, user);
+          await User.findByIdAndUpdate(user._id, { onboardingEmailStep: 2 });
+          console.log(`[cron] Day 3 onboarding email sent to ${user.email}`);
+        } catch (e) {
+          console.error(`[cron] Day 3 email failed for ${user.email}:`, e.message);
+        }
+      }
+
+      // Day 7 email: users where onboardingEmailStep=2 and createdAt >= 7 days ago
+      const day7Threshold = new Date(now - 7 * 24 * 60 * 60 * 1000);
+      const day7Users = await User.find({
+        onboardingEmailStep: 2,
+        createdAt: { $lte: day7Threshold },
+      }).limit(50);
+
+      for (const user of day7Users) {
+        try {
+          await sendOnboardingDay7(user.email, user);
+          await User.findByIdAndUpdate(user._id, { onboardingEmailStep: 3 });
+          console.log(`[cron] Day 7 onboarding email sent to ${user.email}`);
+        } catch (e) {
+          console.error(`[cron] Day 7 email failed for ${user.email}:`, e.message);
+        }
+      }
+    } catch (err) {
+      console.error('[cron] Onboarding sequence error:', err.message);
+    }
+  });
+
   cron.schedule('0 3 * * 1', async () => {
     console.log('[cron] Running weekly airline policy refresh...');
     try {

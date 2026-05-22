@@ -64,6 +64,18 @@ const userSchema = new mongoose.Schema({
     sms: { type: Boolean, default: false },
     dropThresholdDefault: { type: Number, default: 10 },
   },
+  smsConsentAt: {
+    type: Date,
+    default: null,
+  },
+  smsConsentIp: {
+    type: String,
+    default: null,
+  },
+  onboardingEmailStep: {
+    type: Number,
+    default: 0,
+  },
   onboardingComplete: {
     type: Boolean,
     default: false,

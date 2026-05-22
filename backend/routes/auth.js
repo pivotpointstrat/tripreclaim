@@ -99,6 +99,17 @@ router.put('/profile', require('../middleware/auth').requireAuth, async (req, re
     if (notificationPrefs !== undefined) update.notificationPrefs = notificationPrefs;
     if (onboardingComplete !== undefined) update.onboardingComplete = onboardingComplete;
 
+    // Record SMS consent timestamp when SMS is first enabled
+    if (notificationPrefs?.sms === true && !req.user.smsConsentAt) {
+      update.smsConsentAt = new Date();
+      update.smsConsentIp = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || null;
+    }
+    // Clear consent timestamp when SMS is disabled
+    if (notificationPrefs?.sms === false) {
+      update.smsConsentAt = null;
+      update.smsConsentIp = null;
+    }
+
     const user = await User.findByIdAndUpdate(
       req.user._id,
       { $set: update },
