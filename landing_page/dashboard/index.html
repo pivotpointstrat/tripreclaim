@@ -89,6 +89,29 @@
     .btn-lookup { background: var(--blue); color: #fff; padding: 10px 16px; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap; height: 42px; }
     .btn-lookup:hover { background: var(--blue-dark); }
 
+    /* ── Method tabs ── */
+    .method-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .method-tab { flex: 1; min-width: 130px; display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: #fff; border: 2px solid var(--border); border-radius: 12px; cursor: pointer; text-align: left; transition: all 0.15s; }
+    .method-tab:hover { border-color: #93c5fd; background: #f0f9ff; }
+    .method-tab.active { border-color: var(--blue); background: var(--blue-light); }
+    .tab-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .tab-col { display: flex; flex-direction: column; }
+    .tab-label { font-size: 0.88rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+    .method-tab.active .tab-label { color: var(--blue); }
+    .tab-sub { font-size: 0.72rem; color: #94a3b8; font-weight: 400; margin-top: 1px; }
+    .method-tab.active .tab-sub { color: #3b82f6; }
+
+    /* ── Email forward card ── */
+    .email-fwd-card { background: linear-gradient(135deg,#eff6ff,#dbeafe); border: 1.5px solid #93c5fd; border-radius: 12px; padding: 20px 22px; }
+    .efwd-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 10px 0; }
+    .efwd-address { background: #1d4ed8; color: #fff; padding: 10px 18px; border-radius: 8px; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.3px; }
+    .efwd-copy { background: #fff; border: 1.5px solid #93c5fd; color: #1d4ed8; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+    .efwd-copy:hover { background: #eff6ff; }
+
+    /* ── Monitor toggle ── */
+    .monitor-toggle { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: var(--slate-light); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 0.83rem; font-weight: 600; color: #475569; margin: 14px 0 0; transition: background 0.15s; user-select: none; }
+    .monitor-toggle:hover { background: #e2e8f0; }
+
     /* ── Monitoring preferences ── */
     .match-mode-group { display: flex; gap: 10px; margin-bottom: 16px; }
     .match-mode-opt { flex: 1; padding: 12px 14px; border: 2px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.15s; }
@@ -932,35 +955,51 @@ async function renderFlightsTab() {
             <div style="font-size:0.82rem;color:#1e40af;margin-top:4px;">💡 Award ticket price drops are the easiest to claim — airlines refund miles difference immediately with no fees.</div>
           </div>
         </div>
-      <div class="step-indicator">
-        <div class="step-item">
-          <div class="step-num active" id="snum-1">1</div>
-          <div class="step-label active" id="slbl-1">Your Booking</div>
-        </div>
-        <div class="step-connector" id="sconn"></div>
-        <div class="step-item">
-          <div class="step-num pending" id="snum-2">2</div>
-          <div class="step-label pending" id="slbl-2">Monitoring Prefs</div>
-        </div>
+<!-- JS-compat hidden elements -->
+      <div style="display:none;">
+        <span id="form-step-badge">Add Flight</span>
+        <div id="snum-1"></div><div id="slbl-1"></div>
+        <div id="snum-2"></div><div id="slbl-2"></div>
+        <div id="sconn"></div>
       </div>
 
-      <!-- STEP 1: Booking Details -->
+      <!-- Method Tabs -->
+      <div class="method-tabs">
+        <button class="method-tab active" id="mtab-email" onclick="setMethod('email')">
+          <span class="tab-icon">📧</span>
+          <span class="tab-col"><span class="tab-label">Forward Email</span><span class="tab-sub">Every airline worldwide</span></span>
+        </button>
+        <button class="method-tab" id="mtab-lookup" onclick="setMethod('lookup')">
+          <span class="tab-icon">🔍</span>
+          <span class="tab-col"><span class="tab-label">Look Up Booking</span><span class="tab-sub">7 major airlines</span></span>
+        </button>
+        <button class="method-tab" id="mtab-manual" onclick="setMethod('manual')">
+          <span class="tab-icon">✏️</span>
+          <span class="tab-col"><span class="tab-label">Enter Manually</span><span class="tab-sub">Any airline</span></span>
+        </button>
+      </div>
+
+      <!-- STEP 1 wrapper -->
       <div class="form-step active" id="step1">
-        <!-- Confirmation lookup -->
-        <div class="lookup-banner">
-          <!-- Method 1: Email Forward -->
-          <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1.5px solid #93c5fd;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
-            <div style="font-weight:700;color:#1d4ed8;font-size:0.95rem;margin-bottom:4px;">📧 Easiest: Forward your confirmation email</div>
-            <div style="font-size:0.85rem;color:#1e40af;margin-bottom:8px;">Works for <strong>every airline worldwide</strong> — including British Airways, Lufthansa, Southwest, and more. We parse it automatically.</div>
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-              <div style="background:#1d4ed8;color:#fff;padding:8px 16px;border-radius:8px;font-weight:700;font-size:0.9rem;letter-spacing:0.5px;">track@tripreclaim.com</div>
-              <button onclick="copyTrackEmail()" style="background:#fff;border:1.5px solid #93c5fd;color:#1d4ed8;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:0.85rem;font-weight:600;">📋 Copy</button>
+
+        <!-- Panel A: Email Forward -->
+        <div id="mpanel-email">
+          <div class="email-fwd-card">
+            <div style="font-size:1rem;font-weight:700;color:#1d4ed8;margin-bottom:8px;">Forward your booking confirmation email to:</div>
+            <div class="efwd-row">
+              <div class="efwd-address">track@tripreclaim.com</div>
+              <button class="efwd-copy" onclick="copyTrackEmail()">📋 Copy</button>
               <span id="track-copy-msg" style="color:#16a34a;font-size:0.82rem;display:none;">✅ Copied!</span>
             </div>
-            <div style="font-size:0.75rem;color:#64748b;margin-top:6px;">Just forward your booking confirmation email to this address. We'll set up monitoring automatically and email you confirmation.</div>
+            <div style="font-size:0.85rem;color:#475569;margin-top:10px;line-height:1.5;">
+              Works for <strong>every airline worldwide</strong> — British Airways, Lufthansa, Southwest, Korean Air, and more.<br>
+              We parse it automatically and set up price monitoring. You'll get a confirmation email within 30 seconds.
+            </div>
           </div>
-          <!-- Method 2: Conf # lookup -->
-          <div class="lookup-banner-title">🔍 Or look up by confirmation number (American, Delta, United, JetBlue, Alaska)</div>
+        </div>
+
+        <!-- Panel B: Look Up -->
+        <div id="mpanel-lookup" style="display:none;">
           <div class="lookup-row">
             <div class="form-group">
               <label>Airline</label>
@@ -982,170 +1021,180 @@ async function renderFlightsTab() {
               <label>Last Name</label>
               <input type="text" id="lookup-lastname" placeholder="e.g. Smith">
             </div>
-            <button class="btn-lookup" onclick="openAirlineLookup()">Look Up Booking →</button>
+            <button class="btn-lookup" onclick="openAirlineLookup()">Look Up Booking &rarr;</button>
           </div>
-          <div id="lookup-hint" style="font-size:0.78rem;color:#64748b;margin-top:8px;">✨ We'll automatically retrieve your flight details — no copying needed. Supported: American, Delta, United, JetBlue, Alaska, British Airways, Lufthansa.</div>
+          <div id="lookup-hint" style="font-size:0.78rem;color:#64748b;margin-top:10px;">Supported: American, Delta, United, JetBlue, Alaska, British Airways, Lufthansa. Details auto-fill below.</div>
         </div>
 
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Airline *</label>
-            <select id="f-airline" required>
-              <option value="">Select airline...</option>
-              <optgroup label="── Major US Carriers ──">
-                ${MAJOR_US_AIRLINES.map(a => `<option>${a}</option>`).join('')}
-              </optgroup>
-              <optgroup label="── All Airlines ──">
-                ${OTHER_AIRLINES.map(a => `<option>${a}</option>`).join('')}
-              </optgroup>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Cabin Class</label>
-            <select id="f-cabin">
-              <option value="economy">Economy</option>
-              <option value="basic_economy">Basic Economy ⚠️</option>
-              <option value="premium_economy">Premium Economy</option>
-              <option value="business">Business</option>
-              <option value="first">First Class</option>
-            </select>
-            <div class="be-warning" id="be-warning">⚠️ <strong>Basic Economy tickets are non-refundable</strong> on most airlines after the 24-hour window. You may not be able to claim credits for price drops. Consider upgrading to Main Cabin for full price drop protection.</div>
-          </div>
-          <div class="form-group">
-            <label>From Airport *</label>
-            <div class="airport-wrap" id="f-origin-wrap">
-              <input id="f-origin" class="airport-input" placeholder="City or airport code (e.g. New York or JFK)" autocomplete="off"
-                oninput="onAirportInput('f-origin', this.value)"
-                onkeydown="onAirportKeydown('f-origin', event, this.value)"
-                onblur="setTimeout(closeAcDropdown, 200)"
-              >
-            </div>
-          </div>
-          <div class="form-group">
-            <label>To Airport *</label>
-            <div class="airport-wrap" id="f-dest-wrap">
-              <input id="f-dest" class="airport-input" placeholder="City or airport code (e.g. Los Angeles or LAX)" autocomplete="off"
-                oninput="onAirportInput('f-dest', this.value)"
-                onkeydown="onAirportKeydown('f-dest', event, this.value)"
-                onblur="setTimeout(closeAcDropdown, 200)"
-              >
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Departure Date *</label>
-            <input type="date" id="f-depdate" required min="${minDate}">
-          </div>
-          <div class="form-group">
-            <label>Return Date <span style="font-weight:400;color:#94a3b8">(optional)</span></label>
-            <input type="date" id="f-retdate" min="${minDate}">
-          </div>
-          <div class="form-group">
-            <label>Time of Purchase <span style="font-weight:400;color:#e53e3e">&ast; helps detect 24h refund window</span></label>
-            <input type="datetime-local" id="f-purchasedat">
-            <span class="hint">u26a1 Enter the exact date &amp; time you bought this ticket. Within 24 hours of purchase = <strong>full cash refund</strong> eligible under DOT rules.</span>
-          </div>
-          <div class="form-group">
-            <label>Price You Paid ($) *</label>
-            <input type="text" id="f-price" placeholder="e.g. $1,299.00" required oninput="formatPrice(this)">
-          </div>
-          <div class="form-group">
-            <label>Passengers</label>
-            <select id="f-pax">
-              ${[1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}">${n}</option>`).join('')}
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Booking Confirmation # <span style="font-weight:400;color:#94a3b8">(recommended)</span></label>
-            <input type="text" id="f-conf" placeholder="e.g. ABC123" style="text-transform:uppercase">
-            <span class="hint">Used in your price drop refund email template</span>
-          </div>
-        </div>
-        <div id="form-msg"></div>
-        <div class="form-actions">
-          <button class="btn-primary" onclick="goToStep2()">Next: Monitoring Preferences →</button>
-        </div>
-      </div>
-
-      <!-- STEP 2: Monitoring Preferences -->
-      <div class="form-step" id="step2">
-        <div style="margin-bottom:16px;">
-          <label style="font-size:0.85rem;font-weight:600;color:#374151;display:block;margin-bottom:10px;">How should we match prices to your booking?</label>
-          <div class="match-mode-group">
-            <div class="match-mode-opt selected" id="mode-exact" onclick="setMatchMode('exact')">  
-              <div class="mode-title">🎯 Exact Flight Match</div>
-              <div class="mode-desc">Track only your specific flight number. Required for most airline refund policies.</div>
-            </div>
-            <div class="match-mode-opt" id="mode-flexible" onclick="setMatchMode('flexible')">  
-              <div class="mode-title">🔄 Flexible Match</div>
-              <div class="mode-desc">Find the cheapest equivalent option that meets your criteria.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Exact mode: flight number field -->
-        <div id="exact-prefs">
-          <div class="form-group" style="max-width:280px;">
-            <label>Flight Number <span style="color:var(--blue);font-weight:600;">(recommended)</span></label>
-            <input type="text" id="f-flightnum" placeholder="e.g. AA 202 or DL 412" style="text-transform:uppercase">
-            <span class="hint">We'll search for this exact flight in price results and compare directly.</span>
-          </div>
-        </div>
-
-        <!-- Flexible mode: additional prefs -->
-        <div class="flexible-prefs" id="flexible-prefs">
+        <!-- Panel C: Manual Entry -->
+        <div id="mpanel-manual" style="display:none;">
           <div class="form-grid">
             <div class="form-group">
-              <label>Maximum Stops</label>
-              <select id="f-stops">
-                <option value="0">Nonstop only</option>
-                <option value="1">Up to 1 stop</option>
-                <option value="2">Any number of stops</option>
+              <label>Airline *</label>
+              <select id="f-airline" required>
+                <option value="">Select airline...</option>
+                <optgroup label="── Major US Carriers ──">
+                  ${MAJOR_US_AIRLINES.map(a => `<option>${a}</option>`).join('')}
+                </optgroup>
+                <optgroup label="── All Airlines ──">
+                  ${OTHER_AIRLINES.map(a => `<option>${a}</option>`).join('')}
+                </optgroup>
               </select>
-              <span class="hint">Match flights with at most this many connections</span>
             </div>
             <div class="form-group">
-              <label>Departure Time Window</label>
-              <select id="f-timewin">
-                <option value="exact">Exact time only</option>
-                <option value="2h" selected>Within ±2 hours</option>
-                <option value="4h">Within ±4 hours</option>
-                <option value="any">Any time of day</option>
+              <label>Cabin</label>
+              <select id="f-cabin">
+                <option value="economy">Economy</option>
+                <option value="basic_economy">Basic Economy &#9888;</option>
+                <option value="premium_economy">Premium Economy</option>
+                <option value="business">Business</option>
+                <option value="first">First Class</option>
               </select>
-              <span class="hint">How much departure time flexibility is acceptable</span>
+              <div class="be-warning" id="be-warning">&#9888; Basic Economy tickets are non-refundable after 24h on most airlines. Price drop credits may not apply.</div>
             </div>
             <div class="form-group">
-              <label>Airline</label>
-              <select id="f-airline-flex" onchange="checkAirlineFlexWarning()">
-                <option value="same">Same airline only</option>
-                <option value="any">Any airline</option>
-              </select>
-              <span class="hint" id="airline-flex-hint">Same airline required for most refund claims outside the 24h window</span>
-              <div id="any-airline-warning" style="display:none;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:10px 12px;margin-top:6px;font-size:0.85rem;color:#92400e;">
-                ⚠️ <strong>Outside 24h window:</strong> Different-airline savings are not directly actionable — you would need to cancel your current booking (losing any fees) and rebook. TripReclaim will monitor <strong>same airline only</strong> outside the 24h window.
+              <label>From *</label>
+              <div class="airport-wrap" id="f-origin-wrap">
+                <input id="f-origin" class="airport-input" placeholder="City or airport (e.g. New York or JFK)" autocomplete="off"
+                  oninput="onAirportInput('f-origin', this.value)"
+                  onkeydown="onAirportKeydown('f-origin', event, this.value)"
+                  onblur="setTimeout(closeAcDropdown, 200)">
               </div>
             </div>
+            <div class="form-group">
+              <label>To *</label>
+              <div class="airport-wrap" id="f-dest-wrap">
+                <input id="f-dest" class="airport-input" placeholder="City or airport (e.g. Los Angeles or LAX)" autocomplete="off"
+                  oninput="onAirportInput('f-dest', this.value)"
+                  onkeydown="onAirportKeydown('f-dest', event, this.value)"
+                  onblur="setTimeout(closeAcDropdown, 200)">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Departure Date *</label>
+              <input type="date" id="f-depdate" required min="${minDate}">
+            </div>
+            <div class="form-group">
+              <label>Return Date <span style="font-weight:400;color:#94a3b8;">(optional)</span></label>
+              <input type="date" id="f-retdate" min="${minDate}">
+            </div>
+            <div class="form-group">
+              <label>Purchase Date/Time <span style="font-size:0.75rem;color:#3b82f6;">&#9889; 24h DOT window</span></label>
+              <input type="datetime-local" id="f-purchasedat">
+            </div>
+            <div class="form-group">
+              <label>Price Paid ($) *</label>
+              <input type="text" id="f-price" placeholder="e.g. 1,299.00" required oninput="formatPrice(this)">
+            </div>
+            <div class="form-group">
+              <label>Passengers</label>
+              <select id="f-pax">
+                ${[1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}">${n}</option>`).join('')}
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Confirmation # <span style="font-weight:400;color:#94a3b8;">(optional)</span></label>
+              <input type="text" id="f-conf" placeholder="e.g. ABC123" style="text-transform:uppercase">
+            </div>
+          </div>
+
+          <!-- Collapsible Monitoring Prefs -->
+          <div class="monitor-toggle" id="monitor-toggle" onclick="toggleMonitorPrefs()">
+            &#9881; Customize monitoring <span id="monitor-toggle-arrow" style="font-size:0.75rem;">&#9660;</span>
+          </div>
+          <div id="monitor-prefs-panel" style="display:none;padding:14px 0 4px;">
+            <label style="font-size:0.85rem;font-weight:600;color:#374151;display:block;margin-bottom:10px;">Price matching method</label>
+            <div class="match-mode-group">
+              <div class="match-mode-opt selected" id="mode-exact" onclick="setMatchMode('exact')">
+                <div class="mode-title">&#127919; Exact Flight</div>
+                <div class="mode-desc">Track your specific flight number.</div>
+              </div>
+              <div class="match-mode-opt" id="mode-flexible" onclick="setMatchMode('flexible')">
+                <div class="mode-title">&#x1F504; Flexible</div>
+                <div class="mode-desc">Find the cheapest equivalent option.</div>
+              </div>
+            </div>
+            <div id="exact-prefs" style="margin-top:12px;">
+              <div class="form-group" style="max-width:260px;">
+                <label>Flight Number</label>
+                <input type="text" id="f-flightnum" placeholder="e.g. AA 202" style="text-transform:uppercase">
+              </div>
+            </div>
+            <div class="flexible-prefs" id="flexible-prefs">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Max Stops</label>
+                  <select id="f-stops">
+                    <option value="0">Nonstop only</option>
+                    <option value="1">Up to 1 stop</option>
+                    <option value="2">Any stops</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Time Window</label>
+                  <select id="f-timewin">
+                    <option value="exact">Exact time</option>
+                    <option value="2h" selected>±2 hours</option>
+                    <option value="4h">±4 hours</option>
+                    <option value="any">Any time</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Airline</label>
+                  <select id="f-airline-flex" onchange="checkAirlineFlexWarning()">
+                    <option value="same">Same airline only</option>
+                    <option value="any">Any airline</option>
+                  </select>
+                  <span class="hint" id="airline-flex-hint">Same airline only outside the 24h window</span>
+                  <div id="any-airline-warning" style="display:none;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:10px 12px;margin-top:6px;font-size:0.82rem;color:#92400e;">
+                    &#9888; <strong>Outside 24h window:</strong> TripReclaim monitors same airline only. Cross-airline savings require cancellation.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group" style="max-width:200px;margin-top:12px;">
+              <label>Alert threshold ($)</label>
+              <input type="number" id="f-threshold" value="10" min="5" step="1">
+            </div>
+          </div>
+
+          <div id="form-msg"></div>
+          <div class="form-actions" style="margin-top:16px;">
+            <button class="btn-primary" id="submit-btn" onclick="goToStep2()">Start Monitoring &rarr;</button>
           </div>
         </div>
 
-        <hr class="section-divider">
+      </div>
 
-        <div class="form-group" style="max-width:280px;">
-          <label>Alert me when price drops by at least ($)</label>
-          <input type="number" id="f-threshold" value="10" min="5" step="1">
-          <span class="hint">Default: $10 minimum drop per person</span>
-        </div>
-
+      <!-- Step 2 hidden (JS compatibility) -->
+      <div class="form-step" id="step2" style="display:none !important;">
         <div id="step2-msg"></div>
         <div class="form-actions">
-          <button class="btn-secondary" onclick="goToStep1()">← Back</button>
-          <button class="btn-primary" id="submit-btn" onclick="submitBooking()">Start Monitoring This Flight →</button>
+          <button class="btn-secondary" onclick="goToStep1()">&larr; Back</button>
+          <button class="btn-primary" id="submit-btn-s2" onclick="submitBooking()">Start Monitoring &rarr;</button>
         </div>
       </div>
-    </div>
     <div id="bookings-list"><div class="loading-screen"><div class="spinner"></div></div></div>
   `;
   loadBookings();
   setTimeout(loadPolicyChanges, 200);
+}
+
+function setMethod(method) {
+  ['email','lookup','manual'].forEach(m => {
+    document.getElementById('mtab-' + m).classList.toggle('active', m === method);
+    const panel = document.getElementById('mpanel-' + m);
+    if (panel) panel.style.display = m === method ? 'block' : 'none';
+  });
+}
+
+function toggleMonitorPrefs() {
+  const panel = document.getElementById('monitor-prefs-panel');
+  const arrow = document.getElementById('monitor-toggle-arrow');
+  if (!panel) return;
+  const open = panel.style.display !== 'none';
+  panel.style.display = open ? 'none' : 'block';
+  if (arrow) arrow.textContent = open ? '\u25bc' : '\u25b2';
 }
 
 function copyTrackEmail() {
@@ -1203,6 +1252,9 @@ async function openAirlineLookup() {
       if (paxEl && d.passengers) paxEl.value = d.passengers;
       // Show success + prompt for price
       hint.innerHTML = '<span style="color:#16a34a;">✅ Booking found! One last thing — enter the price you paid below (check your confirmation email).</span>';
+      // Switch to manual tab to show pre-filled form
+      setMethod('manual');
+      // Scroll to main form
       // Scroll to main form
       document.getElementById('f-price').scrollIntoView({ behavior: 'smooth', block: 'center' });
       document.getElementById('f-price').focus();
@@ -1274,15 +1326,8 @@ function goToStep2() {
     formData.milesProgram = document.getElementById('f-miles-program')?.value || null;
   }
 
-  document.getElementById('step1').classList.remove('active');
-  document.getElementById('step2').classList.add('active');
-  document.getElementById('form-step-badge').textContent = 'Step 2 of 2 — Monitoring Preferences';
-  document.getElementById('snum-1').className = 'step-num done';
-  document.getElementById('slbl-1').className = 'step-label done';
-  document.getElementById('snum-2').className = 'step-num active';
-  document.getElementById('slbl-2').className = 'step-label active';
-  document.getElementById('sconn').className = 'step-connector done';
-  document.getElementById('step2-msg').innerHTML = ''; 
+  // Single-step form — submit directly
+  submitBooking();
 }
 
 function goToStep1() {
