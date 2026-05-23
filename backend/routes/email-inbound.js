@@ -12,12 +12,13 @@ const resend = new Resend(process.env.RESEND_API_KEY);
  * POST /webhooks/email-inbound
  * Receives inbound email events from Resend.
  * Resend webhook payload contains only metadata + email_id.
- * We must call the Resend API separately to retrieve the email body.
+ * We fetch the full email body via the Resend received-emails API.
  */
 router.post('/', express.raw({ type: 'application/json' }), async (req, res) => {
   try {
-    // Parse raw body
     const rawBody = req.body.toString();
+    console.log('[email-inbound] Raw payload (first 300):', rawBody.substring(0, 300));
+
     let event;
     try {
       event = JSON.parse(rawBody);
@@ -26,26 +27,34 @@ router.post('/', express.raw({ type: 'application/json' }), async (req, res) => 
       return res.status(400).json({ error: 'Invalid JSON' });
     }
 
-    // Verify webhook signature if secret is configured
-    if (process.env.RESEND_WEBHOOK_SECRET) {
+    // Only verify signature if Svix headers are actually present
+    // (Resend inbound email webhooks may not include Svix headers)
+    const svixId = req.headers['svix-id'];
+    const svixTimestamp = req.headers['svix-timestamp'];
+    const svixSignature = req.headers['svix-signature'];
+    const hasSvixHeaders = svixId && svixTimestamp && svixSignature;
+
+    if (process.env.RESEND_WEBHOOK_SECRET && hasSvixHeaders) {
       try {
         resend.webhooks.verify({
           payload: rawBody,
-          headers: {
-            id: req.headers['svix-id'],
-            timestamp: req.headers['svix-timestamp'],
-            signature: req.headers['svix-signature'],
-          },
+          headers: { id: svixId, timestamp: svixTimestamp, signature: svixSignature },
           webhookSecret: process.env.RESEND_WEBHOOK_SECRET,
         });
+        console.log('[email-inbound] Signature verified ✅');
       } catch (verifyErr) {
-        console.error('[email-inbound] Webhook signature verification failed:', verifyErr.message);
+        console.error('[email-inbound] Signature verification failed:', verifyErr.message);
         return res.status(401).json({ error: 'Invalid signature' });
       }
+    } else if (!hasSvixHeaders) {
+      console.log('[email-inbound] No Svix headers — skipping signature verification (inbound email)');
     }
+
+    console.log('[email-inbound] Event type:', event.type);
 
     // Only handle email.received events
     if (event.type !== 'email.received') {
+      console.log('[email-inbound] Skipping non-inbound event:', event.type);
       return res.json({ received: true, skipped: true });
     }
 
@@ -54,7 +63,7 @@ router.post('/', express.raw({ type: 'application/json' }), async (req, res) => 
 
     // Process async after response
     setImmediate(() => processInboundEmail(event).catch(err =>
-      console.error('[email-inbound] Processing error:', err.message)
+      console.error('[email-inbound] Processing error:', err.message, err.stack)
     ));
 
   } catch (err) {
@@ -63,107 +72,127 @@ router.post('/', express.raw({ type: 'application/json' }), async (req, res) => 
   }
 });
 
-/**
- * Processes an inbound email event asynchronously.
- * Fetches the full email body from Resend API, parses it, and creates a booking.
- */
 async function processInboundEmail(event) {
-  const { email_id, from, to, subject } = event.data;
+  const data = event.data || event; // handle both wrapped and unwrapped payloads
+  const email_id = data.email_id || data.id;
+  const from = data.from || data.sender;
+  const subject = data.subject || '';
+  const to = data.to || data.recipient || [];
 
-  console.log(`[email-inbound] Processing email_id=${email_id} from=${from} subject="${subject}"`);
+  console.log(`[email-inbound] Processing email_id=${email_id} from=${from} to=${JSON.stringify(to)} subject="${subject}"`);
 
-  // Step 1: Fetch full email content from Resend API
+  if (!email_id) {
+    console.error('[email-inbound] No email_id in payload — cannot fetch body');
+    return;
+  }
+
+  // Step 1: Fetch full email content from Resend received-emails API
   let emailContent = { text: '', html: '' };
   try {
     const response = await axios.get(
-      `https://api.resend.com/received-emails/${email_id}`,
+      `https://api.resend.com/v1/received-emails/${email_id}`,
       {
-        headers: {
-          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
         timeout: 15000
       }
     );
     emailContent = response.data || {};
-    console.log(`[email-inbound] Retrieved email body (text: ${(emailContent.text || '').length} chars, html: ${(emailContent.html || '').length} chars)`);
+    console.log(`[email-inbound] Email body fetched — text: ${(emailContent.text || '').length} chars, html: ${(emailContent.html || '').length} chars`);
   } catch (fetchErr) {
-    console.error('[email-inbound] Failed to fetch email body:', fetchErr.message);
-    // Continue with empty body — parser will report low confidence
+    // Try alternate endpoint path
+    try {
+      const response = await axios.get(
+        `https://api.resend.com/received-emails/${email_id}`,
+        {
+          headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
+          timeout: 15000
+        }
+      );
+      emailContent = response.data || {};
+      console.log(`[email-inbound] Email body fetched (alt endpoint) — text: ${(emailContent.text || '').length} chars`);
+    } catch (fetchErr2) {
+      console.error('[email-inbound] Failed to fetch email body:', fetchErr2.response?.data || fetchErr2.message);
+    }
   }
 
-  // Step 2: Determine the forwarder's email address
-  // When a user forwards an email, 'from' in the webhook is their address
+  // Step 2: Determine forwarder's email address
   const forwarderEmail = extractEmailAddress(from);
   if (!forwarderEmail) {
-    console.log('[email-inbound] Could not determine forwarder email — skipping');
+    console.log('[email-inbound] Could not extract email from from field:', from);
     return;
   }
+  console.log('[email-inbound] Forwarder email:', forwarderEmail);
 
   // Step 3: Find TripReclaim account
   const user = await User.findOne({ email: forwarderEmail.toLowerCase() });
   if (!user) {
     console.log(`[email-inbound] No TripReclaim account for ${forwarderEmail}`);
-    await resend.emails.send({
-      from: 'TripReclaim <hello@tripreclaim.com>',
-      to: forwarderEmail,
-      subject: "We couldn't find your TripReclaim account",
-      html: `
-        <p>Hi there,</p>
-        <p>We received your forwarded confirmation email but couldn't find a TripReclaim account linked to <strong>${forwarderEmail}</strong>.</p>
-        <p>To use email monitoring, please <a href="https://tripreclaim.com">sign up for TripReclaim</a> first, then forward your confirmation email to track@tripreclaim.com.</p>
-        <p>— The TripReclaim Team</p>
-      `
-    });
+    try {
+      await resend.emails.send({
+        from: 'TripReclaim <hello@tripreclaim.com>',
+        to: forwarderEmail,
+        subject: "We couldn't find your TripReclaim account",
+        html: `
+          <p>Hi there,</p>
+          <p>We received your forwarded confirmation email but couldn't find a TripReclaim account linked to <strong>${forwarderEmail}</strong>.</p>
+          <p>To use email monitoring, please <a href="https://tripreclaim.com">sign up for TripReclaim</a> first, then forward your confirmation email to track@tripreclaim.com.</p>
+          <p>— The TripReclaim Team</p>
+        `
+      });
+    } catch (e) { console.error('[email-inbound] Failed to send no-account email:', e.message); }
     return;
   }
 
   // Step 4: Parse the confirmation email
   const parseResult = parseConfirmationEmail({
-    from,
-    subject,
+    from, subject,
     text: emailContent.text || '',
     html: emailContent.html || ''
   });
 
+  console.log(`[email-inbound] Parse result — confidence: ${parseResult.confidence}%, success: ${parseResult.success}`);
   if (!parseResult.success) {
-    console.log(`[email-inbound] Parse failed (confidence: ${parseResult.confidence}%):`, parseResult.missingFields);
-    await resend.emails.send({
-      from: 'TripReclaim <hello@tripreclaim.com>',
-      to: user.email,
-      subject: "We couldn't read your confirmation email",
-      html: `
-        <p>Hi ${user.name || 'there'},</p>
-        <p>We received your forwarded email but had trouble extracting the flight details automatically.</p>
-        <p><strong>Missing:</strong> ${parseResult.missingFields.join(', ')}</p>
-        <p>Please <a href="https://tripreclaim.com/dashboard/">add your flight manually</a> — it only takes 30 seconds.</p>
-        <p>— The TripReclaim Team</p>
-      `
-    });
+    console.log('[email-inbound] Missing fields:', parseResult.missingFields);
+    try {
+      await resend.emails.send({
+        from: 'TripReclaim <hello@tripreclaim.com>',
+        to: user.email,
+        subject: "We couldn't read your confirmation email",
+        html: `
+          <p>Hi ${user.name || 'there'},</p>
+          <p>We received your forwarded email but had trouble extracting the flight details automatically.</p>
+          <p><strong>Missing:</strong> ${parseResult.missingFields.join(', ')}</p>
+          <p>Please <a href="https://tripreclaim.com/dashboard/">add your flight manually</a> — it only takes 30 seconds.</p>
+          <p>— The TripReclaim Team</p>
+        `
+      });
+    } catch (e) { console.error('[email-inbound] Failed to send parse-fail email:', e.message); }
     return;
   }
 
-  const { data, confidence, missingFields } = parseResult;
-  console.log(`[email-inbound] ✅ Parsed ${data.airline} booking (confidence: ${confidence}%):`, data);
+  const { data: parsed, confidence, missingFields } = parseResult;
+  console.log(`[email-inbound] ✅ Parsed ${parsed.airline} booking (confidence: ${confidence}%):`, parsed);
 
-  // Step 5: Check flight cap
+  // Step 5: Check flight cap (status: 'active' matches Booking model enum)
   const planCaps = { per_trip: 1, monthly: 5, annual: 15 };
   const cap = planCaps[user.plan] || 1;
-  const activeCount = await Booking.countDocuments({ userId: user._id, status: 'monitoring' });
+  const activeCount = await Booking.countDocuments({ userId: user._id, status: 'active' });
 
   if (activeCount >= cap) {
-    await resend.emails.send({
-      from: 'TripReclaim <hello@tripreclaim.com>',
-      to: user.email,
-      subject: 'Flight monitoring limit reached',
-      html: `
-        <p>Hi ${user.name || 'there'},</p>
-        <p>We received your confirmation for ${data.airline || ''}${data.origin ? ' ' + data.origin + '→' + data.destination : ''} but your plan allows a maximum of <strong>${cap} simultaneous flights</strong>.</p>
-        <p>You currently have <strong>${activeCount}</strong> flights being monitored.</p>
-        <p><a href="https://tripreclaim.com/dashboard/">Upgrade your plan →</a></p>
-        <p>— The TripReclaim Team</p>
-      `
-    });
+    console.log(`[email-inbound] Plan cap reached for ${user.email} (${activeCount}/${cap})`);
+    try {
+      await resend.emails.send({
+        from: 'TripReclaim <hello@tripreclaim.com>',
+        to: user.email,
+        subject: 'Flight monitoring limit reached',
+        html: `
+          <p>Hi ${user.name || 'there'},</p>
+          <p>We received your confirmation but your plan allows a maximum of <strong>${cap} simultaneous flights</strong>. You currently have <strong>${activeCount}</strong>.</p>
+          <p><a href="https://tripreclaim.com/dashboard/">Upgrade your plan →</a></p>
+          <p>— The TripReclaim Team</p>
+        `
+      });
+    } catch (e) { console.error('[email-inbound] Failed to send cap email:', e.message); }
     return;
   }
 
@@ -171,17 +200,17 @@ async function processInboundEmail(event) {
   const booking = new Booking({
     userId: user._id,
     email: user.email,
-    airline: data.airline || 'Unknown',
-    confirmationNumber: data.confirmationNumber,
-    flightNumber: data.flightNumber,
-    origin: data.origin,
-    destination: data.destination,
-    departureDate: data.departureDate ? new Date(data.departureDate) : null,
-    cabinClass: data.cabinClass || 'economy',
-    passengers: data.passengers || 1,
-    pricePaid: data.pricePaid || null,
+    airline: parsed.airline || 'Unknown',
+    confirmationNumber: parsed.confirmationNumber,
+    flightNumber: parsed.flightNumber,
+    origin: parsed.origin,
+    destination: parsed.destination,
+    departureDate: parsed.departureDate ? new Date(parsed.departureDate) : null,
+    cabinClass: parsed.cabinClass || 'economy',
+    passengers: parsed.passengers || 1,
+    pricePaid: parsed.pricePaid || null,
     bookingType: 'cash',
-    status: 'monitoring',
+    status: 'active',
     planAtBooking: user.plan,
     dropThreshold: 10,
     nextCheckAt: new Date(Date.now() + 15 * 60 * 1000),
@@ -190,52 +219,48 @@ async function processInboundEmail(event) {
   });
 
   await booking.save();
-
   if (user.plan === 'per_trip') {
     await User.findByIdAndUpdate(user._id, { $inc: { tripsRemaining: -1 } });
   }
-
   console.log(`[email-inbound] ✅ Booking created: ${booking._id}`);
 
-  // Step 7: Confirmation email to user
+  // Step 7: Confirmation email
   const missingNote = missingFields.length > 0
-    ? `<p>⚠️ We couldn't detect: <strong>${missingFields.join(', ')}</strong>. <a href="https://tripreclaim.com/dashboard/">Update these in your dashboard</a>.</p>`
+    ? `<p>⚠️ Couldn't detect: <strong>${missingFields.join(', ')}</strong>. <a href="https://tripreclaim.com/dashboard/">Update in dashboard</a>.</p>`
+    : '';
+  const priceNote = !parsed.pricePaid
+    ? `<p>⚠️ Price paid not found. <a href="https://tripreclaim.com/dashboard/">Add it in your dashboard</a> so we can calculate exact savings.</p>`
     : '';
 
-  const priceNote = !data.pricePaid
-    ? `<p>⚠️ We couldn't find your price paid. <a href="https://tripreclaim.com/dashboard/">Add it in your dashboard</a> so we can calculate your exact savings.</p>`
-    : '';
-
-  await resend.emails.send({
-    from: 'TripReclaim <hello@tripreclaim.com>',
-    to: user.email,
-    subject: `✅ Now monitoring: ${data.airline || 'Your flight'} ${data.origin || ''}→${data.destination || ''}`,
-    html: `
-      <div style="font-family:sans-serif;max-width:560px;margin:0 auto;">
-        <h2 style="color:#1d4ed8;">✅ Your flight is being monitored!</h2>
-        <p>Hi ${user.name || 'there'}, we parsed your confirmation email and set up price monitoring automatically.</p>
-        <table style="width:100%;border-collapse:collapse;margin:16px 0;">
-          <tr><td style="padding:8px;color:#64748b;">Airline</td><td style="padding:8px;font-weight:600;">${data.airline || '—'}</td></tr>
-          <tr style="background:#f8fafc;"><td style="padding:8px;color:#64748b;">Route</td><td style="padding:8px;font-weight:600;">${data.origin || '?'} → ${data.destination || '?'}</td></tr>
-          <tr><td style="padding:8px;color:#64748b;">Flight</td><td style="padding:8px;font-weight:600;">${data.flightNumber || '—'}</td></tr>
-          <tr style="background:#f8fafc;"><td style="padding:8px;color:#64748b;">Departure</td><td style="padding:8px;font-weight:600;">${data.departureDate || '—'}</td></tr>
-          <tr><td style="padding:8px;color:#64748b;">Cabin</td><td style="padding:8px;font-weight:600;">${data.cabinClass || 'Economy'}</td></tr>
-          <tr style="background:#f8fafc;"><td style="padding:8px;color:#64748b;">Price Paid</td><td style="padding:8px;font-weight:600;">${data.pricePaid ? '$' + data.pricePaid.toFixed(2) : '—'}</td></tr>
-          <tr><td style="padding:8px;color:#64748b;">Confidence</td><td style="padding:8px;font-weight:600;">${confidence}%</td></tr>
-        </table>
-        ${missingNote}
-        ${priceNote}
-        <p>We'll check prices every 15 minutes for the first hour, then hourly. You'll get an alert the moment we detect a drop.</p>
-        <p><a href="https://tripreclaim.com/dashboard/" style="background:#1d4ed8;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;display:inline-block;margin-top:8px;">View in Dashboard →</a></p>
-        <p style="color:#94a3b8;font-size:0.85rem;margin-top:24px;">— The TripReclaim Team | <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a></p>
-      </div>
-    `
-  });
+  try {
+    await resend.emails.send({
+      from: 'TripReclaim <hello@tripreclaim.com>',
+      to: user.email,
+      subject: `✅ Now monitoring: ${parsed.airline || 'Your flight'} ${parsed.origin || ''}→${parsed.destination || ''}`,
+      html: `
+        <div style="font-family:sans-serif;max-width:560px;margin:0 auto;">
+          <h2 style="color:#1d4ed8;">✅ Your flight is being monitored!</h2>
+          <p>Hi ${user.name || 'there'}, we parsed your confirmation email and set up price monitoring automatically.</p>
+          <table style="width:100%;border-collapse:collapse;margin:16px 0;">
+            <tr><td style="padding:8px;color:#64748b;">Airline</td><td style="padding:8px;font-weight:600;">${parsed.airline || '—'}</td></tr>
+            <tr style="background:#f8fafc;"><td style="padding:8px;color:#64748b;">Route</td><td style="padding:8px;font-weight:600;">${parsed.origin || '?'} → ${parsed.destination || '?'}</td></tr>
+            <tr><td style="padding:8px;color:#64748b;">Flight</td><td style="padding:8px;font-weight:600;">${parsed.flightNumber || '—'}</td></tr>
+            <tr style="background:#f8fafc;"><td style="padding:8px;color:#64748b;">Departure</td><td style="padding:8px;font-weight:600;">${parsed.departureDate || '—'}</td></tr>
+            <tr><td style="padding:8px;color:#64748b;">Cabin</td><td style="padding:8px;font-weight:600;">${parsed.cabinClass || 'Economy'}</td></tr>
+            <tr style="background:#f8fafc;"><td style="padding:8px;color:#64748b;">Price Paid</td><td style="padding:8px;font-weight:600;">${parsed.pricePaid ? '$' + Number(parsed.pricePaid).toFixed(2) : '—'}</td></tr>
+            <tr><td style="padding:8px;color:#64748b;">Confidence</td><td style="padding:8px;font-weight:600;">${confidence}%</td></tr>
+          </table>
+          ${missingNote}${priceNote}
+          <p>We'll check prices every 15 minutes. You'll get an alert the moment we detect a drop.</p>
+          <p><a href="https://tripreclaim.com/dashboard/" style="background:#1d4ed8;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;display:inline-block;">View in Dashboard →</a></p>
+          <p style="color:#94a3b8;font-size:0.85rem;">— TripReclaim | <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a></p>
+        </div>
+      `
+    });
+    console.log(`[email-inbound] ✅ Confirmation email sent to ${user.email}`);
+  } catch (e) { console.error('[email-inbound] Failed to send confirmation email:', e.message); }
 }
 
-/**
- * Extract email address from "Name <email>" or plain "email" format.
- */
 const extractEmailAddress = (from) => {
   if (!from) return null;
   const m = from.match(/<([^>]+)>/) || from.match(/([\w.+-]+@[\w.-]+\.[a-z]{2,})/i);

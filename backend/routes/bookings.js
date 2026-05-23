@@ -5,6 +5,7 @@ const User = require('../models/User');
 const { requireAuth } = require('../middleware/auth');
 const AirlinePolicy = require('../models/AirlinePolicy');
 const { sendWelcome } = require('../services/email');
+const { upsertContact } = require('../services/ghl');
 
 const SUPPORTED_AIRLINES = [
   // Full airline list — kept loose, frontend validates
@@ -146,6 +147,15 @@ router.post('/', requireAuth, async (req, res) => {
     });
 
     await booking.save();
+
+    // Sync booking to GHL CRM (non-fatal)
+    try {
+      await upsertContact({ email: user.email, name: user.name || '', plan: user.plan,
+        extraTags: [`route:${booking.origin}-${booking.destination}`, `airline:${booking.airline.toLowerCase().replace(/\s+/g, '-')}`],
+        note: `Booking added: ${booking.airline} ${booking.origin}→${booking.destination} on ${booking.departureDate ? booking.departureDate.toISOString().split('T')[0] : 'unknown'}, paid $${booking.pricePaid}` });
+    } catch (ghlErr) {
+      console.error('[bookings] GHL sync failed:', ghlErr.message);
+    }
 
     // Decrement per_trip balance
     if (user.plan === 'per_trip') {

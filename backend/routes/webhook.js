@@ -4,6 +4,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const User = require('../models/User');
 const { generateMagicToken } = require('../middleware/auth');
 const { sendMagicLink, sendOnboardingDay0 } = require('../services/email');
+const { upsertContact } = require('../services/ghl');
 
 // Plan mapping from Stripe price IDs
 const PRICE_TO_PLAN = {
@@ -148,6 +149,15 @@ async function handleNewUser(email, stripeCustomerId, plan, subscriptionId) {
     console.error('[webhook] Day 0 email failed:', e.message);
   }
   console.log(`[webhook] ✅ New user onboarded: ${email} (${plan}) — magic link sent`);
+
+  // Sync to GHL CRM (non-fatal)
+  try {
+    await upsertContact({ email, name: user.name || '', plan,
+      note: `New TripReclaim signup via Stripe — plan: ${plan}` });
+    console.log('[webhook] GHL contact synced:', email);
+  } catch (ghlErr) {
+    console.error('[webhook] GHL sync failed:', ghlErr.message);
+  }
 }
 
 module.exports = router;
