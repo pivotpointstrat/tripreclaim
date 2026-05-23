@@ -1179,6 +1179,11 @@ async function renderFlightsTab() {
   `;
   loadBookings();
   setTimeout(loadPolicyChanges, 200);
+  // Auto-open method tab from URL param (e.g. ?method=manual from email link)
+  const _urlMethod = new URLSearchParams(window.location.search).get('method');
+  if (_urlMethod && ['email','lookup','manual'].includes(_urlMethod)) {
+    setTimeout(() => setMethod(_urlMethod), 50);
+  }
 }
 
 function setMethod(method) {

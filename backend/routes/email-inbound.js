@@ -162,7 +162,7 @@ async function processInboundEmail(event) {
           <p>Hi ${user.name || 'there'},</p>
           <p>We received your forwarded email but had trouble extracting the flight details automatically.</p>
           <p><strong>Missing:</strong> ${parseResult.missingFields.join(', ')}</p>
-          <p>Please <a href="https://tripreclaim.com/dashboard/">add your flight manually</a> — it only takes 30 seconds.</p>
+          <p>Please <a href="https://tripreclaim.com/dashboard/?method=manual">add your flight manually</a> — it only takes 30 seconds.</p>
           <p>— The TripReclaim Team</p>
         `
       });
@@ -188,7 +188,7 @@ async function processInboundEmail(event) {
         html: `
           <p>Hi ${user.name || 'there'},</p>
           <p>We received your confirmation but your plan allows a maximum of <strong>${cap} simultaneous flights</strong>. You currently have <strong>${activeCount}</strong>.</p>
-          <p><a href="https://tripreclaim.com/dashboard/">Upgrade your plan →</a></p>
+          <p><a href="https://tripreclaim.com/dashboard/?method=manual">Upgrade your plan →</a></p>
           <p>— The TripReclaim Team</p>
         `
       });
@@ -226,10 +226,10 @@ async function processInboundEmail(event) {
 
   // Step 7: Confirmation email
   const missingNote = missingFields.length > 0
-    ? `<p>⚠️ Couldn't detect: <strong>${missingFields.join(', ')}</strong>. <a href="https://tripreclaim.com/dashboard/">Update in dashboard</a>.</p>`
+    ? `<p>⚠️ Couldn't detect: <strong>${missingFields.join(', ')}</strong>. <a href="https://tripreclaim.com/dashboard/?method=manual">Update in dashboard</a>.</p>`
     : '';
   const priceNote = !parsed.pricePaid
-    ? `<p>⚠️ Price paid not found. <a href="https://tripreclaim.com/dashboard/">Add it in your dashboard</a> so we can calculate exact savings.</p>`
+    ? `<p>⚠️ Price paid not found. <a href="https://tripreclaim.com/dashboard/?method=manual">Add it in your dashboard</a> so we can calculate exact savings.</p>`
     : '';
 
   try {
@@ -252,7 +252,7 @@ async function processInboundEmail(event) {
           </table>
           ${missingNote}${priceNote}
           <p>We'll check prices every 15 minutes. You'll get an alert the moment we detect a drop.</p>
-          <p><a href="https://tripreclaim.com/dashboard/" style="background:#1d4ed8;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;display:inline-block;">View in Dashboard →</a></p>
+          <p><a href="https://tripreclaim.com/dashboard/?method=manual" style="background:#1d4ed8;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;display:inline-block;">View in Dashboard →</a></p>
           <p style="color:#94a3b8;font-size:0.85rem;">— TripReclaim | <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a></p>
         </div>
       `
