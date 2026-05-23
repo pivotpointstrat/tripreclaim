@@ -4,6 +4,7 @@ const axios = require('axios');
 const User = require('../models/User');
 const Booking = require('../models/Booking');
 const { parseConfirmationEmail } = require('../services/emailParser');
+const { runOcrOnEmail } = require('../services/imageOcr');
 const { Resend } = require('resend');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -115,6 +116,22 @@ async function processInboundEmail(event) {
     }
   }
 
+  // Step 1.5: OCR detection — if email looks like a screenshot, try to extract text
+  let isScreenshot = false;
+  try {
+    const ocrResult = await runOcrOnEmail(emailContent.text || '', emailContent.html || '');
+    isScreenshot = ocrResult.isScreenshot;
+    if (ocrResult.success) {
+      console.log(`[email-inbound] OCR succeeded — appending ${ocrResult.ocrText.length} chars to text`);
+      emailContent.text = (emailContent.text || '') + '\n\n' + ocrResult.ocrText;
+    } else if (ocrResult.isScreenshot) {
+      console.log(`[email-inbound] Screenshot detected but OCR got no useful text (${ocrResult.imageCount} image(s) found)`);
+    }
+  } catch (ocrErr) {
+    console.warn('[email-inbound] OCR step failed (non-fatal):', ocrErr.message);
+  }
+
+
   // Step 2: Determine forwarder's email address
   const forwarderEmail = extractEmailAddress(from);
   if (!forwarderEmail) {
@@ -167,6 +184,29 @@ async function processInboundEmail(event) {
         `
       });
     } catch (e) { console.error('[email-inbound] Failed to send parse-fail email:', e.message); }
+    // Screenshot-specific message
+    if (isScreenshot) {
+      try {
+        await resend.emails.send({
+          from: 'TripReclaim <hello@tripreclaim.com>',
+          to: user.email,
+          subject: 'Heads up — we received a screenshot, not a confirmation email',
+          html: `
+            <p>Hi ${user.name || 'there'},</p>
+            <p>It looks like you forwarded a <strong>screenshot</strong> of your booking instead of the original confirmation email.</p>
+            <p>Our parser reads the text content of confirmation emails — it can't read images or screenshots.</p>
+            <p><strong>To fix this:</strong></p>
+            <ol>
+              <li>Open the <strong>original booking confirmation email</strong> from your airline (check your inbox for an email from the airline directly)</li>
+              <li>Forward that email to <a href="mailto:track@tripreclaim.com">track@tripreclaim.com</a></li>
+            </ol>
+            <p>Or, <a href="https://tripreclaim.com/dashboard/?method=manual" style="color:#1d4ed8;">enter your flight details manually</a> — it only takes 30 seconds.</p>
+            <p>— The TripReclaim Team</p>
+          `
+        });
+        return;
+      } catch (e) { console.error('[email-inbound] Failed to send screenshot email:', e.message); }
+    }
     return;
   }
 
