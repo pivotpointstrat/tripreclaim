@@ -75,46 +75,20 @@ router.post('/', express.raw({ type: 'application/json' }), async (req, res) => 
 
 async function processInboundEmail(event) {
   const data = event.data || event; // handle both wrapped and unwrapped payloads
-  const email_id = data.email_id || data.id;
   const from = data.from || data.sender;
   const subject = data.subject || '';
   const to = data.to || data.recipient || [];
 
-  console.log(`[email-inbound] Processing email_id=${email_id} from=${from} to=${JSON.stringify(to)} subject="${subject}"`);
+  console.log(`[email-inbound] Processing from=${from} to=${JSON.stringify(to)} subject="${subject}"`);
 
-  if (!email_id) {
-    console.error('[email-inbound] No email_id in payload — cannot fetch body');
-    return;
-  }
-
-  // Step 1: Fetch full email content from Resend received-emails API
-  let emailContent = { text: '', html: '' };
-  try {
-    const response = await axios.get(
-      `https://api.resend.com/v1/received-emails/${email_id}`,
-      {
-        headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
-        timeout: 15000
-      }
-    );
-    emailContent = response.data || {};
-    console.log(`[email-inbound] Email body fetched — text: ${(emailContent.text || '').length} chars, html: ${(emailContent.html || '').length} chars`);
-  } catch (fetchErr) {
-    // Try alternate endpoint path
-    try {
-      const response = await axios.get(
-        `https://api.resend.com/received-emails/${email_id}`,
-        {
-          headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
-          timeout: 15000
-        }
-      );
-      emailContent = response.data || {};
-      console.log(`[email-inbound] Email body fetched (alt endpoint) — text: ${(emailContent.text || '').length} chars`);
-    } catch (fetchErr2) {
-      console.error('[email-inbound] Failed to fetch email body:', fetchErr2.response?.data || fetchErr2.message);
-    }
-  }
+  // Step 1: Use email content directly from webhook payload
+  // Resend delivers full email content (text, html, attachments) in the webhook data object
+  let emailContent = {
+    text: data.text || data.plain_text || '',
+    html: data.html || data.html_body || '',
+    attachments: data.attachments || []
+  };
+  console.log(`[email-inbound] Email body from payload — text: ${emailContent.text.length} chars, html: ${emailContent.html.length} chars`);
 
   // Step 1.5: OCR detection — if email looks like a screenshot, try to extract text
   let isScreenshot = false;
