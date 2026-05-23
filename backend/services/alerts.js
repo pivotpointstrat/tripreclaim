@@ -7,15 +7,27 @@ const { getPolicyForAirline } = require('./policyAgent');
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 
-/** Build a Google Flights search URL for a given route and date. */
-const buildGoogleFlightsUrl = (origin, destination, departureDate) => {
+/** Build a Google Flights deep link for a given route and date. */
+const buildGoogleFlightsUrl = (origin, destination, departureDate, passengers = 1) => {
   try {
     const d = typeof departureDate === 'string'
-      ? departureDate
+      ? departureDate.split('T')[0]
       : new Date(departureDate).toISOString().split('T')[0];
-    return `https://www.google.com/travel/flights?q=Flights+from+${origin}+to+${destination}+on+${d}`;
+    return `https://www.google.com/flights#flt=${origin}.${destination}.${d};c:USD;e:1;sd:1;t:f;a:${passengers}`;
   } catch (_) {
     return 'https://www.google.com/travel/flights';
+  }
+};
+
+/** Build a Skyscanner deep link for a given route and date. */
+const buildSkyscannerUrl = (origin, destination, departureDate, passengers = 1) => {
+  try {
+    const d = typeof departureDate === 'string'
+      ? departureDate.split('T')[0].replace(/-/g, '')
+      : new Date(departureDate).toISOString().split('T')[0].replace(/-/g, '');
+    return `https://www.skyscanner.net/transport/flights/${origin}/${destination}/${d}/?adults=${passengers}&currency=USD`;
+  } catch (_) {
+    return 'https://www.skyscanner.net';
   }
 };
 
@@ -128,18 +140,36 @@ const checkBooking = async (booking) => {
 
   try {
     const departureDate = booking.departureDate.toISOString().split('T')[0];
+
+    // Determine 24h window: use purchasedAt (actual ticket purchase) or fall back to createdAt
+    const now = new Date();
+    const purchaseTime = booking.purchasedAt || booking.createdAt;
+    const hoursSincePurchase = purchaseTime ? (now - purchaseTime) / (1000 * 60 * 60) : 999;
+    const within24h = hoursSincePurchase <= 24;
+
+    // Outside 24h window: only check same airline (cross-airline savings not actionable without cancellation)
+    // Inside 24h window: check all airlines (DOT full refund allows rebooking anywhere)
+    const sameAirlineOnly = !within24h;
+
+    if (sameAirlineOnly) {
+      console.log(`[alerts] Outside 24h window (${Math.round(hoursSincePurchase)}h since purchase) — same airline only: ${booking.airline}`);
+    } else {
+      console.log(`[alerts] Within 24h window (${Math.round(hoursSincePurchase)}h since purchase) — all airlines eligible`);
+    }
+
     const { price, rawResults } = await getLowestPrice(
       booking.origin,
       booking.destination,
       departureDate,
       booking.airline,
       booking.cabinClass,
-      booking.passengers
+      booking.passengers,
+      sameAirlineOnly
     );
 
-    const now = new Date();
     result.checked = true;
     result.currentPrice = price;
+    result.within24h = within24h;
 
     // Build update object
     const update = {

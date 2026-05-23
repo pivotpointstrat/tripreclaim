@@ -30,7 +30,7 @@ const AIRLINE_CODES = {
  * @param {number} passengers
  * @returns {{ price: number|null, rawResults: object }}
  */
-const getLowestPrice = async (origin, dest, date, airline, cabin = 'economy', passengers = 1) => {
+const getLowestPrice = async (origin, dest, date, airline, cabin = 'economy', passengers = 1, sameAirlineOnly = false) => {
   const cabinMap = {
     economy: '1',
     premium_economy: '2',
@@ -80,8 +80,9 @@ const getLowestPrice = async (origin, dest, date, airline, cabin = 'economy', pa
       )
     );
 
-    // Fall back to all flights if no airline match
-    const candidates = matchedFlights.length > 0 ? matchedFlights : allFlights;
+    // Fall back to all flights if no airline match (unless sameAirlineOnly mode)
+    // sameAirlineOnly=true means we're outside the 24h window and cannot use a different airline
+    const candidates = matchedFlights.length > 0 ? matchedFlights : (sameAirlineOnly ? [] : allFlights);
 
     // Return the lowest price found
     const prices = candidates.map(f => f.price).filter(p => p && p > 0);

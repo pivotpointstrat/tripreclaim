@@ -1115,11 +1115,14 @@ async function renderFlightsTab() {
             </div>
             <div class="form-group">
               <label>Airline</label>
-              <select id="f-airline-flex">
+              <select id="f-airline-flex" onchange="checkAirlineFlexWarning()">
                 <option value="same">Same airline only</option>
                 <option value="any">Any airline</option>
               </select>
-              <span class="hint">Same airline required for most refund claims</span>
+              <span class="hint" id="airline-flex-hint">Same airline required for most refund claims outside the 24h window</span>
+              <div id="any-airline-warning" style="display:none;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:10px 12px;margin-top:6px;font-size:0.85rem;color:#92400e;">
+                ⚠️ <strong>Outside 24h window:</strong> Different-airline savings are not directly actionable — you would need to cancel your current booking (losing any fees) and rebook. TripReclaim will monitor <strong>same airline only</strong> outside the 24h window.
+              </div>
             </div>
           </div>
         </div>
@@ -1213,6 +1216,23 @@ async function openAirlineLookup() {
     btn.disabled = false;
     btn.textContent = 'Look Up Booking →';
   }
+}
+
+function checkAirlineFlexWarning() {
+  const airlineFlex = document.getElementById('f-airline-flex');
+  const purchasedAtVal = document.getElementById('f-purchasedat');
+  const warning = document.getElementById('any-airline-warning');
+  if (!airlineFlex || !warning) return;
+  const isAny = airlineFlex.value === 'any';
+  if (!isAny) { warning.style.display = 'none'; return; }
+  if (purchasedAtVal && purchasedAtVal.value) {
+    const hoursSince = (Date.now() - new Date(purchasedAtVal.value)) / 3600000;
+    if (hoursSince > 24) {
+      warning.style.display = 'block';
+      return;
+    }
+  }
+  warning.style.display = 'none';
 }
 
 function setMatchMode(mode) {
@@ -1392,6 +1412,11 @@ function renderBookingsList() {
           <div class="stat-box"><div class="stat-label">Lowest Seen</div><div class="stat-value">${formatCurrency(b.lowestPriceSeen)}</div></div>
           <div class="stat-box"><div class="stat-label">Savings</div><div class="stat-value ${drop && drop > 0 ? 'drop'  : '' }">${drop && drop > 0 ? formatCurrency(drop) : '—'}</div></div>
         </div>
+        ${(drop && drop > 0) ? `<div style="margin:8px 0 4px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <span style="font-size:0.78rem;color:#64748b;">${is24h ? '⚡ Book the lower fare:' : '🔍 Verify price:'}</span>
+          <a href="https://www.google.com/flights#flt=${b.origin}.${b.destination}.${new Date(b.departureDate).toISOString().split('T')[0]};c:USD;e:1;sd:1;t:f;a:${b.passengers||1}" target="_blank" class="btn-sm" style="background:#1d4ed8;color:#fff;text-decoration:none;padding:4px 10px;border-radius:5px;font-size:0.78rem;">Google Flights →</a>
+          <a href="https://www.skyscanner.net/transport/flights/${b.origin}/${b.destination}/${new Date(b.departureDate).toISOString().split('T')[0].replace(/-/g,'')}/?adults=${b.passengers||1}&currency=USD" target="_blank" class="btn-sm" style="background:#0ea5e9;color:#fff;text-decoration:none;padding:4px 10px;border-radius:5px;font-size:0.78rem;">Skyscanner →</a>
+        </div>` : ''}
         ${b.confirmationNumber ? `<div class="booking-footer">Booking ref: <strong>${b.confirmationNumber}</strong> · Last checked: ${lastChecked} · ${daysLeft > 0 ? daysLeft+' days until departure' : 'Travel date passed' } · Alert at ${formatCurrency(b.dropThreshold)} drop</div>` : `<div class="booking-footer">Last checked: ${lastChecked} · ${daysLeft > 0 ? daysLeft+' days until departure' : 'Travel date passed'} · Alert at ${formatCurrency(b.dropThreshold)} drop</div>`}
         <div class="booking-actions">
           <button class="btn-sm" onclick="viewBookingHistory('${b._id}' )">📈 History</button>
@@ -1685,7 +1710,7 @@ async function viewClaimKit(bookingId, airline) {
     let policy = null;
     try { const pd = await apiFetch('/policy/' + encodeURIComponent(airline)); policy = pd.policy || pd; } catch(e) {}
     const drop = b.lowestPriceSeen ? b.pricePaid - b.lowestPriceSeen : null;
-    const isIn24h = b.createdAt && (Date.now() - new Date(b.createdAt)) / 3600000 < 24;
+    const purchaseRef = b.purchasedAt || b.createdAt; const isIn24h = purchaseRef && (Date.now() - new Date(purchaseRef)) / 3600000 < 24;
     const expiry = (policy && policy.policies && policy.policies.creditExpiry) || '1 year from original purchase';
     const steps = (policy && policy.policies && policy.policies.claimSteps) || [];
     const claimUrl = (policy && policy.policies && policy.policies.claimUrl) || (AIRLINE_LOOKUP_URLS[airline] || '');

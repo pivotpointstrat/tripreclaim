@@ -138,7 +138,7 @@ const buildTwentyFourHourBanner = (booking) => {
  * @param {object} opts - { netSavings, rawDrop, notWorthClaiming }
  */
 const sendPriceDropAlert = async (email, booking, currentPrice, opts = {}) => {
-  const { netSavings = null, rawDrop = null, notWorthClaiming = false, googleFlightsUrl = null, evidenceUrl = null } = opts;
+  const { netSavings = null, rawDrop = null, notWorthClaiming = false, googleFlightsUrl = null, evidenceUrl = null, within24h = false, skyscannerUrl = null } = opts;
   const route = `${booking.origin} → ${booking.destination}`;
   const drop = rawDrop !== null ? rawDrop : booking.pricePaid - currentPrice;
   const net  = netSavings !== null ? netSavings : drop;
@@ -243,9 +243,17 @@ const sendPriceDropAlert = async (email, booking, currentPrice, opts = {}) => {
         ${claimKit}
         ${fallbackGuide}
 
-        ${ googleFlightsUrl ? `
-        <div style="margin:20px 0;">
-          <a href="${googleFlightsUrl}" target="_blank" style="display:inline-block;background:#1d4ed8;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;margin-right:10px;">🔍 Verify Current Price on Google Flights →</a>
+        ${ (googleFlightsUrl || skyscannerUrl) ? `
+        <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:16px 18px;margin:16px 0;">
+          ${ within24h ? `
+            <p style="margin:0 0 10px 0;font-size:14px;font-weight:600;color:#0369a1;">⚡ You're within the 24h window — book the lower fare and get a full cash refund:</p>
+          ` : `
+            <p style="margin:0 0 10px 0;font-size:14px;font-weight:600;color:#0369a1;">🔍 Verify current price and request a price adjustment from ${booking.airline}:</p>
+          ` }
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            ${ googleFlightsUrl ? `<a href="${googleFlightsUrl}" target="_blank" style="display:inline-block;background:#1d4ed8;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">🔍 Google Flights →</a>` : '' }
+            ${ skyscannerUrl ? `<a href="${skyscannerUrl}" target="_blank" style="display:inline-block;background:#0ea5e9;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">✈️ Skyscanner →</a>` : '' }
+          </div>
         </div>` : '' }
         ${ evidenceUrl ? `
         <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:14px 18px;margin:16px 0;">
