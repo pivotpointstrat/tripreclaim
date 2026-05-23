@@ -42,6 +42,7 @@
 
     /* ── Cards ── */
     .card { background: #fff; border-radius: 12px; box-shadow: var(--card-shadow); padding: 24px; margin-bottom: 20px; }
+    #bookings-list { margin-top: 36px; }
     .card-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
     .card-title .badge { font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: var(--blue-light); color: var(--blue); }
 
@@ -1773,13 +1774,12 @@ async function viewClaimKit(bookingId, airline) {
     }
     html += '<div style="margin-top:12px;font-size:0.82rem;color:#1e40af;">\uD83D\uDCC5 Credit valid: <strong>' + expiry + '</strong>' + (claimPhone ? ' &middot; \uD83D\uDCDE ' + claimPhone : '') + '</div><div style="margin-top:6px;font-size:0.78rem;color:#64748b;">\u2705 Policy last verified: ' + lastVerified + ' &middot; <a href="/policies/" target="_blank" style="color:#1d4ed8;text-decoration:none;">View Policy Hub</a></div></div>';
     if (b.confirmationNumber) html += '<div style="background:var(--slate-light);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:0.88rem;"><strong>Booking:</strong> ' + airline + ' &middot; ' + b.origin + '&rarr;' + b.destination + ' &middot; Ref: <strong>' + b.confirmationNumber + '</strong>' + (b.flightNumber ? ' &middot; Flight: <strong>' + b.flightNumber + '</strong>' : '') + '</div>';
-    html += '<div style="display:flex;gap:10px;flex-wrap:wrap;">';
+    html += '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">';
     if (claimUrl) html += '<a href="' + claimUrl + '" target="_blank" class="btn-primary" style="text-decoration:none;">Claim at ' + airline + ' &rarr;</a>';
-    if (drop && drop > 0 && !b.creditClaimed) html += '<button class="btn-secondary" onclick="closePolicyModal(); openClaimCreditModal(\'' + b._id + '\', ' + drop.toFixed(2) + ')">\u2705 Mark as Claimed</button>';
-    html += '<button onclick="closePolicyModal()" class="btn-secondary">Close</button></div>';
+    if (drop && drop > 0 && !b.creditClaimed) html += '<button class="btn-secondary" onclick="closePolicyModal(); openClaimCreditModal(\'' + b._id + '\', ' + drop.toFixed(2) + ')">✅ Mark as Claimed</button>';
     html += '<button id="claim-email-btn" class="btn-secondary" style="border-color:#7c3aed;color:#7c3aed;">&#x1F4E7; Generate Claim Email</button>';
     html += '<button onclick="closePolicyModal()" class="btn-secondary">Close</button></div>';
-    html += '<div id="email-gen-area"></div>';
+    html += '<div id="email-gen-area" style="margin-top:12px;"></div>';
     mb.innerHTML = html;
     document.getElementById('claim-email-btn') && document.getElementById('claim-email-btn').addEventListener('click', function() { generateClaimEmail(bookingId); });
   } catch(e) {
