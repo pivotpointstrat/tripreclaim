@@ -132,4 +132,87 @@ async function upsertContact({ email, name, phone, plan, note, extraTags = [] })
   return contact;
 }
 
-module.exports = { upsertContact, findContact, createContact, updateContact, addNote };
+
+/**
+ * Add tags to an existing GHL contact.
+ */
+async function addTags(contactId, tags) {
+  try {
+    const r = await axios.post(`${GHL_BASE}/contacts/${contactId}/tags`, {
+      tags,
+    }, { headers: ghlHeaders(), timeout: 10000 });
+    console.log('[ghl] Tags added to', contactId, ':', tags);
+    return r.data;
+  } catch (err) {
+    console.error('[ghl] addTags error:', err.response?.data || err.message);
+  }
+}
+
+/**
+ * Trigger a price drop event on a GHL contact.
+ * Adds tags and a note when TripReclaim detects a lower fare.
+ *
+ * @param {string} email - user email
+ * @param {object} booking - { airline, origin, destination, departureDate, pricePaid }
+ * @param {number} currentPrice - the detected lower price
+ * @param {number} savings - how much the user saves
+ * @param {boolean} isIn24h - whether within the 24h DOT refund window
+ */
+async function triggerPriceDropEvent(email, booking, currentPrice, savings, isIn24h) {
+  if (!email) return;
+  try {
+    const contact = await findContact(email);
+    if (!contact) {
+      console.log('[ghl] triggerPriceDropEvent: no contact found for', email);
+      return;
+    }
+
+    const savingsFormatted = savings.toFixed(2);
+    const route = `${booking.origin || '?'}-${booking.destination || '?'}`;
+    const windowLabel = isIn24h ? '24h-window' : 'post-24h';
+
+    // Add actionable tags
+    await addTags(contact.id, [
+      'price-drop-detected',
+      `savings:$${Math.floor(savings)}`,
+      `route:${route.toLowerCase()}`,
+      `airline:${(booking.airline || 'unknown').toLowerCase().replace(/\s+/g, '-')}`,
+      `window:${windowLabel}`,
+    ]);
+
+    // Add timestamped note
+    const noteDate = new Date().toISOString().split('T')[0];
+    const noteBody = [
+      `💰 Price Drop Detected — ${noteDate}`,
+      `Route: ${booking.origin} → ${booking.destination}`,
+      `Airline: ${booking.airline || 'Unknown'}`,
+      `Departure: ${booking.departureDate ? new Date(booking.departureDate).toLocaleDateString() : 'Unknown'}`,
+      `Paid: $${Number(booking.pricePaid || 0).toFixed(2)} → Now: $${Number(currentPrice).toFixed(2)}`,
+      `Savings: $${savingsFormatted}`,
+      `Window: ${isIn24h ? '✅ Within 24h (full cash refund eligible)' : '⏰ Outside 24h (price adjustment/credit)'}`,
+    ].join('\n');
+
+    await addNote(contact.id, noteBody);
+    console.log(`[ghl] Price drop event recorded for ${email} — savings: $${savingsFormatted}`);
+  } catch (err) {
+    console.error('[ghl] triggerPriceDropEvent error:', err.message);
+  }
+}
+
+/**
+ * Mark a contact as churned (plan expired / cancelled).
+ */
+async function markChurned(email, reason) {
+  if (!email) return;
+  try {
+    const contact = await findContact(email);
+    if (!contact) return;
+    await addTags(contact.id, ['churned', `churn-reason:${reason || 'unknown'}`]);
+    await addNote(contact.id, `❌ Churn event — ${new Date().toISOString().split('T')[0]}: ${reason || 'plan expired'}`);
+    console.log('[ghl] Contact marked churned:', email);
+  } catch (err) {
+    console.error('[ghl] markChurned error:', err.message);
+  }
+}
+
+module.exports = { upsertContact, findContact, createContact, updateContact, addNote, addTags, triggerPriceDropEvent, markChurned };

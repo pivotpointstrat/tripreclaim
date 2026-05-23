@@ -1,6 +1,7 @@
 const { Resend } = require('resend');
 const twilio = require('twilio');
 const { getPolicyForAirline } = require('./policyAgent');
+const { triggerPriceDropEvent } = require('./ghl');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = `${process.env.EMAIL_FROM_NAME || 'TripReclaim'} <${process.env.EMAIL_FROM || 'hello@tripreclaim.com'}>`;
@@ -267,6 +268,15 @@ const sendPriceDropAlert = async (email, booking, currentPrice, opts = {}) => {
         <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a> · <a href="https://tripreclaim.com/unsubscribe" style="color:#94a3b8;">Unsubscribe</a></p>
       </div>
     `,
+  });
+
+  // Async GHL CRM trigger — record price drop on contact (non-blocking)
+  setImmediate(() => {
+    const savings = net > 0 ? net : 0;
+    if (savings > 0) {
+      triggerPriceDropEvent(email, booking, currentPrice, savings, within24h || false)
+        .catch(e => console.warn('[email] GHL price drop trigger failed:', e.message));
+    }
   });
 };
 

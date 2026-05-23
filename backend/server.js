@@ -44,6 +44,7 @@ app.use(limiter);
 // IMPORTANT: Stripe webhook route needs raw body — mount BEFORE json middleware
 app.use('/webhooks', require('./routes/twilio-webhook'));
 app.use('/webhooks/email-inbound', require('./routes/email-inbound'));
+app.use('/webhooks/ghl', require('./routes/ghl-webhook'));
 app.use('/webhook', require('./routes/webhook'));
 
 // JSON body parser for all other routes
