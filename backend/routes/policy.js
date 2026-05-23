@@ -36,7 +36,7 @@ router.get('/changes', requireAuth, async (req, res) => {
  * GET /policy/all
  * Returns all stored airline policies (lightweight, no scraped markdown).
  */
-router.get('/all', requireAuth, async (req, res) => {
+router.get('/all', async (req, res) => {
   try {
     const policies = await AirlinePolicy.find()
       .select('-policies.scrapedMarkdown')

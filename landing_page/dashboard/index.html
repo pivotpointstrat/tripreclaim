@@ -1683,6 +1683,7 @@ async function viewClaimKit(bookingId, airline) {
     const steps = (policy && policy.policies && policy.policies.claimSteps) || [];
     const claimUrl = (policy && policy.policies && policy.policies.claimUrl) || (AIRLINE_LOOKUP_URLS[airline] || '');
     const claimPhone = (policy && policy.policies && policy.policies.claimPhone) || '';
+    const lastVerified = (policy && policy.lastScraped) ? new Date(policy.lastScraped).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : 'May 22, 2026';
     const mb = overlay.querySelector('.modal-box');
     let html = '<div class="modal-header"><div class="modal-title">\uD83D\uDCCB Claim Kit &mdash; ' + b.origin + ' &rarr; ' + b.destination + ' &middot; ' + airline + '</div><button class="modal-close" onclick="closePolicyModal()">&times;</button></div>';
     if (isIn24h) html += '<div style="background:linear-gradient(135deg,#d97706,#b45309);color:#fff;border-radius:10px;padding:14px 16px;margin-bottom:16px;"><strong>\u26A1 24-Hour Full Cash Refund Available!</strong><br><span style="font-size:0.88rem;opacity:0.9;">DOT rules entitle you to a FULL CASH REFUND right now. Cancel and rebook at the lower price.</span></div>';
@@ -1693,7 +1694,7 @@ async function viewClaimKit(bookingId, airline) {
     } else {
       html += '<p style="font-size:0.9rem;color:#1e40af;">Contact ' + airline + ' customer service to request a price adjustment for booking ' + (b.confirmationNumber || 'your booking') + '.</p>';
     }
-    html += '<div style="margin-top:12px;font-size:0.82rem;color:#1e40af;">\uD83D\uDCC5 Credit valid: <strong>' + expiry + '</strong>' + (claimPhone ? ' &middot; \uD83D\uDCDE ' + claimPhone : '') + '</div></div>';
+    html += '<div style="margin-top:12px;font-size:0.82rem;color:#1e40af;">\uD83D\uDCC5 Credit valid: <strong>' + expiry + '</strong>' + (claimPhone ? ' &middot; \uD83D\uDCDE ' + claimPhone : '') + '</div><div style="margin-top:6px;font-size:0.78rem;color:#64748b;">\u2705 Policy last verified: ' + lastVerified + ' &middot; <a href="/policies/" target="_blank" style="color:#1d4ed8;text-decoration:none;">View Policy Hub</a></div></div>';
     if (b.confirmationNumber) html += '<div style="background:var(--slate-light);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:0.88rem;"><strong>Booking:</strong> ' + airline + ' &middot; ' + b.origin + '&rarr;' + b.destination + ' &middot; Ref: <strong>' + b.confirmationNumber + '</strong>' + (b.flightNumber ? ' &middot; Flight: <strong>' + b.flightNumber + '</strong>' : '') + '</div>';
     html += '<div style="display:flex;gap:10px;flex-wrap:wrap;">';
     if (claimUrl) html += '<a href="' + claimUrl + '" target="_blank" class="btn-primary" style="text-decoration:none;">Claim at ' + airline + ' &rarr;</a>';
