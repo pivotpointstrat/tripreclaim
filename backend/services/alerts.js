@@ -144,6 +144,7 @@ const checkBooking = async (booking) => {
     // Build update object
     const update = {
       lastCheckedAt: now,
+      $inc: { checkCount: 1 },
     };
 
     if (price !== null) {

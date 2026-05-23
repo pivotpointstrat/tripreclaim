@@ -671,6 +671,13 @@ async function init() {
       setToken(data.token);
       setUser(data.user);
       window.history.replaceState({}, '', '/dashboard/');
+      // Redirect back to evidence page (or any page) after login if requested
+      const postLoginRedirect = sessionStorage.getItem('tr_redirect');
+      if (postLoginRedirect) {
+        sessionStorage.removeItem('tr_redirect');
+        window.location.href = postLoginRedirect;
+        return;
+      }
       await renderApp();
     } catch { renderAuth('Link expired or invalid. Request a new one below.'); }
     return;

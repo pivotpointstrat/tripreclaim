@@ -70,6 +70,7 @@ const bookingSchema = new mongoose.Schema({
     default: 'active',
   },
   lastCheckedAt: { type: Date, default: null },
+  checkCount:    { type: Number, default: 0 },
   nextCheckAt: { type: Date, default: Date.now },
   alertsSent: { type: Number, default: 0 },
   lastAlertAt: { type: Date, default: null },
