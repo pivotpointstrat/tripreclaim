@@ -23,16 +23,16 @@ router.post('/', async (req, res) => {
     await resend.emails.send({
       from: 'TripReclaim <hello@tripreclaim.com>',
       to: email,
-      subject: `📡 Watching ${routeLabel} for price drops`,
+      subject: `✅ Free 24-hour monitoring started — ${routeLabel}`,
       html: `
         <div style="font-family:Inter,sans-serif;max-width:560px;margin:0 auto;color:#0f172a">
           <div style="background:linear-gradient(135deg,#0f172a,#1d4ed8);padding:32px;border-radius:16px 16px 0 0;text-align:center">
             <img src="https://tripreclaim.com/logos/logo.png" alt="TripReclaim" style="height:36px;margin-bottom:16px">
-            <h1 style="color:#fff;font-size:1.4rem;margin:0;font-weight:800">We're watching your flight 👀</h1>
+            <h1 style="color:#fff;font-size:1.4rem;margin:0;font-weight:800">✅ 24-hour free monitoring started</h1>
           </div>
           <div style="background:#fff;padding:32px;border:1px solid #e2e8f0;border-top:none">
             <p style="font-size:1rem;margin:0 0 20px">Hi there,</p>
-            <p style="margin:0 0 24px;color:#475569">We've started monitoring <strong>${routeLabel}</strong> on <strong>${depLabel}</strong>. The moment we detect a price drop from your paid fare of <strong>${priceLabel}</strong>, we'll send you step-by-step instructions to claim the difference.</p>
+            <p style="margin:0 0 24px;color:#475569">We're watching <strong>${routeLabel}</strong> on <strong>${depLabel}</strong> for the next 24 hours. If the price drops from your paid fare of <strong>${priceLabel}</strong>, we'll alert you instantly with step-by-step instructions to claim the difference.</p>
 
             <div style="background:#eff6ff;border-radius:12px;padding:20px;margin-bottom:24px">
               <p style="margin:0 0 8px;font-weight:700;font-size:0.9rem">⚡ What happens next:</p>
@@ -47,10 +47,10 @@ router.post('/', async (req, res) => {
               <p style="margin:0;font-size:0.9rem;color:#166534"><strong>💡 DOT 24-Hour Rule:</strong> If you booked within the last 24 hours and your flight is 7+ days away, you're entitled to a FULL CASH REFUND if you cancel — no questions asked. <a href="https://tripreclaim.com/blog/dot-24-hour-flight-cancellation-rule/" style="color:#166534">Learn more →</a></p>
             </div>
 
-            <p style="margin:0 0 24px;color:#475569;font-size:0.9rem">For continuous monitoring beyond 24 hours and unlimited flight tracking, upgrade to a full TripReclaim plan:</p>
+            <p style="margin:0 0 24px;color:#475569;font-size:0.9rem">Your free 24-hour watch expires tomorrow. To keep monitoring this flight until departure — and protect every trip you book — continue for just <strong>$2.99</strong>:</p>
 
             <div style="text-align:center;margin-bottom:24px">
-              <a href="https://tripreclaim.com/#pricing" style="display:inline-block;background:#2563eb;color:#fff;padding:14px 32px;border-radius:10px;font-weight:700;text-decoration:none;font-size:0.95rem">See Plans — From $2.99/trip →</a>
+              <a href="https://tripreclaim.com/#pricing" style="display:inline-block;background:#2563eb;color:#fff;padding:14px 32px;border-radius:10px;font-weight:700;text-decoration:none;font-size:0.95rem">Continue Monitoring — $2.99/trip →</a>
             </div>
 
             <p style="margin:0;color:#94a3b8;font-size:0.8rem;text-align:center">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8">tripreclaim.com</a> · <a href="https://tripreclaim.com/privacy/" style="color:#94a3b8">Privacy</a></p>

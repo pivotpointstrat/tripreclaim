@@ -141,6 +141,10 @@
     .email-success { display: none; align-items: center; gap: 10px; color: #065f46; font-weight: 600; font-size: 0.9rem; margin-top: 12px; }
     .email-success.visible { display: flex; }
     .email-disclaimer { font-size: 0.75rem; color: var(--slate); margin-top: 8px; }
+    .upgrade-nudge { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 14px 16px; margin-top: 12px; }
+    .upgrade-nudge p { font-size: 0.875rem; color: #9a3412; margin: 0 0 10px; }
+    .upgrade-link { display: inline-block; background: #f97316; color: #fff; padding: 8px 18px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: background 0.2s; }
+    .upgrade-link:hover { background: #ea580c; }
 
     /* Section below fold */
     .info-section { padding: 80px 24px; max-width: 900px; margin: 0 auto; }
@@ -273,17 +277,21 @@
         </div>
 
         <div class="email-capture">
-          <h3>📡 Monitor This Flight Automatically</h3>
-          <p>We'll watch this route 24/7 and alert you the moment we detect a price drop — with step-by-step instructions to claim your money back.</p>
+          <h3>📡 Monitor Free for 24 Hours</h3>
+          <p>Enter your email and we'll watch this route for the next 24 hours. If the price drops, you get an instant alert with step-by-step instructions to claim your money back.</p>
           <div class="email-form">
             <input type="email" id="lead-email" placeholder="your@email.com">
             <button onclick="submitLead()">Start Free Monitoring →</button>
           </div>
           <div class="email-success" id="email-success">
             <svg width="18" height="18" fill="none" stroke="#065f46" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-            Check your email — we'll start monitoring within 60 seconds.
+            ✅ Monitoring started — check your email for confirmation.
           </div>
-          <p class="email-disclaimer">Free 24-hour monitoring. No credit card. Upgrade anytime to extend monitoring.</p>
+          <div class="upgrade-nudge" id="upgrade-nudge" style="display:none">
+            <p>⏱️ <strong>Want to monitor beyond 24 hours?</strong> Continue watching this flight all month for just <strong>$2.99</strong> — includes a full Claim Kit the moment a price drops.</p>
+            <a href="/#pricing" class="upgrade-link">Continue Monitoring — $2.99 →</a>
+          </div>
+          <p class="email-disclaimer">Free for 24 hours · No credit card · Continue monitoring for $2.99/trip or $5.99/month unlimited</p>
         </div>
       </div>
     </div>
@@ -654,11 +662,13 @@ function submitLead() {
   .then(() => {
     document.querySelector('.email-form').style.display = 'none';
     document.getElementById('email-success').classList.add('visible');
+    setTimeout(() => { document.getElementById('upgrade-nudge').style.display = 'block'; }, 3000);
   })
   .catch(() => {
     // Still show success for UX (backend processes async)
     document.querySelector('.email-form').style.display = 'none';
     document.getElementById('email-success').classList.add('visible');
+    setTimeout(() => { document.getElementById('upgrade-nudge').style.display = 'block'; }, 3000);
   });
 }
 </script>
