@@ -51,6 +51,13 @@
     .hero h1 em { color: #60a5fa; font-style: normal; }
     .hero p { font-size: 1.1rem; color: #94a3b8; max-width: 520px; margin: 0 auto 40px; }
 
+
+    /* Trip type toggle */
+    .trip-toggle { display: flex; gap: 0; margin-bottom: 24px; background: var(--slate-light); border-radius: 10px; padding: 4px; }
+    .trip-tab { flex: 1; padding: 9px 16px; border: none; background: transparent; font-family: inherit; font-size: 0.875rem; font-weight: 600; color: var(--slate); cursor: pointer; border-radius: 8px; transition: all 0.2s; }
+    .trip-tab.active { background: #fff; color: var(--navy); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .return-date-row { display: none; margin-bottom: 16px; }
+    .return-date-row.visible { display: block; }
     /* CALCULATOR CARD */
     .calc-wrapper { max-width: 720px; margin: 0 auto; padding: 0 24px; transform: translateY(32px); }
     .calc-card { background: #fff; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); overflow: hidden; }
@@ -173,6 +180,12 @@
   <div class="calc-card">
     <div class="calc-form">
       <h2>✈️ Enter Your Flight Details</h2>
+
+      <div class="trip-toggle">
+        <button class="trip-tab active" id="tab-oneway" onclick="setTripType('oneway')">✈️ One Way</button>
+        <button class="trip-tab" id="tab-roundtrip" onclick="setTripType('roundtrip')">🔄 Round Trip</button>
+      </div>
+
       <div class="form-grid">
         <div>
           <label>From</label>
@@ -200,6 +213,10 @@
           <label>Date You Booked</label>
           <input type="date" id="booked-date">
         </div>
+      </div>
+      <div class="return-date-row" id="return-date-row">
+        <label>Return Date</label>
+        <input type="date" id="return-date">
       </div>
       <div class="form-row">
         <label>Price You Paid (per person)</label>
@@ -467,6 +484,26 @@ setupAutocomplete('to-input', 'to-suggestions', 'to-code');
 })();
 
 // ── Calculation logic ─────────────────────────────────────────────────────────
+// ── Trip type toggle ──────────────────────────────────────────────────────────
+let tripType = 'oneway';
+function setTripType(type) {
+  tripType = type;
+  document.getElementById('tab-oneway').classList.toggle('active', type === 'oneway');
+  document.getElementById('tab-roundtrip').classList.toggle('active', type === 'roundtrip');
+  const returnRow = document.getElementById('return-date-row');
+  returnRow.classList.toggle('visible', type === 'roundtrip');
+  if (type === 'roundtrip') {
+    // Set default return date 7 days after departure if empty
+    const dep = document.getElementById('depart-date').value;
+    const ret = document.getElementById('return-date');
+    if (dep && !ret.value) {
+      const d = new Date(dep);
+      d.setDate(d.getDate() + 7);
+      ret.value = d.toISOString().split('T')[0];
+    }
+  }
+}
+
 function calculate() {
   const fromCode = document.getElementById('from-code').value || document.getElementById('from-input').value.trim().toUpperCase().slice(0,3);
   const toCode = document.getElementById('to-code').value || document.getElementById('to-input').value.trim().toUpperCase().slice(0,3);
@@ -478,14 +515,15 @@ function calculate() {
     alert('Please enter your origin, destination, and departure date.');
     return;
   }
-  if (bookedStr && booked > depart) {
-    alert('Your booking date cannot be after your departure date.');
-    return;
-  }
 
   const today = new Date();
   const depart = new Date(departStr);
   const booked = bookedStr ? new Date(bookedStr) : today;
+
+  if (bookedStr && booked > depart) {
+    alert('Your booking date cannot be after your departure date.');
+    return;
+  }
 
   const daysOut = Math.max(0, Math.round((depart - today) / 86400000));
 
@@ -578,6 +616,19 @@ function calculate() {
   document.getElementById('factor-refund').textContent = 'Travel credit for fare difference (Main Cabin+)';
 
 
+
+  // Round trip note
+  if (tripType === 'roundtrip') {
+    const returnStr = document.getElementById('return-date').value;
+    if (returnStr) {
+      const returnDate = new Date(returnStr);
+      if (returnDate <= depart) {
+        alert('Return date must be after your departure date.');
+        return;
+      }
+    }
+    document.getElementById('prob-desc').textContent += ' (Outbound leg — return leg has similar probability.)'
+  }
 
   // Show results
   document.getElementById('results').classList.add('visible');
