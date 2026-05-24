@@ -146,6 +146,14 @@
     .savings-banner .amount { font-size: 1.6rem; font-weight: 800; }
     .savings-banner .label { font-size: 0.85rem; opacity: 0.9; }
 
+    /* ── Trial banner ── */
+    .trial-banner { background: linear-gradient(135deg,#f97316,#ea580c); color:#fff; border-radius:12px; padding:14px 20px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+    .trial-banner.expired { background: linear-gradient(135deg,#64748b,#475569); }
+    .trial-banner-text strong { font-size:1rem; font-weight:700; display:block; }
+    .trial-banner-text span { font-size:0.82rem; opacity:0.9; display:block; margin-top:2px; }
+    .trial-cta-btn { background:#fff; color:#ea580c; font-weight:700; padding:9px 18px; border-radius:8px; text-decoration:none; font-size:0.88rem; white-space:nowrap; }
+    .trial-cta-btn:hover { background:#fff7ed; }
+
     /* ── Plan card ── */
     .plan-card { background: var(--blue); color: #fff; border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; }
     .plan-card .plan-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
@@ -702,12 +710,12 @@ async function init() {
         window.location.href = postLoginRedirect;
         return;
       }
-      await renderApp();
+      await renderApp(); startTrialCountdown();
     } catch { renderAuth('Link expired or invalid. Request a new one below.'); }
     return;
   }
   if (getToken()) {
-    try { const data = await apiFetch('/auth/me'); setUser(data); await renderApp(); }
+    try { const data = await apiFetch('/auth/me'); setUser(data); await renderApp(); startTrialCountdown(); }
     catch { clearToken(); renderAuth(); }
   } else { renderAuth(); }
 }
@@ -771,6 +779,14 @@ function renderShell(user) {
         <h1>Welcome back${user.name ? ', ' + user.name.split(' ')[0] : '' }! ✈️</h1>
         <p>Monitor your flight prices and claim refunds when they drop.</p>
       </div>
+      ${user.plan === 'trial' ? `
+      <div class="trial-banner" id="trial-banner-bar">
+        <div class="trial-banner-text">
+          <strong id="trial-banner-title">⚡ Free 24-Hour Trial Active</strong>
+          <span id="trial-banner-sub">Calculating time remaining...</span>
+        </div>
+        <a href="https://tripreclaim.com/#pricing" class="trial-cta-btn">Continue for $2.99 →</a>
+      </div>` : ''}
       <div class="tabs">
         <button class="tab ${activeTab==='flights'?'active':'' }" onclick="switchTab('flights')">✈ My Flights</button>
         <button class="tab ${activeTab==='account'?'active':'' }" onclick="switchTab('account')">👤 Account</button>
@@ -789,6 +805,35 @@ function switchTab(tab) {
 }
 
 function logout() { clearToken(); renderAuth(); }
+
+// ── Trial countdown timer ──
+let _trialTimer = null;
+function startTrialCountdown() {
+  if (_trialTimer) clearInterval(_trialTimer);
+  const user = getUser();
+  if (!user || user.plan !== 'trial' || !user.trialExpiresAt) return;
+  const update = () => {
+    const banner = document.getElementById('trial-banner-bar');
+    const title  = document.getElementById('trial-banner-title');
+    const sub    = document.getElementById('trial-banner-sub');
+    if (!banner) return;
+    const msLeft = new Date(user.trialExpiresAt) - Date.now();
+    if (msLeft <= 0) {
+      banner.classList.add('expired');
+      if (title) title.textContent = '⏰ Your Free Trial Has Expired';
+      if (sub) sub.textContent = 'Monitoring is paused. Upgrade to continue watching your flight.';
+      clearInterval(_trialTimer);
+      return;
+    }
+    const hrs  = Math.floor(msLeft / 3600000);
+    const mins = Math.floor((msLeft % 3600000) / 60000);
+    if (title) title.textContent = '⚡ Free 24-Hour Trial Active';
+    if (sub) sub.textContent = `${hrs}h ${mins}m remaining — monitoring your flight every 15 minutes`;
+  };
+  update();
+  _trialTimer = setInterval(update, 60000);
+}
+
 function loadingScreen() { return `<div class="loading-screen"><div class="spinner"></div></div>`; }
 
 // ═══════════════════════════════════════════

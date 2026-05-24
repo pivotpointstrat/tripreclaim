@@ -67,6 +67,9 @@ router.get('/verify', async (req, res) => {
         plan: user.plan,
         planStatus: user.planStatus,
         tripsRemaining: user.tripsRemaining,
+        trialExpiresAt: user.trialExpiresAt || null,
+        trialOrigin: user.trialOrigin || null,
+        trialDestination: user.trialDestination || null,
       },
     });
   } catch (err) {
@@ -82,8 +85,8 @@ router.get('/verify', async (req, res) => {
  * Return current user info (requires session token)
  */
 router.get('/me', require('../middleware/auth').requireAuth, (req, res) => {
-  const { email, plan, planStatus, tripsRemaining, createdAt, name, phone, notificationPrefs, onboardingComplete } = req.user;
-  res.json({ email, plan, planStatus, tripsRemaining, createdAt, name, phone, notificationPrefs, onboardingComplete });
+  const { email, plan, planStatus, tripsRemaining, createdAt, name, phone, notificationPrefs, onboardingComplete, trialExpiresAt, trialOrigin, trialDestination } = req.user;
+  res.json({ email, plan, planStatus, tripsRemaining, createdAt, name, phone, notificationPrefs, onboardingComplete, trialExpiresAt, trialOrigin, trialDestination });
 });
 
 /**

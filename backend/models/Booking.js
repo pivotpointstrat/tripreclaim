@@ -56,6 +56,7 @@ const bookingSchema = new mongoose.Schema({
   flightNumber: { type: String, default: null },
   purchasedAt: { type: Date, default: null },   // exact date+time of purchase (for 24h DOT window)
   matchMode: { type: String, enum: ['exact', 'flexible'], default: 'exact' },
+  isTrial: { type: Boolean, default: false },
   monitoringPrefs: {
     flightNumber: String,
     maxStops: { type: Number, default: 0 },

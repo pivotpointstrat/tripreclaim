@@ -416,19 +416,32 @@ const runMonitoringCycle = async () => {
     status: 'active',
     nextCheckAt: { $lte: now },
   }).lean({ getters: true });
+  // Filter out bookings belonging to expired trial users
+  const filteredBookings = [];
+  for (const booking of bookings) {
+    const owner = await User.findById(booking.userId).lean();
+    if (owner && owner.plan === 'trial' && owner.trialExpiresAt && new Date(owner.trialExpiresAt) < now) {
+      // Pause the booking — trial expired
+      await Booking.findByIdAndUpdate(booking._id, { monitoringActive: false, status: 'paused' });
+      console.log(`[alerts] Trial expired for ${owner.email} — pausing booking ${booking._id}`);
+      continue;
+    }
+    filteredBookings.push(booking);
+  }
+  const activeBookings = filteredBookings;
 
-  if (!bookings.length) {
+  if (!activeBookings.length) {
     console.log('[alerts] No bookings due for check');
     return { checked: 0, alerts: 0 };
   }
 
-  console.log(`[alerts] Checking ${bookings.length} booking(s)`);
+  console.log(`[alerts] Checking ${activeBookings.length} booking(s)`);
 
   let checked = 0;
   let alerts = 0;
 
   // Process sequentially to respect API rate limits
-  for (const booking of bookings) {
+  for (const booking of activeBookings) {
     // Skip if travel date has passed
     const daysLeft = Math.ceil((new Date(booking.departureDate) - now) / (1000 * 60 * 60 * 24));
     if (daysLeft <= 0) {

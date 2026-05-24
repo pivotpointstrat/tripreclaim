@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
   },
   plan: {
     type: String,
-    enum: ['per_trip', 'monthly', 'annual', null],
+    enum: ['per_trip', 'monthly', 'annual', 'trial', 'lead', null],
     default: null,
   },
   planStatus: {
@@ -40,6 +40,14 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: null,
   },
+  trialExpiresAt: {
+    type: Date,
+    default: null,
+  },
+  trialOrigin: { type: String, default: null },
+  trialDestination: { type: String, default: null },
+  trialDepartureDate: { type: String, default: null },
+  trialPricePaid: { type: Number, default: null },
   createdAt: {
     type: Date,
     default: Date.now,
