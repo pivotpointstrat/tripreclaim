@@ -194,6 +194,9 @@ async function triggerPriceDropEvent(email, booking, currentPrice, savings, isIn
 
     await addNote(contact.id, noteBody);
     console.log(`[ghl] Price drop event recorded for ${email} — savings: $${savingsFormatted}`);
+
+    // Move to Price Drop Win stage in pipeline
+    await moveOpportunityToStage(email, 'priceDropWin');
   } catch (err) {
     console.error('[ghl] triggerPriceDropEvent error:', err.message);
   }
@@ -209,10 +212,112 @@ async function markChurned(email, reason) {
     if (!contact) return;
     await addTags(contact.id, ['churned', `churn-reason:${reason || 'unknown'}`]);
     await addNote(contact.id, `❌ Churn event — ${new Date().toISOString().split('T')[0]}: ${reason || 'plan expired'}`);
+    await moveOpportunityToStage(email, 'churned', 'lost');
     console.log('[ghl] Contact marked churned:', email);
   } catch (err) {
     console.error('[ghl] markChurned error:', err.message);
   }
 }
 
-module.exports = { upsertContact, findContact, createContact, updateContact, addNote, addTags, triggerPriceDropEvent, markChurned };
+
+// ─────────────────────────────────────────────
+// PIPELINE / OPPORTUNITIES
+// ─────────────────────────────────────────────
+
+// Hardcoded pipeline + stage IDs from "TripReclaim Customer Journey"
+const PIPELINE_ID = 'XDsMr5uHtPV0b0umwDrd';
+const STAGE_IDS = {
+  lead:           'e3d68045-5257-4aa6-ae9e-55e65f44095c',
+  active:         'ea948bf8-e979-458a-9e30-8935a81d3254',
+  priceDropWin:   'df139d88-c49b-4d38-aac5-b6fea5e6db0c',
+  upgraded:       '9014bb0a-926b-436e-90f6-1d2610959f7c',
+  churned:        '3dc99806-e475-4717-8453-ab37b98552a8',
+};
+
+/**
+ * Find an existing opportunity for a contact in the TripReclaim pipeline.
+ */
+async function findOpportunity(contactId) {
+  try {
+    const r = await axios.get(`${GHL_BASE}/opportunities/search`, {
+      headers: ghlHeaders(),
+      params: { location_id: process.env.GHL_LOCATION_ID, contact_id: contactId },
+      timeout: 10000,
+    });
+    const opps = r.data?.opportunities || [];
+    return opps.find(o => o.pipelineId === PIPELINE_ID) || null;
+  } catch (err) {
+    console.error('[ghl] findOpportunity error:', err.response?.data || err.message);
+    return null;
+  }
+}
+
+/**
+ * Create an opportunity for a contact in the pipeline.
+ * Call this when a user purchases a plan.
+ */
+async function createOpportunity(contactId, stageName, monetaryValue = 0, name = 'TripReclaim') {
+  const stageId = STAGE_IDS[stageName] || STAGE_IDS.active;
+  try {
+    const r = await axios.post(`${GHL_BASE}/opportunities/`, {
+      locationId: process.env.GHL_LOCATION_ID,
+      pipelineId: PIPELINE_ID,
+      pipelineStageId: stageId,
+      contactId,
+      name,
+      status: 'open',
+      monetaryValue,
+    }, { headers: ghlHeaders(), timeout: 10000 });
+    console.log('[ghl] Opportunity created:', r.data?.opportunity?.id, 'stage:', stageName);
+    return r.data?.opportunity || null;
+  } catch (err) {
+    console.error('[ghl] createOpportunity error:', err.response?.data || err.message);
+    return null;
+  }
+}
+
+/**
+ * Move an existing opportunity to a new pipeline stage.
+ * Creates the opportunity first if it doesn't exist.
+ */
+async function moveOpportunityToStage(email, stageName, status = 'open') {
+  if (!email) return;
+  try {
+    const contact = await findContact(email);
+    if (!contact) {
+      console.log('[ghl] moveOpportunityToStage: no contact for', email);
+      return;
+    }
+
+    const stageId = STAGE_IDS[stageName];
+    if (!stageId) {
+      console.error('[ghl] Unknown stage:', stageName, '— valid stages:', Object.keys(STAGE_IDS).join(', '));
+      return;
+    }
+
+    // Find existing opportunity
+    let opp = await findOpportunity(contact.id);
+
+    if (!opp) {
+      // Create new opportunity at this stage
+      opp = await createOpportunity(contact.id, stageName);
+      console.log('[ghl] Created new opportunity at stage:', stageName, 'for', email);
+    } else {
+      // Move to new stage
+      await axios.put(`${GHL_BASE}/opportunities/${opp.id}`, {
+        pipelineStageId: stageId,
+        status,
+      }, { headers: ghlHeaders(), timeout: 10000 });
+      console.log('[ghl] Moved opportunity to stage:', stageName, 'for', email);
+    }
+  } catch (err) {
+    console.error('[ghl] moveOpportunityToStage error:', err.message);
+  }
+}
+
+module.exports = {
+  upsertContact, findContact, createContact, updateContact, addNote, addTags,
+  triggerPriceDropEvent, markChurned,
+  createOpportunity, moveOpportunityToStage, findOpportunity,
+  PIPELINE_ID, STAGE_IDS,
+};
