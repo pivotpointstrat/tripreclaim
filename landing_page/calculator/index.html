@@ -37,7 +37,7 @@
     /* NAV */
     nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 24px; }
     .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
-    .logo img { height: 36px; display: block; }
+    .logo { height: 28px; width: auto; display: block; }
     .nav-actions { display: flex; align-items: center; gap: 10px; }
     .nav-signin { color: var(--blue); font-size: 0.9rem; font-weight: 600; text-decoration: none; padding: 8px 16px; border-radius: 8px; border: 1px solid var(--blue); transition: all 0.2s; }
     .nav-signin:hover { background: var(--blue); color: #fff; }
@@ -427,6 +427,7 @@ const AIRPORTS = [
 function setupAutocomplete(inputId, suggestId, codeId) {
   const inp = document.getElementById(inputId);
   const sug = document.getElementById(suggestId);
+
   inp.addEventListener('input', () => {
     const q = inp.value.trim().toLowerCase();
     if (q.length < 2) { sug.style.display = 'none'; return; }
@@ -436,22 +437,35 @@ function setupAutocomplete(inputId, suggestId, codeId) {
       a.name.toLowerCase().includes(q)
     ).slice(0, 6);
     if (!matches.length) { sug.style.display = 'none'; return; }
-    sug.innerHTML = matches.map(a =>
-      `<div class="airport-opt" onclick="selectAirport('${inputId}','${suggestId}','${codeId}','${a.code}','${a.city.replace(/'/g,\"\\'\")}, ${a.code}','${String(a.intl)}')">
+    sug.innerHTML = matches.map(a => {
+      const label = a.city + ', ' + a.code;
+      return `<div class="airport-opt"
+        data-code="${a.code}"
+        data-label="${label.replace(/"/g, '&quot;')}"
+        data-intl="${a.intl}">
         <span class="airport-code">${a.code}</span>
         <span class="airport-name">${a.city} — ${a.name}</span>
-      </div>`
-    ).join('');
+      </div>`;
+    }).join('');
     sug.style.display = 'block';
   });
-  document.addEventListener('click', e => { if (!inp.contains(e.target)) sug.style.display = 'none'; });
-}
 
-function selectAirport(inputId, suggestId, codeId, code, label, isIntl) {
-  document.getElementById(inputId).value = label;
-  document.getElementById(codeId).value = code;
-  document.getElementById(suggestId).style.display = 'none';
-  document.getElementById(inputId).dataset.intl = isIntl;
+  // Use mousedown (fires before blur) for reliable click handling
+  sug.addEventListener('mousedown', e => {
+    const opt = e.target.closest('.airport-opt');
+    if (!opt) return;
+    e.preventDefault();
+    inp.value = opt.dataset.label;
+    document.getElementById(codeId).value = opt.dataset.code;
+    inp.dataset.intl = opt.dataset.intl;
+    sug.style.display = 'none';
+  });
+
+  inp.addEventListener('blur', () => { setTimeout(() => { sug.style.display = 'none'; }, 150); });
+  inp.addEventListener('focus', () => { if (sug.innerHTML && inp.value.length >= 2) sug.style.display = 'block'; });
+  document.addEventListener('click', e => {
+    if (!inp.contains(e.target) && !sug.contains(e.target)) sug.style.display = 'none';
+  });
 }
 
 setupAutocomplete('from-input', 'from-suggestions', 'from-code');
