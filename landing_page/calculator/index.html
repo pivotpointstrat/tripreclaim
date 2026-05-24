@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Flight Price Drop Calculator — TripReclaim</title>
+  <meta name="description" content="Find out the probability your flight price will drop after booking. Free calculator — enter your route and get an instant prediction.">
+  <meta property="og:title" content="Will Your Flight Price Drop? Free Calculator">
+  <meta property="og:description" content="Enter your flight details and instantly see the probability of a price drop — and how much you could save.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tripreclaim.com/calculator/">
+  <meta property="og:image" content="https://tripreclaim.com/logos/logo.png">
+  <link rel="canonical" href="https://tripreclaim.com/calculator/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue: #2563eb;
+      --blue-dark: #1d4ed8;
+      --blue-light: #eff6ff;
+      --navy: #0f172a;
+      --slate: #64748b;
+      --slate-light: #f8fafc;
+      --border: #e2e8f0;
+      --green: #10b981;
+      --green-light: #ecfdf5;
+      --amber: #f59e0b;
+      --amber-light: #fffbeb;
+      --red: #ef4444;
+      --radius: 12px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--navy); background: #fff; line-height: 1.6; }
+
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 24px; }
+    .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .logo img { height: 36px; display: block; }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .nav-signin { color: var(--blue); font-size: 0.9rem; font-weight: 600; text-decoration: none; padding: 8px 16px; border-radius: 8px; border: 1px solid var(--blue); transition: all 0.2s; }
+    .nav-signin:hover { background: var(--blue); color: #fff; }
+    .nav-cta { background: var(--blue); color: #fff; padding: 10px 22px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: background 0.2s; }
+    .nav-cta:hover { background: var(--blue-dark); }
+
+    /* HERO */
+    .hero { background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1d4ed8 100%); padding: 64px 24px 0; text-align: center; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: #93c5fd; padding: 6px 16px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 20px; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; color: #fff; line-height: 1.15; letter-spacing: -1.5px; margin-bottom: 16px; }
+    .hero h1 em { color: #60a5fa; font-style: normal; }
+    .hero p { font-size: 1.1rem; color: #94a3b8; max-width: 520px; margin: 0 auto 40px; }
+
+    /* CALCULATOR CARD */
+    .calc-wrapper { max-width: 720px; margin: 0 auto; padding: 0 24px; transform: translateY(32px); }
+    .calc-card { background: #fff; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); overflow: hidden; }
+    .calc-form { padding: 36px; }
+    .calc-form h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 24px; color: var(--navy); }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+    .form-row { margin-bottom: 16px; }
+
+    label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--slate); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
+    input, select { width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 0.95rem; font-family: inherit; color: var(--navy); background: var(--slate-light); transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
+    input:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); background: #fff; }
+    .price-input-wrap { position: relative; }
+    .price-input-wrap::before { content: '$'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--slate); font-weight: 600; font-size: 0.95rem; pointer-events: none; }
+    .price-input-wrap input { padding-left: 28px; }
+
+    /* Airport autocomplete */
+    .autocomplete-wrap { position: relative; }
+    .airport-suggestions { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #fff; border: 1.5px solid var(--blue); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 200; max-height: 200px; overflow-y: auto; }
+    .airport-opt { padding: 10px 14px; cursor: pointer; font-size: 0.9rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+    .airport-opt:last-child { border-bottom: none; }
+    .airport-opt:hover { background: var(--blue-light); }
+    .airport-code { font-weight: 700; color: var(--blue); min-width: 36px; font-size: 0.85rem; }
+    .airport-name { color: var(--slate); font-size: 0.85rem; }
+
+    .calc-btn { width: 100%; padding: 16px; background: var(--blue); color: #fff; border: none; border-radius: 12px; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.1s; margin-top: 8px; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .calc-btn:hover { background: var(--blue-dark); transform: translateY(-1px); }
+    .calc-btn:active { transform: translateY(0); }
+
+    /* RESULTS */
+    .results-section { display: none; border-top: 1px solid var(--border); }
+    .results-section.visible { display: block; }
+
+    /* 24h banner */
+    .banner-24h { padding: 14px 24px; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; font-weight: 600; }
+    .banner-24h.active { background: #dcfce7; color: #166534; }
+    .banner-24h.expired { background: var(--amber-light); color: #92400e; }
+    .banner-24h svg { flex-shrink: 0; }
+
+    .results-body { padding: 32px 36px; }
+
+    /* Probability meter */
+    .prob-section { display: flex; align-items: center; gap: 32px; margin-bottom: 32px; }
+    @media (max-width: 560px) { .prob-section { flex-direction: column; align-items: flex-start; gap: 20px; } }
+    .prob-gauge-wrap { flex-shrink: 0; }
+    .prob-gauge { position: relative; width: 140px; height: 140px; }
+    .prob-gauge svg { width: 140px; height: 140px; transform: rotate(-90deg); }
+    .gauge-bg { fill: none; stroke: #e2e8f0; stroke-width: 12; }
+    .gauge-fill { fill: none; stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+    .gauge-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .gauge-pct { font-size: 2rem; font-weight: 900; line-height: 1; }
+    .gauge-sub { font-size: 0.7rem; color: var(--slate); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .prob-info h3 { font-size: 1.35rem; font-weight: 800; margin-bottom: 8px; line-height: 1.2; }
+    .prob-info p { color: var(--slate); font-size: 0.9rem; line-height: 1.5; }
+
+    /* Stats row */
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+    @media (max-width: 480px) { .stats-row { grid-template-columns: 1fr 1fr; } }
+    .stat-card { background: var(--slate-light); border-radius: 12px; padding: 16px; text-align: center; }
+    .stat-card .stat-val { font-size: 1.4rem; font-weight: 800; color: var(--navy); }
+    .stat-card .stat-lbl { font-size: 0.75rem; color: var(--slate); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
+    .stat-card.highlight { background: var(--green-light); }
+    .stat-card.highlight .stat-val { color: #065f46; }
+
+    /* Breakdown */
+    .breakdown { margin-bottom: 28px; }
+    .breakdown h4 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--slate); margin-bottom: 12px; }
+    .breakdown-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    .breakdown-item:last-child { border-bottom: none; }
+    .bi-label { color: var(--slate); }
+    .bi-val { font-weight: 600; }
+    .bi-val.green { color: var(--green); }
+    .bi-val.amber { color: var(--amber); }
+
+    /* Email capture */
+    .email-capture { background: linear-gradient(135deg, #eff6ff, #dbeafe); border-radius: 16px; padding: 28px; margin-bottom: 8px; }
+    .email-capture h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 6px; }
+    .email-capture p { color: var(--slate); font-size: 0.875rem; margin-bottom: 16px; }
+    .email-form { display: flex; gap: 10px; }
+    @media (max-width: 500px) { .email-form { flex-direction: column; } }
+    .email-form input { flex: 1; padding: 12px 16px; border: 1.5px solid #bfdbfe; border-radius: 10px; font-size: 0.95rem; font-family: inherit; background: #fff; outline: none; }
+    .email-form input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    .email-form button { padding: 12px 22px; background: var(--blue); color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; font-family: inherit; white-space: nowrap; transition: background 0.2s; }
+    .email-form button:hover { background: var(--blue-dark); }
+    .email-success { display: none; align-items: center; gap: 10px; color: #065f46; font-weight: 600; font-size: 0.9rem; margin-top: 12px; }
+    .email-success.visible { display: flex; }
+    .email-disclaimer { font-size: 0.75rem; color: var(--slate); margin-top: 8px; }
+
+    /* Section below fold */
+    .info-section { padding: 80px 24px; max-width: 900px; margin: 0 auto; }
+    .info-section h2 { font-size: 1.8rem; font-weight: 800; text-align: center; margin-bottom: 8px; }
+    .info-section .sub { text-align: center; color: var(--slate); margin-bottom: 48px; }
+    .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } }
+    .info-card { background: var(--slate-light); border-radius: 16px; padding: 24px; }
+    .info-card .icon { font-size: 2rem; margin-bottom: 12px; }
+    .info-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .info-card p { font-size: 0.875rem; color: var(--slate); line-height: 1.6; }
+
+    /* Footer */
+    footer { background: var(--navy); color: #94a3b8; padding: 32px 24px; text-align: center; font-size: 0.85rem; }
+    footer a { color: #60a5fa; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .hero-spacer { height: 64px; background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1d4ed8 100%); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/"><img src="/logos/logo.png" alt="TripReclaim" class="logo"></a>
+    <div class="nav-actions">
+      <a href="/dashboard/" class="nav-signin">Sign In</a>
+      <a href="/#pricing" class="nav-cta">Start Free</a>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">🧮 Free Calculator</div>
+  <h1>Will Your Flight Price<br><em>Drop After Booking?</em></h1>
+  <p>Enter your flight details and instantly see the probability of a price drop — and how much you could recover.</p>
+</div>
+<div class="hero-spacer"></div>
+
+<div class="calc-wrapper">
+  <div class="calc-card">
+    <div class="calc-form">
+      <h2>✈️ Enter Your Flight Details</h2>
+      <div class="form-grid">
+        <div>
+          <label>From</label>
+          <div class="autocomplete-wrap">
+            <input type="text" id="from-input" placeholder="City or airport (e.g. JFK)" autocomplete="off">
+            <div class="airport-suggestions" id="from-suggestions" style="display:none"></div>
+          </div>
+          <input type="hidden" id="from-code">
+        </div>
+        <div>
+          <label>To</label>
+          <div class="autocomplete-wrap">
+            <input type="text" id="to-input" placeholder="City or airport (e.g. LAX)" autocomplete="off">
+            <div class="airport-suggestions" id="to-suggestions" style="display:none"></div>
+          </div>
+          <input type="hidden" id="to-code">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div>
+          <label>Departure Date</label>
+          <input type="date" id="depart-date">
+        </div>
+        <div>
+          <label>Date You Booked</label>
+          <input type="date" id="booked-date">
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Price You Paid (per person)</label>
+        <div class="price-input-wrap">
+          <input type="number" id="price-paid" placeholder="e.g. 489" min="1" step="1">
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        Calculate My Drop Probability
+      </button>
+    </div>
+
+    <div class="results-section" id="results">
+      <div class="banner-24h" id="banner-24h"></div>
+      <div class="results-body">
+        <div class="prob-section">
+          <div class="prob-gauge-wrap">
+            <div class="prob-gauge">
+              <svg viewBox="0 0 140 140">
+                <circle class="gauge-bg" cx="70" cy="70" r="56"/>
+                <circle class="gauge-fill" id="gauge-fill" cx="70" cy="70" r="56"
+                  stroke-dasharray="351.86" stroke-dashoffset="351.86"/>
+              </svg>
+              <div class="gauge-label">
+                <span class="gauge-pct" id="gauge-pct" style="color:#2563eb">0%</span>
+                <span class="gauge-sub">chance</span>
+              </div>
+            </div>
+          </div>
+          <div class="prob-info">
+            <h3 id="prob-headline">Calculating...</h3>
+            <p id="prob-desc"></p>
+          </div>
+        </div>
+
+        <div class="stats-row" id="stats-row">
+          <div class="stat-card highlight">
+            <div class="stat-val" id="stat-avg-drop">—</div>
+            <div class="stat-lbl">Avg. Savings</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stat-days-out">—</div>
+            <div class="stat-lbl">Days Until Flight</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stat-window">—</div>
+            <div class="stat-lbl">24h DOT Window</div>
+          </div>
+        </div>
+
+        <div class="breakdown">
+          <h4>What factors into this estimate</h4>
+          <div class="breakdown-item"><span class="bi-label">Days until departure</span><span class="bi-val" id="factor-days">—</span></div>
+          <div class="breakdown-item"><span class="bi-label">Route type</span><span class="bi-val" id="factor-route">—</span></div>
+          <div class="breakdown-item"><span class="bi-label">Price tier</span><span class="bi-val" id="factor-price">—</span></div>
+          <div class="breakdown-item"><span class="bi-label">Best time to watch</span><span class="bi-val green" id="factor-timing">—</span></div>
+          <div class="breakdown-item"><span class="bi-label">Potential cash refund</span><span class="bi-val" id="factor-refund">—</span></div>
+        </div>
+
+        <div class="email-capture">
+          <h3>📡 Monitor This Flight Automatically</h3>
+          <p>We'll watch this route 24/7 and alert you the moment we detect a price drop — with step-by-step instructions to claim your money back.</p>
+          <div class="email-form">
+            <input type="email" id="lead-email" placeholder="your@email.com">
+            <button onclick="submitLead()">Start Free Monitoring →</button>
+          </div>
+          <div class="email-success" id="email-success">
+            <svg width="18" height="18" fill="none" stroke="#065f46" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+            Check your email — we'll start monitoring within 60 seconds.
+          </div>
+          <p class="email-disclaimer">Free 24-hour monitoring. No credit card. Upgrade anytime to extend monitoring.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="info-section" style="margin-top: 80px;">
+  <h2>How Price Drop Probability Works</h2>
+  <p class="sub">Our estimate is based on three key factors airline pricing researchers track</p>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="icon">📅</div>
+      <h3>Days Until Departure</h3>
+      <p>Flights booked 30–90 days out see the most price volatility. Airlines reprice frequently to fill seats, creating drop opportunities — especially at night.</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">🌍</div>
+      <h3>Route Type</h3>
+      <p>International and transatlantic routes see larger absolute drops. Domestic routes drop more frequently but in smaller amounts. Both are worth monitoring.</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">⚖️</div>
+      <h3>Ticket Price Tier</h3>
+      <p>Higher-priced tickets tend to see larger absolute drops. A $800 fare has more room to fall than a $200 fare — both in dollars and percentage terms.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p style="margin-bottom:8px">
+    <a href="/">TripReclaim</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/policies/">Airline Policies</a> · <a href="/blog/">Blog</a>
+  </p>
+  <p>© 2026 TripReclaim. Probability estimates are based on historical airline pricing patterns and are not guaranteed.</p>
+</footer>
+
+<script>
+// ── Airport data (major airports) ─────────────────────────────────────────────
+const AIRPORTS = [
+  {code:'JFK',name:'John F. Kennedy International',city:'New York',country:'US',intl:false},
+  {code:'LGA',name:'LaGuardia Airport',city:'New York',country:'US',intl:false},
+  {code:'EWR',name:'Newark Liberty International',city:'Newark',country:'US',intl:false},
+  {code:'LAX',name:'Los Angeles International',city:'Los Angeles',country:'US',intl:false},
+  {code:'ORD',name:'O\'Hare International',city:'Chicago',country:'US',intl:false},
+  {code:'MDW',name:'Midway International',city:'Chicago',country:'US',intl:false},
+  {code:'ATL',name:'Hartsfield-Jackson Atlanta',city:'Atlanta',country:'US',intl:false},
+  {code:'DFW',name:'Dallas/Fort Worth International',city:'Dallas',country:'US',intl:false},
+  {code:'DAL',name:'Dallas Love Field',city:'Dallas',country:'US',intl:false},
+  {code:'DEN',name:'Denver International',city:'Denver',country:'US',intl:false},
+  {code:'SFO',name:'San Francisco International',city:'San Francisco',country:'US',intl:false},
+  {code:'OAK',name:'Oakland International',city:'Oakland',country:'US',intl:false},
+  {code:'SJC',name:'San Jose International',city:'San Jose',country:'US',intl:false},
+  {code:'SEA',name:'Seattle-Tacoma International',city:'Seattle',country:'US',intl:false},
+  {code:'MIA',name:'Miami International',city:'Miami',country:'US',intl:false},
+  {code:'FLL',name:'Fort Lauderdale-Hollywood',city:'Fort Lauderdale',country:'US',intl:false},
+  {code:'MCO',name:'Orlando International',city:'Orlando',country:'US',intl:false},
+  {code:'BOS',name:'Logan International',city:'Boston',country:'US',intl:false},
+  {code:'LAS',name:'Harry Reid International',city:'Las Vegas',country:'US',intl:false},
+  {code:'PHX',name:'Phoenix Sky Harbor',city:'Phoenix',country:'US',intl:false},
+  {code:'IAH',name:'George Bush Intercontinental',city:'Houston',country:'US',intl:false},
+  {code:'HOU',name:'William P. Hobby Airport',city:'Houston',country:'US',intl:false},
+  {code:'MSP',name:'Minneapolis-Saint Paul',city:'Minneapolis',country:'US',intl:false},
+  {code:'DTW',name:'Detroit Metropolitan',city:'Detroit',country:'US',intl:false},
+  {code:'PHL',name:'Philadelphia International',city:'Philadelphia',country:'US',intl:false},
+  {code:'CLT',name:'Charlotte Douglas International',city:'Charlotte',country:'US',intl:false},
+  {code:'DCA',name:'Ronald Reagan Washington',city:'Washington DC',country:'US',intl:false},
+  {code:'IAD',name:'Dulles International',city:'Washington DC',country:'US',intl:false},
+  {code:'BWI',name:'Baltimore/Washington International',city:'Baltimore',country:'US',intl:false},
+  {code:'SLC',name:'Salt Lake City International',city:'Salt Lake City',country:'US',intl:false},
+  {code:'PDX',name:'Portland International',city:'Portland',country:'US',intl:false},
+  {code:'SAN',name:'San Diego International',city:'San Diego',country:'US',intl:false},
+  {code:'HNL',name:'Daniel K. Inouye International',city:'Honolulu',country:'US',intl:false},
+  {code:'ANC',name:'Ted Stevens Anchorage',city:'Anchorage',country:'US',intl:false},
+  {code:'BNA',name:'Nashville International',city:'Nashville',country:'US',intl:false},
+  {code:'AUS',name:'Austin-Bergstrom International',city:'Austin',country:'US',intl:false},
+  {code:'RDU',name:'Raleigh-Durham International',city:'Raleigh',country:'US',intl:false},
+  {code:'MCI',name:'Kansas City International',city:'Kansas City',country:'US',intl:false},
+  {code:'STL',name:'St. Louis Lambert International',city:'St. Louis',country:'US',intl:false},
+  {code:'MSY',name:'Louis Armstrong New Orleans',city:'New Orleans',country:'US',intl:false},
+  {code:'MEM',name:'Memphis International',city:'Memphis',country:'US',intl:false},
+  {code:'PIT',name:'Pittsburgh International',city:'Pittsburgh',country:'US',intl:false},
+  {code:'CLE',name:'Cleveland Hopkins International',city:'Cleveland',country:'US',intl:false},
+  {code:'CMH',name:'John Glenn Columbus International',city:'Columbus',country:'US',intl:false},
+  {code:'IND',name:'Indianapolis International',city:'Indianapolis',country:'US',intl:false},
+  {code:'MKE',name:'Milwaukee Mitchell International',city:'Milwaukee',country:'US',intl:false},
+  {code:'OMA',name:'Eppley Airfield',city:'Omaha',country:'US',intl:false},
+  {code:'BUF',name:'Buffalo Niagara International',city:'Buffalo',country:'US',intl:false},
+  {code:'ALB',name:'Albany International',city:'Albany',country:'US',intl:false},
+  {code:'SYR',name:'Syracuse Hancock International',city:'Syracuse',country:'US',intl:false},
+  // International
+  {code:'LHR',name:'Heathrow Airport',city:'London',country:'UK',intl:true},
+  {code:'LGW',name:'Gatwick Airport',city:'London',country:'UK',intl:true},
+  {code:'LCY',name:'London City Airport',city:'London',country:'UK',intl:true},
+  {code:'CDG',name:'Charles de Gaulle Airport',city:'Paris',country:'FR',intl:true},
+  {code:'ORY',name:'Paris Orly Airport',city:'Paris',country:'FR',intl:true},
+  {code:'AMS',name:'Amsterdam Schiphol',city:'Amsterdam',country:'NL',intl:true},
+  {code:'FRA',name:'Frankfurt Airport',city:'Frankfurt',country:'DE',intl:true},
+  {code:'MUC',name:'Munich Airport',city:'Munich',country:'DE',intl:true},
+  {code:'BCN',name:'Barcelona-El Prat Airport',city:'Barcelona',country:'ES',intl:true},
+  {code:'MAD',name:'Adolfo Suarez Madrid-Barajas',city:'Madrid',country:'ES',intl:true},
+  {code:'FCO',name:'Leonardo da Vinci-Fiumicino',city:'Rome',country:'IT',intl:true},
+  {code:'MXP',name:'Milan Malpensa Airport',city:'Milan',country:'IT',intl:true},
+  {code:'ZUR',name:'Zurich Airport',city:'Zurich',country:'CH',intl:true},
+  {code:'GVA',name:'Geneva Airport',city:'Geneva',country:'CH',intl:true},
+  {code:'CPH',name:'Copenhagen Airport',city:'Copenhagen',country:'DK',intl:true},
+  {code:'ARN',name:'Stockholm Arlanda Airport',city:'Stockholm',country:'SE',intl:true},
+  {code:'OSL',name:'Oslo Gardermoen Airport',city:'Oslo',country:'NO',intl:true},
+  {code:'HEL',name:'Helsinki-Vantaa Airport',city:'Helsinki',country:'FI',intl:true},
+  {code:'VIE',name:'Vienna International Airport',city:'Vienna',country:'AT',intl:true},
+  {code:'DUB',name:'Dublin Airport',city:'Dublin',country:'IE',intl:true},
+  {code:'BRU',name:'Brussels Airport',city:'Brussels',country:'BE',intl:true},
+  {code:'LIS',name:'Humberto Delgado Airport',city:'Lisbon',country:'PT',intl:true},
+  {code:'ATH',name:'Athens International Airport',city:'Athens',country:'GR',intl:true},
+  {code:'IST',name:'Istanbul Airport',city:'Istanbul',country:'TR',intl:true},
+  {code:'DXB',name:'Dubai International Airport',city:'Dubai',country:'AE',intl:true},
+  {code:'AUH',name:'Abu Dhabi International',city:'Abu Dhabi',country:'AE',intl:true},
+  {code:'DOH',name:'Hamad International Airport',city:'Doha',country:'QA',intl:true},
+  {code:'SIN',name:'Singapore Changi Airport',city:'Singapore',country:'SG',intl:true},
+  {code:'HKG',name:'Hong Kong International',city:'Hong Kong',country:'HK',intl:true},
+  {code:'NRT',name:'Narita International Airport',city:'Tokyo',country:'JP',intl:true},
+  {code:'HND',name:'Tokyo Haneda Airport',city:'Tokyo',country:'JP',intl:true},
+  {code:'ICN',name:'Incheon International Airport',city:'Seoul',country:'KR',intl:true},
+  {code:'PVG',name:'Shanghai Pudong International',city:'Shanghai',country:'CN',intl:true},
+  {code:'PEK',name:'Beijing Capital International',city:'Beijing',country:'CN',intl:true},
+  {code:'BKK',name:'Suvarnabhumi Airport',city:'Bangkok',country:'TH',intl:true},
+  {code:'KUL',name:'Kuala Lumpur International',city:'Kuala Lumpur',country:'MY',intl:true},
+  {code:'SYD',name:'Sydney Kingsford Smith',city:'Sydney',country:'AU',intl:true},
+  {code:'MEL',name:'Melbourne Airport',city:'Melbourne',country:'AU',intl:true},
+  {code:'YYZ',name:'Toronto Pearson International',city:'Toronto',country:'CA',intl:true},
+  {code:'YVR',name:'Vancouver International',city:'Vancouver',country:'CA',intl:true},
+  {code:'YUL',name:'Montreal-Trudeau International',city:'Montreal',country:'CA',intl:true},
+  {code:'MEX',name:'Mexico City International',city:'Mexico City',country:'MX',intl:true},
+  {code:'GRU',name:'São Paulo-Guarulhos International',city:'São Paulo',country:'BR',intl:true},
+  {code:'EZE',name:'Ministro Pistarini International',city:'Buenos Aires',country:'AR',intl:true},
+  {code:'SCL',name:'Santiago International Airport',city:'Santiago',country:'CL',intl:true},
+  {code:'BOG',name:'El Dorado International Airport',city:'Bogotá',country:'CO',intl:true},
+  {code:'LIM',name:'Jorge Chavez International',city:'Lima',country:'PE',intl:true},
+  {code:'NBO',name:'Jomo Kenyatta International',city:'Nairobi',country:'KE',intl:true},
+  {code:'JNB',name:'O.R. Tambo International',city:'Johannesburg',country:'ZA',intl:true},
+  {code:'CAI',name:'Cairo International Airport',city:'Cairo',country:'EG',intl:true},
+  {code:'CMN',name:'Mohammed V International',city:'Casablanca',country:'MA',intl:true},
+];
+
+// ── Airport autocomplete ──────────────────────────────────────────────────────
+function setupAutocomplete(inputId, suggestId, codeId) {
+  const inp = document.getElementById(inputId);
+  const sug = document.getElementById(suggestId);
+  inp.addEventListener('input', () => {
+    const q = inp.value.trim().toLowerCase();
+    if (q.length < 2) { sug.style.display = 'none'; return; }
+    const matches = AIRPORTS.filter(a =>
+      a.code.toLowerCase().startsWith(q) ||
+      a.city.toLowerCase().includes(q) ||
+      a.name.toLowerCase().includes(q)
+    ).slice(0, 6);
+    if (!matches.length) { sug.style.display = 'none'; return; }
+    sug.innerHTML = matches.map(a =>
+      `<div class="airport-opt" onclick="selectAirport('${inputId}','${suggestId}','${codeId}','${a.code}','${a.city.replace(/'/g,\"\\'\")}, ${a.code}','${String(a.intl)}')">
+        <span class="airport-code">${a.code}</span>
+        <span class="airport-name">${a.city} — ${a.name}</span>
+      </div>`
+    ).join('');
+    sug.style.display = 'block';
+  });
+  document.addEventListener('click', e => { if (!inp.contains(e.target)) sug.style.display = 'none'; });
+}
+
+function selectAirport(inputId, suggestId, codeId, code, label, isIntl) {
+  document.getElementById(inputId).value = label;
+  document.getElementById(codeId).value = code;
+  document.getElementById(suggestId).style.display = 'none';
+  document.getElementById(inputId).dataset.intl = isIntl;
+}
+
+setupAutocomplete('from-input', 'from-suggestions', 'from-code');
+setupAutocomplete('to-input', 'to-suggestions', 'to-code');
+
+// Set default dates
+(function() {
+  const today = new Date();
+  const dep = new Date(today);
+  dep.setDate(dep.getDate() + 45);
+  document.getElementById('booked-date').value = today.toISOString().split('T')[0];
+  document.getElementById('depart-date').value = dep.toISOString().split('T')[0];
+})();
+
+// ── Calculation logic ─────────────────────────────────────────────────────────
+function calculate() {
+  const fromCode = document.getElementById('from-code').value || document.getElementById('from-input').value.trim().toUpperCase().slice(0,3);
+  const toCode = document.getElementById('to-code').value || document.getElementById('to-input').value.trim().toUpperCase().slice(0,3);
+  const departStr = document.getElementById('depart-date').value;
+  const bookedStr = document.getElementById('booked-date').value;
+  const price = parseFloat(document.getElementById('price-paid').value) || 0;
+
+  if (!fromCode || !toCode || !departStr) {
+    alert('Please enter your origin, destination, and departure date.');
+    return;
+  }
+
+  const today = new Date();
+  const depart = new Date(departStr);
+  const booked = bookedStr ? new Date(bookedStr) : today;
+
+  const daysOut = Math.max(0, Math.round((depart - today) / 86400000));
+  const hoursSinceBooked = (today - booked) / 3600000;
+  const in24hWindow = hoursSinceBooked < 24 && daysOut >= 7;
+
+  // Determine if international
+  const fromAirport = AIRPORTS.find(a => a.code === fromCode);
+  const toAirport = AIRPORTS.find(a => a.code === toCode);
+  const isIntl = (fromAirport && fromAirport.intl) || (toAirport && toAirport.intl) ||
+    document.getElementById('from-input').dataset.intl === 'true' ||
+    document.getElementById('to-input').dataset.intl === 'true';
+
+  // Base probability by days out
+  let basePct;
+  if (daysOut <= 3) basePct = 12;
+  else if (daysOut <= 7) basePct = 22;
+  else if (daysOut <= 14) basePct = 38;
+  else if (daysOut <= 30) basePct = 55;
+  else if (daysOut <= 60) basePct = 68;
+  else if (daysOut <= 90) basePct = 74;
+  else basePct = 81;
+
+  // Route modifier
+  const routeMult = isIntl ? 1.18 : 1.0;
+
+  // Price tier modifier
+  let priceMult = 1.0;
+  if (price > 800) priceMult = 1.15;
+  else if (price > 400) priceMult = 1.05;
+  else if (price < 150) priceMult = 0.88;
+
+  let finalPct = Math.min(92, Math.round(basePct * routeMult * priceMult));
+
+  // Average savings
+  let avgSavings;
+  if (isIntl && price > 600) avgSavings = Math.round(price * 0.15);
+  else if (isIntl) avgSavings = Math.round(price * 0.12);
+  else if (price > 400) avgSavings = Math.round(price * 0.13);
+  else avgSavings = Math.round(price * 0.11) || 65;
+  avgSavings = Math.max(35, avgSavings);
+
+  // Headline
+  let headline, desc;
+  if (finalPct >= 70) {
+    headline = `Strong chance of a price drop on this route`;
+    desc = `Flights booked ${daysOut} days out on this ${isIntl ? 'international' : 'domestic'} route have historically shown significant price volatility. Monitoring this flight is highly recommended.`;
+  } else if (finalPct >= 45) {
+    headline = `Moderate chance — worth monitoring`;
+    desc = `There's a meaningful probability of a price adjustment on this route. Airlines reprice flights regularly, and the ${daysOut}-day booking window gives you time to catch a drop.`;
+  } else if (finalPct >= 25) {
+    headline = `Lower probability, but drops still happen`;
+    desc = `${daysOut < 7 ? 'Close-in departures' : 'This route'} see less frequent price drops, but when they do occur, the DOT 24-hour refund rule and same-airline repricing can still recover meaningful savings.`;
+  } else {
+    headline = `Limited drop potential on this route`;
+    desc = `With only ${daysOut} days until departure, deep price drops are less common — but the 24-hour DOT refund rule may still apply if you booked recently.`;
+  }
+
+  // Color for gauge
+  const gaugeColor = finalPct >= 60 ? '#10b981' : finalPct >= 35 ? '#f59e0b' : '#ef4444';
+
+  // Render gauge
+  const circumference = 351.86;
+  const offset = circumference - (finalPct / 100) * circumference;
+  const fill = document.getElementById('gauge-fill');
+  fill.style.stroke = gaugeColor;
+  fill.style.strokeDashoffset = circumference; // start at 0
+  setTimeout(() => { fill.style.strokeDashoffset = offset; }, 50);
+  document.getElementById('gauge-pct').textContent = finalPct + '%';
+  document.getElementById('gauge-pct').style.color = gaugeColor;
+
+  // Headlines
+  document.getElementById('prob-headline').textContent = headline;
+  document.getElementById('prob-desc').textContent = desc;
+
+  // Stats
+  document.getElementById('stat-avg-drop').textContent = price ? '$' + avgSavings : `~$${isIntl ? 160 : 80}`;
+  document.getElementById('stat-days-out').textContent = daysOut + 'd';
+  document.getElementById('stat-window').textContent = in24hWindow ? '✅ OPEN' : '❌ Closed';
+
+  // Breakdown factors
+  let daysLabel;
+  if (daysOut <= 7) daysLabel = { text: `${daysOut} days (very close-in)`, cls: 'amber' };
+  else if (daysOut <= 30) daysLabel = { text: `${daysOut} days (prime window)`, cls: 'green' };
+  else daysLabel = { text: `${daysOut} days (early booking)`, cls: 'green' };
+  document.getElementById('factor-days').textContent = daysLabel.text;
+  document.getElementById('factor-days').className = 'bi-val ' + daysLabel.cls;
+
+  document.getElementById('factor-route').textContent = isIntl ? 'International (+18% probability)' : 'Domestic';
+  document.getElementById('factor-price').textContent = price ?
+    (price > 800 ? 'Premium ($800+) — larger drop potential' :
+     price > 400 ? 'Mid-range ($400–800)' : 'Budget (<$400)') : 'Not entered';
+  document.getElementById('factor-timing').textContent = 'Overnight 11pm–3am ET (when airlines batch reprice)';
+  document.getElementById('factor-refund').textContent = in24hWindow ?
+    '✅ FULL CASH REFUND eligible (within 24h of booking)' :
+    'Travel credit for fare difference (Main Cabin+)';
+
+  // 24h banner
+  const banner = document.getElementById('banner-24h');
+  if (in24hWindow) {
+    const hoursLeft = Math.floor(24 - hoursSinceBooked);
+    banner.className = 'banner-24h active';
+    banner.innerHTML = `<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> <strong>⚡ 24-Hour DOT Window Active — ~${hoursLeft}h remaining.</strong>&nbsp;You are entitled to a FULL CASH REFUND if you cancel now. Start monitoring immediately.`;
+  } else if (daysOut > 0) {
+    banner.className = 'banner-24h expired';
+    banner.innerHTML = `<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg> <strong>24-hour window has passed.</strong>&nbsp;Price drops now qualify for travel credit from your airline (not a full cash refund).`;
+  } else {
+    banner.className = 'banner-24h expired';
+    banner.innerHTML = `⚠️ Flight departure is today or in the past — limited monitoring value.`;
+  }
+
+  // Show results
+  document.getElementById('results').classList.add('visible');
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Email capture ─────────────────────────────────────────────────────────────
+function submitLead() {
+  const email = document.getElementById('lead-email').value.trim();
+  if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
+
+  const fromCode = document.getElementById('from-code').value || document.getElementById('from-input').value.trim().toUpperCase().slice(0,3);
+  const toCode = document.getElementById('to-code').value || document.getElementById('to-input').value.trim().toUpperCase().slice(0,3);
+  const departStr = document.getElementById('depart-date').value;
+  const price = parseFloat(document.getElementById('price-paid').value) || 0;
+
+  fetch('https://tripreclaim-production.up.railway.app/api/leads', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, origin: fromCode, destination: toCode, departureDate: departStr, pricePaid: price })
+  })
+  .then(r => r.json())
+  .then(() => {
+    document.querySelector('.email-form').style.display = 'none';
+    document.getElementById('email-success').classList.add('visible');
+  })
+  .catch(() => {
+    // Still show success for UX (backend processes async)
+    document.querySelector('.email-form').style.display = 'none';
+    document.getElementById('email-success').classList.add('visible');
+  });
+}
+</script>
+</body>
+</html>

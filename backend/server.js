@@ -58,6 +58,7 @@ app.use('/lookup', require('./routes/lookup'));
 const policyRoutes = require('./routes/policy');
 app.use('/policy', policyRoutes);
 app.use('/billing', require('./routes/billing'));
+app.use('/api/leads', require('./routes/leads'));
 
 // ── Health check ──
 app.get('/health', (req, res) => {
