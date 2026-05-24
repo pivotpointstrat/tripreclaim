@@ -45,7 +45,7 @@
     .nav-cta:hover { background: var(--blue-dark); }
 
     /* HERO */
-    .hero { background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1d4ed8 100%); padding: 64px 24px 0; text-align: center; }
+    .hero { background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1d4ed8 100%); padding: 64px 24px 48px; text-align: center; }
     .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: #93c5fd; padding: 6px 16px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 20px; }
     .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; color: #fff; line-height: 1.15; letter-spacing: -1.5px; margin-bottom: 16px; }
     .hero h1 em { color: #60a5fa; font-style: normal; }
@@ -85,12 +85,6 @@
     .results-section { display: none; border-top: 1px solid var(--border); }
     .results-section.visible { display: block; }
 
-    /* 24h banner */
-    .banner-24h { padding: 14px 24px; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; font-weight: 600; }
-    .banner-24h.active { background: #dcfce7; color: #166534; }
-    .banner-24h.expired { background: var(--amber-light); color: #92400e; }
-    .banner-24h svg { flex-shrink: 0; }
-
     .results-body { padding: 32px 36px; }
 
     /* Probability meter */
@@ -109,7 +103,7 @@
     .prob-info p { color: var(--slate); font-size: 0.9rem; line-height: 1.5; }
 
     /* Stats row */
-    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+    .stats-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 32px; }
     @media (max-width: 480px) { .stats-row { grid-template-columns: 1fr 1fr; } }
     .stat-card { background: var(--slate-light); border-radius: 12px; padding: 16px; text-align: center; }
     .stat-card .stat-val { font-size: 1.4rem; font-weight: 800; color: var(--navy); }
@@ -156,7 +150,6 @@
     footer { background: var(--navy); color: #94a3b8; padding: 32px 24px; text-align: center; font-size: 0.85rem; }
     footer a { color: #60a5fa; text-decoration: none; }
     footer a:hover { text-decoration: underline; }
-    .hero-spacer { height: 64px; background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1d4ed8 100%); }
   </style>
 </head>
 <body>
@@ -176,8 +169,6 @@
   <h1>Will Your Flight Price<br><em>Drop After Booking?</em></h1>
   <p>Enter your flight details and instantly see the probability of a price drop — and how much you could recover.</p>
 </div>
-<div class="hero-spacer"></div>
-
 <div class="calc-wrapper">
   <div class="calc-card">
     <div class="calc-form">
@@ -223,7 +214,6 @@
     </div>
 
     <div class="results-section" id="results">
-      <div class="banner-24h" id="banner-24h"></div>
       <div class="results-body">
         <div class="prob-section">
           <div class="prob-gauge-wrap">
@@ -253,10 +243,6 @@
           <div class="stat-card">
             <div class="stat-val" id="stat-days-out">—</div>
             <div class="stat-lbl">Days Until Flight</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-val" id="stat-window">—</div>
-            <div class="stat-lbl">24h DOT Window</div>
           </div>
         </div>
 
@@ -492,14 +478,16 @@ function calculate() {
     alert('Please enter your origin, destination, and departure date.');
     return;
   }
+  if (bookedStr && booked > depart) {
+    alert('Your booking date cannot be after your departure date.');
+    return;
+  }
 
   const today = new Date();
   const depart = new Date(departStr);
   const booked = bookedStr ? new Date(bookedStr) : today;
 
   const daysOut = Math.max(0, Math.round((depart - today) / 86400000));
-  const hoursSinceBooked = (today - booked) / 3600000;
-  const in24hWindow = hoursSinceBooked < 24 && daysOut >= 7;
 
   // Determine if international
   const fromAirport = AIRPORTS.find(a => a.code === fromCode);
@@ -572,8 +560,7 @@ function calculate() {
 
   // Stats
   document.getElementById('stat-avg-drop').textContent = price ? '$' + avgSavings : `~$${isIntl ? 160 : 80}`;
-  document.getElementById('stat-days-out').textContent = daysOut + 'd';
-  document.getElementById('stat-window').textContent = in24hWindow ? '✅ OPEN' : '❌ Closed';
+  document.getElementById('stat-days-out').textContent = daysOut + ' Days';
 
   // Breakdown factors
   let daysLabel;
@@ -588,23 +575,9 @@ function calculate() {
     (price > 800 ? 'Premium ($800+) — larger drop potential' :
      price > 400 ? 'Mid-range ($400–800)' : 'Budget (<$400)') : 'Not entered';
   document.getElementById('factor-timing').textContent = 'Overnight 11pm–3am ET (when airlines batch reprice)';
-  document.getElementById('factor-refund').textContent = in24hWindow ?
-    '✅ FULL CASH REFUND eligible (within 24h of booking)' :
-    'Travel credit for fare difference (Main Cabin+)';
+  document.getElementById('factor-refund').textContent = 'Travel credit for fare difference (Main Cabin+)';
 
-  // 24h banner
-  const banner = document.getElementById('banner-24h');
-  if (in24hWindow) {
-    const hoursLeft = Math.floor(24 - hoursSinceBooked);
-    banner.className = 'banner-24h active';
-    banner.innerHTML = `<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> <strong>⚡ 24-Hour DOT Window Active — ~${hoursLeft}h remaining.</strong>&nbsp;You are entitled to a FULL CASH REFUND if you cancel now. Start monitoring immediately.`;
-  } else if (daysOut > 0) {
-    banner.className = 'banner-24h expired';
-    banner.innerHTML = `<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg> <strong>24-hour window has passed.</strong>&nbsp;Price drops now qualify for travel credit from your airline (not a full cash refund).`;
-  } else {
-    banner.className = 'banner-24h expired';
-    banner.innerHTML = `⚠️ Flight departure is today or in the past — limited monitoring value.`;
-  }
+
 
   // Show results
   document.getElementById('results').classList.add('visible');
