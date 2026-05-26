@@ -92,8 +92,8 @@ async function runTests() {
     failed++;
   }
 
-  // ─── 4. Serpapi Flight Search ──────────────────────
-  section('4. Serpapi Flight Search (IAD → KTI)');
+  // ─── 4. SearchAPI.io Flight Search ──────────────────────
+  section('4. SearchAPI.io Flight Search (IAD → KTI)');
   try {
     const params = new URLSearchParams({
       engine: 'google_flights',
@@ -102,20 +102,20 @@ async function runTests() {
       outbound_date: '2026-06-10',
       currency: 'USD',
       hl: 'en',
-      api_key: process.env.SERPAPI_KEY,
+      api_key: process.env.SEARCHAPI_KEY,
     });
-    const r = await axios.get(`https://serpapi.com/search.json?${params}`, { timeout: 20000 });
+    const r = await axios.get(`https://www.searchapi.io/api/v1/search?${params}`, { timeout: 20000 });
     const prices = (r.data?.best_flights || r.data?.other_flights || [])
       .map(f => f.price).filter(Boolean);
     if (prices.length > 0) {
-      pass(`Serpapi returned ${prices.length} flights — lowest: $${Math.min(...prices)}`);
+      pass(`SearchAPI returned ${prices.length} flights — lowest: $${Math.min(...prices)}`);
       passed++;
     } else {
       fail('Serpapi returned no flight prices');
       failed++;
     }
   } catch (e) {
-    fail(`Serpapi error: ${e.message}`);
+    fail(`SearchAPI error: ${e.message}`);
     failed++;
   }
 

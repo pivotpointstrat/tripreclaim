@@ -72,3 +72,50 @@
 
 ### New Env Vars
 - `FIRECRAWL_API_KEY` — for weekly airline policy scraping (optional; gracefully skipped if absent)
+
+## 12 Airline Policy Detail Pages — 2026-05-24
+- Created individual detail pages for all 12 airlines in the Policy Hub
+- Each page: hero with airline logo, breadcrumb, overview stats, price drop policy, 24h rule, step-by-step claim process, cancellation fees table, insider tips, credit card backup, TripReclaim CTA
+- Files created (not yet deployed):
+  - /policies/american-airlines/index.html
+  - /policies/delta-air-lines/index.html
+  - /policies/united-airlines/index.html
+  - /policies/southwest-airlines/index.html
+  - /policies/jetblue-airways/index.html
+  - /policies/alaska-airlines/index.html
+  - /policies/british-airways/index.html
+  - /policies/lufthansa/index.html
+  - /policies/qatar-airways/index.html
+  - /policies/singapore-airlines/index.html
+  - /policies/cathay-pacific/index.html
+  - /policies/air-canada/index.html
+- Updated policies/index.html to add "View Full Policy →" link on each airline card
+- Updated sitemap.xml with all 12 new policy page URLs (priority 0.7–0.8, monthly changefreq)
+- DOT 24-hour rule coverage: AA, DL, UA, WN, B6, AS, AC (7 US/Canadian carriers)
+- Data sourced from: airline_policies_scraped.json (AA, DL, UA, WN, B6, AS) + expert knowledge (BA, LH, QR, SQ, CX, AC)
+
+## TravelPayouts Integration — 2026-05-26
+- Installed TravelPayouts tracking script (tp-em.com/NTMyOTEz.js?t=532913) on all 24 pages of tripreclaim.com
+- Removed Skyscanner link from dashboard booking cards (affiliate application rejected)
+- Added Kiwi.com affiliate button (kiwi.tpx.gr/5DuWgZjq) to dashboard booking cards alongside Google Flights
+- Dashboard booking cards now show: Google Flights + Kiwi.com (1.8% affiliate commission)
+
+## UI/Branding Updates — 2026-05-26
+- New logo (trip-reclaim-logo.png) deployed across all 24 pages
+- White transparent logo (logo-white.png) used in dashboard navbar and homepage footer
+- Header logo increased by 30% across all pages
+- Blog pages (main + 3 articles) navbar changed from blue (#1d4ed8) to white with logo visible
+- Dashboard navbar updated to use white transparent logo at 47px (matching homepage)
+- All line-break subtitles fixed with white-space:nowrap or shortened copy
+
+## Policies Page Updates — 2026-05-26
+- American, United, Alaska airline logos increased by 30% in policy table
+- Singapore Airlines and Cathay Pacific logos replaced with new versions
+- United, Singapore, Air Canada logos increased 30%; Cathay Pacific decreased 30%
+- Airline policy table simplified to logos-only (no text labels)
+- Singapore Airlines, Cathay Pacific, Air Canada added as new airlines (total: 12)
+
+## Testimonials — 2026-05-26
+- All 3 testimonial slots filled with real supporter photos and names
+- Shaun K. (Vienna, VA), Anthony W. (Washington D.C.), Alyza K. (Chicago, IL)
+- Circular avatar photos with real names and cities

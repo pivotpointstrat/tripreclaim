@@ -1,7 +1,7 @@
 const axios = require('axios');
 
-const SERPAPI_KEY = process.env.SERPAPI_KEY;
-const SERPAPI_BASE = 'https://serpapi.com/search';
+const SEARCHAPI_KEY = process.env.SEARCHAPI_KEY;
+const SEARCHAPI_BASE = 'https://www.searchapi.io/api/v1/search';
 
 /**
  * Map airline display names to IATA carrier codes for better search results
@@ -48,15 +48,15 @@ const getLowestPrice = async (origin, dest, date, airline, cabin = 'economy', pa
     type: '2',                          // one-way
     travel_class: cabinMap[cabin] || '1',
     adults: passengers,
-    api_key: SERPAPI_KEY,
+    api_key: SEARCHAPI_KEY,
   };
 
   try {
-    const resp = await axios.get(SERPAPI_BASE, { params, timeout: 15000 });
+    const resp = await axios.get(SEARCHAPI_BASE, { params, timeout: 15000 });
     const data = resp.data;
 
     if (data.error) {
-      console.error(`[monitor] SerpApi error: ${data.error}`);
+      console.error(`[monitor] SearchAPI error: ${data.error}`);
       return { price: null, rawResults: data };
     }
 
