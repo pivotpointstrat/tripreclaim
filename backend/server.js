@@ -1,4 +1,10 @@
 require('dotenv').config();
+const cron = require('node-cron');
+const { runMonitoringCycle } = require('./services/alerts');
+const { sendCreditExpiryReminder, sendOnboardingDay3, sendOnboardingDay7 } = require('./services/email');
+const { refreshAllPolicies, getRecentPolicyChanges } = require('./services/policyAgent');
+const Booking = require('./models/Booking');
+const User    = require('./models/User');
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -91,6 +97,53 @@ const start = async () => {
     console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`   Frontend:    ${process.env.FRONTEND_URL}`);
   });
+  // ── Background monitoring cron jobs ──
+  // Run immediately on startup, then every 15 minutes
+  runMonitoringCycle().catch(err => console.error('[cron] Initial cycle error:', err.message));
+
+  cron.schedule('*/15 * * * *', async () => {
+    try { await runMonitoringCycle(); }
+    catch (err) { console.error('[cron] Monitoring cycle error:', err.message); }
+  });
+
+  // Daily 9am UTC: Credit expiry reminders & onboarding drip
+  cron.schedule('0 9 * * *', async () => {
+    try {
+      const now = new Date();
+      const day3Users = await User.find({
+        plan: { $ne: null },
+        onboardingEmailStep: 1,
+        createdAt: { $lte: new Date(now - 3 * 24 * 60 * 60 * 1000) }
+      });
+      for (const u of day3Users) {
+        await sendOnboardingDay3(u.email);
+        await User.findByIdAndUpdate(u._id, { onboardingEmailStep: 2 });
+      }
+      const day7Users = await User.find({
+        plan: { $ne: null },
+        onboardingEmailStep: 2,
+        createdAt: { $lte: new Date(now - 7 * 24 * 60 * 60 * 1000) }
+      });
+      for (const u of day7Users) {
+        await sendOnboardingDay7(u.email);
+        await User.findByIdAndUpdate(u._id, { onboardingEmailStep: 3 });
+      }
+      await sendCreditExpiryReminder();
+    } catch (err) { console.error('[cron] Daily email error:', err.message); }
+  });
+
+  // Weekly Monday 3am UTC: Airline policy refresh
+  cron.schedule('0 3 * * 1', async () => {
+    try {
+      console.log('[cron] Starting weekly policy refresh...');
+      await refreshAllPolicies();
+      const changes = await getRecentPolicyChanges(7);
+      if (changes.length) console.log(`[cron] Policy refresh complete — ${changes.length} changes detected`);
+    } catch (err) { console.error('[cron] Policy refresh error:', err.message); }
+  });
+
+  console.log('✅ Monitoring cron jobs started (15min cycle + daily + weekly)');
+
 };
 
 start();
