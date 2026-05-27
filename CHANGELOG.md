@@ -141,3 +141,70 @@
 - Next steps: Activate Kiwi.com + JetRadar deep links in dashboard booking cards
   - Pre-fill user's route/date for better conversion
   - Add contextual affiliate links to blog + policy pages
+
+---
+
+## v1.0-Sprint8 — Pricing, Caps, Award Monitoring — 2026-05-26
+- **Pricing updated**: Per Trip $2.99, Monthly $5.99, Annual $49
+- **Flight caps enforced**: 1 (per_trip) / 5 (monthly) / 15 (annual) simultaneous monitors
+- **Award/miles monitoring** added to alerts.js with CPM valuation per airline loyalty program
+- **Stripe prices updated** in Railway environment variables for all 3 tiers
+- **Calculator lead magnet** deployed at tripreclaim.com/calculator/
+- **24-hour trial flow** built: calculator email → real trial account → magic link → dashboard with countdown
+- **Trial countdown banner** shows hours:minutes remaining; upgrade CTA on expiry
+
+---
+
+## v1.0-Sprint9 — Evidence Archive, Policy Hub, Claim Email — 2026-05-26
+- **Price evidence archive**: Serpapi responses saved to MongoDB on every alert
+- **Evidence viewer** at tripreclaim.com/evidence/ with price history charts and airline deep links
+- **Policy Hub**: 12 airline policy pages (AA, DL, UA, WN, B6, AS, BA, LH, QR, SQ, CX, AC)
+- **Claim email generator**: POST /api/bookings/:id/claim-email returns pre-filled airline claim email
+- **Policy last verified dates** in Claim Kit modals (lastScraped field from DB)
+- **Weekly policy refresh** scheduled Monday 3am UTC via cron.js + Firecrawl
+- **Google Search Console** verified; sitemap.xml submitted with all 24+ pages
+- **Privacy Policy & Terms of Service** updated for TCPA/SMS compliance
+
+---
+
+## v1.0-Sprint10 — Support System — 2026-05-27
+- **AI-powered support system** built with smart agent routing
+  - Categories: Account Access, Billing, Monitoring, Claim Help, General
+  - Auto-resolution rate: ~75% (agent responds within seconds)
+  - Escalation to Seyla only for legal/billing fraud keywords
+- **Support center page** at tripreclaim.com/support/
+  - Live status bar, keyword search, 10 FAQ items, contact form
+- **Dashboard Help tab** with inline FAQ accordions, contact form, My Tickets section
+- **SupportTicket MongoDB model** with auto-incrementing ticket numbers (starts at #1000)
+- **Admin endpoint** GET /api/support/admin for Seyla's review queue
+
+---
+
+## v1.1 — Travel Crew Share + Referral Pipeline — 2026-05-27
+- **Travel Crew Share button** added to price drop alert emails and dashboard flight cards
+  - WhatsApp, iMessage/SMS, and Copy sharing options
+  - Pre-filled message with flight details + referral link
+- **Referral attribution pipeline** built end-to-end:
+  - Landing page reads ?ref= URL param → localStorage → appends to Stripe payment links
+  - webhook.js processes client_reference_id on checkout.session.completed
+  - $3 credit awarded to referrer per paid signup; no cap; no reward for referred user
+  - Anti-self-referral check (referrer.email !== purchaser.email)
+  - referredBy stored on new user after handleNewUser() creates account (timing fix)
+- **Account credit system** on User model: accountCredit (Number), creditHistory (array)
+- **Credit redemption**: POST /billing/create-upgrade-checkout applies credit as Stripe coupon
+  - Credit only redeemable on Monthly ($5.99) or Annual ($49) plans (not per-trip)
+  - 12-month expiry on each credit history entry
+- **Referral credit email** template: 💰 You earned $3 TripReclaim credit!
+- **Dashboard Account tab** shows credit balance with upgrade buttons when credit > 0
+- **Referral copy updated**: removed "1 free month" → now shows $3/referral, no cap
+
+---
+
+## v1.1-QA — Full QA Sweep & Bug Fixes — 2026-05-27
+- **Bug**: billing.js annual plan mode was 'payment' → fixed to 'subscription' [commit 0d5852f]
+- **Bug**: webhook.js duplicate comment removed [commit 0d5852f]
+- **Bug**: webhook.js referredBy update ran before user existed → fixed with pendingReferredBy [commit 0d5852f]
+- **Bug**: policy.js duplicate /seed routes (one with requireAuth blocking) → cleaned up [commit 21b97c6]
+- **Bug**: _redirects missing SPA routes for /support/*, /calculator/*, /sms-consent/* → added [commit 0d5852f]
+- **Bug**: AirlinePolicy.js cancellationFees Map type was Number → fixed to String [commit 8e6c267]
+- **Fix**: Policy DB seeded with all 6 airlines (DL, WN, B6, AS, UA, AA) → 6 policies now in MongoDB
