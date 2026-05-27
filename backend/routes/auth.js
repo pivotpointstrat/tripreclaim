@@ -146,7 +146,7 @@ router.get('/referral', require('../middleware/auth').requireAuth, async (req, r
       referralCode: user.referralCode,
       referralLink: `${process.env.FRONTEND_URL}?ref=${user.referralCode}`,
       referralCount: user.referralCount || 0,
-      tripsEarned: user.referralTripsEarned || 0,
+      accountCredit: user.accountCredit || 0,
     });
   } catch (err) {
     console.error('[auth] Referral error:', err.message);

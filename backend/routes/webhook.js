@@ -3,7 +3,7 @@ const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const User = require('../models/User');
 const { generateMagicToken } = require('../middleware/auth');
-const { sendMagicLink, sendOnboardingDay0 } = require('../services/email');
+const { sendMagicLink, sendOnboardingDay0, sendReferralCreditEmail } = require('../services/email');
 const { upsertContact, moveOpportunityToStage } = require('../services/ghl');
 
 // Plan mapping from Stripe price IDs
@@ -39,19 +39,70 @@ router.post('/stripe', express.raw({ type: 'application/json' }), async (req, re
     switch (event.type) {
 
       // ── One-time payment completed (per_trip plan) ──
+      // ── One-time payment completed (per_trip plan) ──
       case 'checkout.session.completed': {
         const session = event.data.object;
         const email = session.customer_details?.email || session.customer_email;
         if (!email) break;
 
-        // Determine plan from line items
-        let plan = 'per_trip';
-        if (session.mode === 'subscription') {
-          // Subscription handled by customer.subscription.created
-          break;
+        // ── Referral credit attribution (runs for ALL plan types) ──
+        const clientRef = session.client_reference_id;
+        if (clientRef && clientRef.startsWith('ref:')) {
+          const refCode = clientRef.replace('ref:', '').split('|')[0].trim();
+          try {
+            const referrer = await User.findOne({ referralCode: refCode }).lean();
+            if (referrer && referrer.email.toLowerCase() !== email.toLowerCase()) {
+              const expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+              await User.findByIdAndUpdate(referrer._id, {
+                $inc: { accountCredit: 3, referralCount: 1 },
+                $push: { creditHistory: {
+                  amount: 3,
+                  creditType: 'referral_earned',
+                  description: `Referral credit — ${email} signed up`,
+                  referredEmail: email,
+                  expiresAt,
+                }},
+              });
+              await User.findOneAndUpdate(
+                { email: email.toLowerCase() },
+                { referredBy: refCode },
+                { upsert: false }
+              );
+              sendReferralCreditEmail(referrer.email, email, 3)
+                .catch(e => console.warn('[webhook] Referral email failed (non-fatal):', e.message));
+              console.log(`[webhook] 💰 Referral $3 credit → ${referrer.email} (referred: ${email})`);
+            } else if (referrer) {
+              console.log(`[webhook] ⚠️ Self-referral blocked for ${email}`);
+            }
+          } catch (refErr) {
+            console.warn('[webhook] Referral credit failed (non-fatal):', refErr.message);
+          }
         }
 
-        await handleNewUser(email, session.customer, plan, null);
+        // ── Deduct credit if applied via upgrade checkout session ──
+        const creditApplied = parseInt(session.metadata?.creditApplied || '0');
+        const creditUserId  = session.metadata?.userId;
+        if (creditApplied > 0 && creditUserId) {
+          const creditDollars = creditApplied / 100;
+          try {
+            await User.findByIdAndUpdate(creditUserId, {
+              $inc: { accountCredit: -creditDollars },
+              $push: { creditHistory: {
+                amount: -creditDollars,
+                creditType: 'credit_applied',
+                description: 'Credit applied to plan upgrade',
+              }},
+            });
+            console.log(`[webhook] 💳 $${creditDollars} credit deducted from user ${creditUserId}`);
+          } catch (creditErr) {
+            console.warn('[webhook] Credit deduction failed (non-fatal):', creditErr.message);
+          }
+        }
+
+        // Subscriptions handled by customer.subscription.created — skip per_trip logic
+        if (session.mode === 'subscription') break;
+
+        await handleNewUser(email, session.customer, 'per_trip', null);
         break;
       }
 

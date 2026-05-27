@@ -107,6 +107,19 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  // Account credit system (earned via referrals, redeemable on monthly/annual plans only)
+  accountCredit: {
+    type: Number,
+    default: 0,
+  },
+  creditHistory: [{
+    amount: { type: Number },
+    creditType: { type: String, enum: ['referral_earned', 'credit_applied', 'expired'] },
+    description: { type: String },
+    referredEmail: { type: String },
+    expiresAt: { type: Date },
+    createdAt: { type: Date, default: Date.now },
+  }],
 }, {
   timestamps: true,
 });

@@ -1821,15 +1821,27 @@ async function loadReferral() {
   try {
     const data = await apiFetch('/auth/referral' );
     el.innerHTML = `
+      ${ data.accountCredit > 0 ? `
+      <div style="background:linear-gradient(135deg,#16a34a,#15803d);border-radius:12px;padding:18px 20px;color:#fff;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div>
+          <div style="font-size:0.82rem;opacity:0.9;margin-bottom:2px;">💰 Available Account Credit</div>
+          <div style="font-size:1.8rem;font-weight:800;">$${data.accountCredit.toFixed(2)}</div>
+          <div style="font-size:0.78rem;opacity:0.8;">Redeemable on Monthly or Annual plan upgrade</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button onclick="upgradeWithCredit('monthly')" style="background:#fff;color:#15803d;border:none;padding:9px 16px;border-radius:7px;font-weight:700;font-size:0.85rem;cursor:pointer;">Upgrade to Monthly →</button>
+          <button onclick="upgradeWithCredit('annual')" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);padding:9px 16px;border-radius:7px;font-weight:600;font-size:0.85rem;cursor:pointer;">Upgrade to Annual →</button>
+        </div>
+      </div>` : '' }
       <div class="referral-card">
-        <h3>🎁 Refer a Friend — Earn a Free Month</h3>
-        <p>Share your unique link. When a friend subscribes to any plan, you both get <strong>1 free month of TripReclaim</strong> added automatically.</p>
+        <h3>🎁 Earn $3 Per Referral — No Cap</h3>
+        <p>Share your link with your travel crew. Every time someone subscribes to any paid plan, <strong>you earn $3 account credit</strong> — valid for 12 months, redeemable toward any Monthly or Annual plan.</p>
         <div class="referral-stats">
           <div class="ref-stat"><div class="val">${data.referralCount}</div><div class="lbl">Referrals</div></div>
-          <div class="ref-stat"><div class="val">${data.tripsEarned}</div><div class="lbl">Free months earned</div></div>
+          <div class="ref-stat"><div class="val">$${data.accountCredit.toFixed(2)}</div><div class="lbl">Credit balance</div></div>
         </div>
         <div class="referral-link-box" id="ref-link-box">${data.referralLink}</div>
-        <button class="btn-copy" onclick="copyReferralLink('${data.referralLink}' )">Copy Link</button>
+        <button class="btn-copy" onclick="copyReferralLink('${data.referralLink}')">Copy Link</button>
       </div>
     `;
   } catch(e) { el.innerHTML = '<div class="alert alert-error">Could not load referral info.</div>'  ; }
@@ -1839,6 +1851,32 @@ function copyReferralLink(link) {
   navigator.clipboard.writeText(link).then(() => {
     const btn = event.target; btn.textContent = 'Copied! ✅' ; setTimeout(() => btn.textContent = 'Copy Link' , 2000);
   }).catch(() => alert('Copy this link: ' + link));
+}
+
+
+async function upgradeWithCredit(plan) {
+  const btn = event.target;
+  const orig = btn.textContent;
+  btn.textContent = 'Creating checkout...';
+  btn.disabled = true;
+  try {
+    const data = await apiFetch('/billing/create-upgrade-checkout', {
+      method: 'POST',
+      body: JSON.stringify({ plan })
+    });
+    if (data.url) {
+      if (data.creditApplied > 0) {
+        btn.textContent = `Redirecting (saving $${data.creditApplied.toFixed(2)})...`;
+      }
+      window.location.href = data.url;
+    } else {
+      throw new Error('No checkout URL returned');
+    }
+  } catch(e) {
+    btn.textContent = orig;
+    btn.disabled = false;
+    alert('Could not create checkout: ' + (e.message || 'Please try again'));
+  }
 }
 
 // ═══════════════════════════════════════════

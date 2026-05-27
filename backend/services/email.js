@@ -561,4 +561,41 @@ const sendOnboardingDay7 = async (email, user) => {
   });
 };
 
-module.exports = { sendMagicLink, sendWelcome, sendPriceDropAlert, sendCreditExpiryReminder, sendPolicyChangeAlert, sendSmsAlert, sendSmsPriceDropAlert, sendOnboardingDay0, sendOnboardingDay3, sendOnboardingDay7 };
+
+/**
+ * Send referral credit earned notification to referrer
+ */
+const sendReferralCreditEmail = async (referrerEmail, referredEmail, creditAmount) => {
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: referrerEmail,
+      subject: `💰 You earned $${creditAmount} TripReclaim credit!`,
+      html: `
+        <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px;">
+          <h1 style="color:#1d4ed8;">✈️ TripReclaim</h1>
+          <div style="background:#f0fdf4;border:2px solid #22c55e;border-radius:12px;padding:20px;margin:20px 0;text-align:center;">
+            <p style="color:#15803d;font-size:14px;font-weight:600;margin:0 0 8px 0;">🎉 REFERRAL CREDIT EARNED</p>
+            <p style="font-size:32px;font-weight:800;color:#0f172a;margin:0 0 4px 0;">$${creditAmount}.00</p>
+            <p style="color:#475569;margin:0;">added to your TripReclaim account</p>
+          </div>
+          <p style="color:#334155;">Your friend <strong>${referredEmail}</strong> just signed up using your referral link. Nice work!</p>
+          <div style="background:#f8fafc;border-radius:8px;padding:16px;margin:16px 0;">
+            <p style="margin:0 0 8px 0;font-weight:600;color:#0f172a;">How to use your credit:</p>
+            <p style="margin:0 0 6px 0;color:#475569;">✅ Redeemable against any <strong>Monthly ($5.99)</strong> or <strong>Annual ($49)</strong> plan</p>
+            <p style="margin:0 0 6px 0;color:#475569;">✅ Automatically applied at checkout when you upgrade</p>
+            <p style="margin:0 0 6px 0;color:#475569;">✅ Valid for 12 months from today</p>
+            <p style="margin:0;color:#94a3b8;font-size:13px;">Note: Credit cannot be applied to Per Trip ($2.99) plans</p>
+          </div>
+          <a href="https://tripreclaim.com/dashboard/" style="display:inline-block;margin:8px 0 24px;padding:14px 28px;background:#1d4ed8;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">View My Dashboard →</a>
+          <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
+          <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a></p>
+        </div>
+      `,
+    });
+  } catch (e) {
+    console.warn('[email] sendReferralCreditEmail failed:', e.message);
+  }
+};
+
+module.exports = { sendMagicLink, sendWelcome, sendPriceDropAlert, sendCreditExpiryReminder, sendPolicyChangeAlert, sendSmsAlert, sendSmsPriceDropAlert, sendOnboardingDay0, sendOnboardingDay3, sendOnboardingDay7, sendReferralCreditEmail };

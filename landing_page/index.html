@@ -769,6 +769,37 @@
     gtag('js', new Date());
     gtag('config', 'G-LZ5EW9NJ7P');
   </script>
+<script>
+  /* ── TripReclaim Referral Tracking ──
+     Read ?ref= URL param → store in localStorage.
+     On DOMContentLoaded, append client_reference_id to Stripe payment link buttons.
+     This enables referral attribution in Stripe webhooks. */
+  (function() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var ref = params.get('ref');
+      if (ref && /^[A-Za-z0-9]+$/.test(ref) && ref.length <= 20) {
+        localStorage.setItem('tr_ref', ref);
+      }
+    } catch(e) {}
+  })();
+
+  document.addEventListener('DOMContentLoaded', function() {
+    try {
+      var ref = localStorage.getItem('tr_ref');
+      if (!ref) return;
+      var encoded = encodeURIComponent('ref:' + ref);
+      ['btn-per-trip', 'btn-monthly', 'btn-annual'].forEach(function(id) {
+        var btn = document.getElementById(id);
+        if (!btn) return;
+        var href = btn.getAttribute('href');
+        if (href && !href.includes('client_reference_id')) {
+          btn.setAttribute('href', href + (href.includes('?') ? '&' : '?') + 'client_reference_id=' + encoded);
+        }
+      });
+    } catch(e) {}
+  });
+</script>
 </head>
 <body>
 
