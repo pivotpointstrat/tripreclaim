@@ -2080,7 +2080,76 @@ function copyReferralLink(link) {
 
 
 async function upgradeWithCredit(plan) {
+  // Fetch billing context first, then show confirmation before checkout
   const btn = event.target;
+  const orig = btn.textContent;
+  btn.textContent = 'Loading billing info...';
+  btn.disabled = true;
+
+  let info;
+  try {
+    info = await apiFetch('/billing/info');
+  } catch(e) {
+    btn.textContent = orig;
+    btn.disabled = false;
+    alert('Could not load billing info: ' + (e.message || 'Please try again'));
+    return;
+  }
+
+  // Build confirmation message
+  const credit = info.accountCredit || 0;
+  let confirmHtml = '';
+  if (plan === 'monthly') {
+    const nextAmt = info.monthlyAfterCredit.toFixed(2);
+    const dateStr = info.nextBillDate || 'your next billing date';
+    confirmHtml = `
+      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:16px 18px;margin-top:10px;">
+        <div style="font-size:0.95rem;font-weight:700;color:#15803d;margin-bottom:6px;">Confirm: Apply Credit to Subscription</div>
+        <p style="font-size:0.87rem;color:#166534;margin:0 0 12px;">
+          Your next bill on <strong>${dateStr}</strong> will be <strong>$${nextAmt}</strong>
+          ${credit > 0 ? ` <span style="color:#64748b;font-size:0.82rem;">(${info.monthlyPrice.toFixed(2)} &minus; $${credit.toFixed(2)} credit)</span>` : ''}.
+        </p>
+        <div style="display:flex;gap:8px;">
+          <button onclick="confirmUpgradeWithCredit('monthly', this)" style="background:#15803d;color:#fff;border:none;padding:8px 18px;border-radius:7px;font-weight:700;font-size:0.85rem;cursor:pointer;">Confirm &amp; Apply</button>
+          <button onclick="this.closest('.credit-confirm-box').remove()" style="background:transparent;border:none;color:#94a3b8;font-size:0.85rem;cursor:pointer;">Cancel</button>
+        </div>
+      </div>`;
+  } else {
+    const annualAmt = info.annualAfterCredit.toFixed(2);
+    const startDate = info.nextBillDate || 'end of current billing cycle';
+    const endDate = info.currentPeriodEnd
+      ? new Date((info.currentPeriodEnd + 365 * 86400) * 1000).toLocaleDateString('en-US', {month:'long',day:'numeric',year:'numeric'})
+      : 'one year from then';
+    confirmHtml = `
+      <div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:10px;padding:16px 18px;margin-top:10px;">
+        <div style="font-size:0.95rem;font-weight:700;color:#1d4ed8;margin-bottom:6px;">Confirm: Annual Upgrade</div>
+        <p style="font-size:0.87rem;color:#1e40af;margin:0 0 4px;">
+          Annual plan starts <strong>${startDate}</strong> and runs through <strong>${endDate}</strong>.
+        </p>
+        <p style="font-size:0.87rem;color:#1e40af;margin:0 0 12px;">
+          You will be charged <strong>$${annualAmt}</strong>
+          ${credit > 0 ? ` <span style="color:#64748b;font-size:0.82rem;">($${info.annualPrice.toFixed(2)} &minus; $${credit.toFixed(2)} credit)</span>` : ''}.
+        </p>
+        <div style="display:flex;gap:8px;">
+          <button onclick="confirmUpgradeWithCredit('annual', this)" style="background:#1d4ed8;color:#fff;border:none;padding:8px 18px;border-radius:7px;font-weight:700;font-size:0.85rem;cursor:pointer;">Confirm &amp; Upgrade</button>
+          <button onclick="this.closest('.credit-confirm-box').remove()" style="background:transparent;border:none;color:#94a3b8;font-size:0.85rem;cursor:pointer;">Cancel</button>
+        </div>
+      </div>`;
+  }
+
+  // Insert confirmation box after the button
+  btn.textContent = orig;
+  btn.disabled = false;
+  const existing = document.querySelector('.credit-confirm-box');
+  if (existing) existing.remove();
+  const box = document.createElement('div');
+  box.className = 'credit-confirm-box';
+  box.innerHTML = confirmHtml;
+  btn.closest('div[style*="flex-direction"]')?.appendChild(box)
+    || btn.parentElement.appendChild(box);
+}
+
+async function confirmUpgradeWithCredit(plan, btn) {
   const orig = btn.textContent;
   btn.textContent = 'Creating checkout...';
   btn.disabled = true;

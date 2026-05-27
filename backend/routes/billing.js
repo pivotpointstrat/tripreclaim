@@ -94,4 +94,43 @@ router.post('/create-upgrade-checkout', requireAuth, async (req, res) => {
   }
 });
 
+/**
+ * GET /billing/info
+ * Return billing context: next bill date, credit balance, amounts after credit
+ */
+router.get('/info', requireAuth, async (req, res) => {
+  const User = require('../models/User');
+  const freshUser = await User.findById(req.user._id).lean();
+  const credit = freshUser?.accountCredit || 0;
+
+  let nextBillDate = null;
+  let currentPeriodEnd = null;
+
+  if (freshUser?.stripeSubscriptionId) {
+    try {
+      const sub = await stripe.subscriptions.retrieve(freshUser.stripeSubscriptionId);
+      currentPeriodEnd = sub.current_period_end;
+      nextBillDate = new Date(currentPeriodEnd * 1000).toLocaleDateString('en-US', {
+        month: 'long', day: 'numeric', year: 'numeric'
+      });
+    } catch (e) {
+      console.warn('[billing] info - could not retrieve subscription:', e.message);
+    }
+  }
+
+  const MONTHLY = 5.99;
+  const ANNUAL  = 49.00;
+
+  res.json({
+    plan:            freshUser?.plan || null,
+    nextBillDate,
+    currentPeriodEnd,
+    accountCredit:   parseFloat(credit.toFixed(2)),
+    monthlyPrice:    MONTHLY,
+    annualPrice:     ANNUAL,
+    monthlyAfterCredit: parseFloat(Math.max(0, MONTHLY - credit).toFixed(2)),
+    annualAfterCredit:  parseFloat(Math.max(0, ANNUAL  - credit).toFixed(2)),
+  });
+});
+
 module.exports = router;
