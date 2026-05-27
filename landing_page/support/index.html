@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support Center — TripReclaim</title>
+  <meta name="description" content="Get help with TripReclaim. Find answers to common questions or contact our support team.">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Inter,sans-serif;background:#f8fafc;color:#0f172a;line-height:1.6}
+    a{color:#2563eb;text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    /* Nav */
+    nav{background:#0f172a;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{display:flex;align-items:center;gap:10px}
+    .nav-logo img{height:28px;width:auto}
+    .nav-links{display:flex;align-items:center;gap:20px}
+    .nav-links a{color:#94a3b8;font-size:0.9rem;font-weight:500;text-decoration:none;transition:color 0.15s}
+    .nav-links a:hover{color:#fff}
+    .nav-cta{background:#2563eb;color:#fff!important;padding:7px 16px;border-radius:8px;font-size:0.85rem;font-weight:600}
+
+    /* Hero */
+    .hero{background:linear-gradient(135deg,#0f172a,#1d4ed8);padding:60px 24px;text-align:center}
+    .hero h1{color:#fff;font-size:2rem;font-weight:800;margin-bottom:12px}
+    .hero p{color:#94a3b8;font-size:1.05rem;max-width:500px;margin:0 auto 28px}
+    .search-bar{max-width:480px;margin:0 auto;display:flex;gap:0;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+    .search-bar input{flex:1;padding:14px 18px;border:none;outline:none;font-size:0.95rem;font-family:Inter,sans-serif;color:#0f172a}
+    .search-bar button{background:#2563eb;color:#fff;border:none;padding:14px 20px;cursor:pointer;font-weight:600;font-size:0.9rem;font-family:Inter,sans-serif}
+
+    /* Quick links */
+    .quick-links{max-width:900px;margin:0 auto;padding:40px 24px 0}
+    .quick-links h2{font-size:1.1rem;font-weight:700;color:#475569;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.05em}
+    .ql-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+    .ql-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;cursor:pointer;transition:all 0.15s;text-decoration:none;display:block}
+    .ql-card:hover{border-color:#2563eb;box-shadow:0 4px 12px rgba(37,99,235,0.1);text-decoration:none}
+    .ql-icon{font-size:1.4rem;margin-bottom:8px;display:block}
+    .ql-title{font-weight:600;color:#0f172a;font-size:0.9rem}
+    .ql-sub{font-size:0.8rem;color:#64748b;margin-top:2px}
+
+    /* Main layout */
+    .main{max-width:900px;margin:0 auto;padding:40px 24px 80px;display:grid;grid-template-columns:1fr 380px;gap:40px}
+    @media(max-width:768px){.main{grid-template-columns:1fr}}
+
+    /* FAQ */
+    .section-title{font-size:1.3rem;font-weight:700;margin-bottom:20px;color:#0f172a}
+    .faq-item{background:#fff;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:10px;overflow:hidden}
+    .faq-q{padding:16px 20px;font-weight:600;font-size:0.95rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background 0.15s}
+    .faq-q:hover{background:#f8fafc}
+    .faq-q.open{background:#eff6ff;color:#1d4ed8}
+    .faq-arrow{transition:transform 0.2s;font-size:1.1rem;color:#64748b}
+    .faq-q.open .faq-arrow{transform:rotate(180deg);color:#2563eb}
+    .faq-a{display:none;padding:0 20px 16px;color:#475569;font-size:0.9rem;line-height:1.8;border-top:1px solid #e2e8f0}
+    .faq-a.open{display:block}
+    .faq-a ul{padding-left:18px;margin-top:8px}
+    .faq-a li{margin-bottom:4px}
+
+    /* Contact form */
+    .contact-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:28px;position:sticky;top:20px}
+    .contact-card h2{font-size:1.1rem;font-weight:700;margin-bottom:6px}
+    .contact-card p{font-size:0.85rem;color:#64748b;margin-bottom:20px}
+    .response-badge{background:#ecfdf5;color:#065f46;font-size:0.78rem;font-weight:600;padding:4px 10px;border-radius:20px;display:inline-flex;align-items:center;gap:4px;margin-bottom:16px}
+    .form-group{margin-bottom:14px}
+    .form-group label{display:block;font-size:0.82rem;font-weight:600;color:#374151;margin-bottom:5px}
+    .form-group input,.form-group select,.form-group textarea{
+      width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:8px;
+      font-size:0.9rem;font-family:Inter,sans-serif;color:#0f172a;
+      transition:border-color 0.15s;outline:none
+    }
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#2563eb}
+    .form-group textarea{resize:vertical;min-height:100px}
+    .submit-btn{width:100%;background:#2563eb;color:#fff;border:none;padding:12px;border-radius:8px;font-weight:700;font-size:0.95rem;cursor:pointer;font-family:Inter,sans-serif;transition:background 0.15s}
+    .submit-btn:hover{background:#1d4ed8}
+    .submit-btn:disabled{background:#94a3b8;cursor:not-allowed}
+    .form-success{background:#ecfdf5;border-radius:10px;padding:16px;text-align:center;display:none}
+    .form-success .check{font-size:2rem;margin-bottom:8px}
+    .form-success h3{color:#065f46;font-weight:700;margin-bottom:4px}
+    .form-success p{color:#065f46;font-size:0.85rem}
+    .ticket-num{font-weight:800;font-size:1.1rem}
+
+    /* Status bar */
+    .status-bar{background:#ecfdf5;border-bottom:1px solid #d1fae5;padding:10px 24px;text-align:center;font-size:0.85rem;color:#065f46;font-weight:500}
+    .status-dot{display:inline-block;width:8px;height:8px;background:#16a34a;border-radius:50%;margin-right:6px}
+
+    /* Footer */
+    footer{background:#0f172a;padding:24px;text-align:center;color:#475569;font-size:0.82rem}
+    footer a{color:#64748b}
+  </style>
+</head>
+<body>
+
+<div class="status-bar"><span class="status-dot"></span>All systems operational — monitoring running normally</div>
+
+<nav>
+  <div class="nav-logo">
+    <a href="/"><img src="/logos/logo.png" alt="TripReclaim"></a>
+  </div>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/dashboard/">Dashboard</a>
+    <a href="/calculator/">Calculator</a>
+    <a href="/dashboard/" class="nav-cta">Sign In</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>How can we help you?</h1>
+  <p>Find instant answers or contact our support team — we typically reply within 4 hours.</p>
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="Search for answers..." oninput="filterFAQ(this.value)">
+    <button onclick="filterFAQ(document.getElementById('search-input').value)">Search</button>
+  </div>
+</div>
+
+<div class="quick-links">
+  <h2>Common Topics</h2>
+  <div class="ql-grid">
+    <a class="ql-card" onclick="filterFAQ('access');return false" href="#faq">
+      <span class="ql-icon">🔐</span>
+      <div class="ql-title">Account Access</div>
+      <div class="ql-sub">Can't log in, magic link</div>
+    </a>
+    <a class="ql-card" onclick="filterFAQ('billing');return false" href="#faq">
+      <span class="ql-icon">💳</span>
+      <div class="ql-title">Billing & Plans</div>
+      <div class="ql-sub">Cancel, refund, upgrade</div>
+    </a>
+    <a class="ql-card" onclick="filterFAQ('monitoring');return false" href="#faq">
+      <span class="ql-icon">📡</span>
+      <div class="ql-title">Flight Monitoring</div>
+      <div class="ql-sub">Alerts, how it works</div>
+    </a>
+    <a class="ql-card" onclick="filterFAQ('claim');return false" href="#faq">
+      <span class="ql-icon">💰</span>
+      <div class="ql-title">Claiming a Refund</div>
+      <div class="ql-sub">Step-by-step claim help</div>
+    </a>
+    <a class="ql-card" href="/policies/">
+      <span class="ql-icon">📋</span>
+      <div class="ql-title">Airline Policies</div>
+      <div class="ql-sub">Per-airline guides</div>
+    </a>
+  </div>
+</div>
+
+<div class="main">
+  <!-- FAQ Section -->
+  <div>
+    <div class="section-title" id="faq">Frequently Asked Questions</div>
+    <div id="faq-list">
+
+      <div class="faq-item" data-tags="access login sign in magic link email">
+        <div class="faq-q" onclick="toggleFAQ(this)">How do I sign in to my dashboard? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">TripReclaim uses magic links — no password needed.
+          <ul>
+            <li>Go to <a href="/dashboard/">tripreclaim.com/dashboard</a></li>
+            <li>Enter the email you used when you signed up or purchased</li>
+            <li>Click "Send Magic Link" — check your inbox (and spam folder)</li>
+            <li>Click the link in the email — it's valid for 1 hour</li>
+          </ul>
+          If you don't receive the email, check your spam folder or try again with your purchase email address.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="access email wrong account different">
+        <div class="faq-q" onclick="toggleFAQ(this)">I used the wrong email when purchasing — what do I do? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Your TripReclaim account is linked to the email you used at checkout. Enter that exact email on the dashboard sign-in page. If you're not sure which email was used, check your inbox for a receipt from Stripe or TripReclaim. Contact support if you need help locating your account.</div>
+      </div>
+
+      <div class="faq-item" data-tags="billing cancel subscription refund money back">
+        <div class="faq-q" onclick="toggleFAQ(this)">How do I cancel my subscription? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">You can cancel anytime — no questions asked.
+          <ul>
+            <li>Sign in to your <a href="/dashboard/">dashboard</a></li>
+            <li>Go to the <strong>Account</strong> tab</li>
+            <li>Click <strong>"Manage Billing →"</strong> to open the Stripe billing portal</li>
+            <li>Click "Cancel plan" — your access continues until the end of the billing period</li>
+          </ul>
+          Per-trip purchases are non-refundable once a trip is used. Unused trips can be reviewed on request.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="billing refund charged wrong error">
+        <div class="faq-q" onclick="toggleFAQ(this)">I was charged incorrectly — how do I get a refund? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">We take billing errors seriously. If you were charged incorrectly:
+          <ul>
+            <li>Contact us using the form on this page — select "Billing" as the category</li>
+            <li>Include the charge amount and approximate date</li>
+            <li>We'll review and resolve within 4 hours</li>
+          </ul>
+          For disputed charges, you can also manage billing directly in your <a href="/dashboard/">dashboard</a> → Account tab → Manage Billing.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="monitoring alert didn't fire price drop not working">
+        <div class="faq-q" onclick="toggleFAQ(this)">My price drop alert didn't fire — why? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">A few common reasons:
+          <ul>
+            <li><strong>Same airline requirement:</strong> After 24 hours from booking, we only alert on price drops for your exact airline — not other carriers</li>
+            <li><strong>Monitoring paused:</strong> Check your booking card in the dashboard — monitoring should show as "Active"</li>
+            <li><strong>Price hasn't dropped below your fare:</strong> We alert only when the current price is lower than what you paid</li>
+            <li><strong>Check spam folder:</strong> Alert emails sometimes land in spam</li>
+          </ul>
+          If none of these apply, contact us with your confirmation number and we'll investigate.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="monitoring how works airlines supported">
+        <div class="faq-q" onclick="toggleFAQ(this)">Which airlines does TripReclaim support? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">We support 30+ airlines including all major US carriers and international airlines:
+          <ul>
+            <li><strong>US:</strong> American, Delta, United, Southwest, JetBlue, Alaska, Spirit, Frontier</li>
+            <li><strong>International:</strong> British Airways, Lufthansa, Air Canada, Singapore Airlines, Cathay Pacific, Qatar Airways, Turkish Airlines, Korean Air, ANA, and more</li>
+          </ul>
+          See <a href="/policies/">airline policy guides</a> for claim details per airline.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="claim refund how steps airline">
+        <div class="faq-q" onclick="toggleFAQ(this)">How do I claim a price drop refund from my airline? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a"><strong>Within 24 hours of booking (DOT rule):</strong> You're entitled to a full cash refund. Cancel and rebook at the lower price.
+          <br><br>
+          <strong>After 24 hours:</strong> Most airlines offer a travel credit for the fare difference. Contact your airline directly:
+          <ol style="padding-left:18px;margin-top:8px">
+            <li>Call the airline or use their website/app</li>
+            <li>Say: "I'd like a price adjustment — the fare has dropped since I booked"</li>
+            <li>Have your confirmation number ready</li>
+          </ol>
+          Get your personalized <strong>Claim Kit</strong> from your <a href="/dashboard/">dashboard</a> — it has the exact script for your airline.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="claim 24 hour dot rule full refund">
+        <div class="faq-q" onclick="toggleFAQ(this)">What is the 24-hour DOT rule? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">The US Department of Transportation (DOT) requires airlines to offer a full cash refund if you cancel within 24 hours of booking — no matter what fare type you purchased. This applies to all flights departing from or arriving in the US. TripReclaim monitors your flight every 15 minutes during this critical window so you never miss a price drop while you're still eligible for a full refund.</div>
+      </div>
+
+      <div class="faq-item" data-tags="plan per trip monthly annual difference">
+        <div class="faq-q" onclick="toggleFAQ(this)">What's the difference between the plans? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">
+          <ul>
+            <li><strong>Per Trip ($2.99):</strong> Monitor 1 flight until departure. Perfect for a single upcoming trip.</li>
+            <li><strong>Monthly ($5.99/mo):</strong> Monitor up to 5 flights simultaneously. Great for frequent travelers.</li>
+            <li><strong>Annual ($49/yr):</strong> Monitor up to 15 flights at once. Best value for road warriors (~$4.08/mo).</li>
+          </ul>
+          All plans include real-time price monitoring, instant alerts, full Claim Kits, and the 24-hour DOT window tracker.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="email forwarding parse track confirmation">
+        <div class="faq-q" onclick="toggleFAQ(this)">How does email forwarding work? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Forward your airline confirmation email to <strong>track@tripreclaim.com</strong> and we'll automatically extract your flight details and add them to your dashboard for monitoring. We support 30+ airlines. Make sure you forward from the same email address linked to your TripReclaim account.</div>
+      </div>
+
+    </div>
+    <div id="no-results" style="display:none;text-align:center;padding:40px;color:#94a3b8">
+      <div style="font-size:2rem;margin-bottom:12px">🔍</div>
+      <p>No results found. Try different keywords or use the contact form.</p>
+    </div>
+  </div>
+
+  <!-- Contact Form -->
+  <div>
+    <div class="contact-card" id="contact-form-card">
+      <h2>Contact Support</h2>
+      <p>Not finding what you need? Send us a message.</p>
+      <div class="response-badge">⚡ Typically replies within 4 hours</div>
+      <div id="contact-form">
+        <div class="form-group">
+          <label>Your Email *</label>
+          <input type="email" id="s-email" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="s-name" placeholder="Jane Smith">
+        </div>
+        <div class="form-group">
+          <label>Category *</label>
+          <select id="s-category">
+            <option value="">Select a category...</option>
+            <option value="account_access">🔐 Account Access — Can't log in</option>
+            <option value="billing">💳 Billing — Charges, refunds, cancel</option>
+            <option value="monitoring">📡 Flight Monitoring — Alerts, tracking</option>
+            <option value="claim_help">💰 Claim Help — Getting my refund</option>
+            <option value="general">💬 General — Feedback or other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Subject *</label>
+          <input type="text" id="s-subject" placeholder="Brief description of your issue">
+        </div>
+        <div class="form-group">
+          <label>Message *</label>
+          <textarea id="s-message" placeholder="Tell us what's happening in detail..."></textarea>
+        </div>
+        <button class="submit-btn" onclick="submitTicket()">Send Message →</button>
+      </div>
+      <div class="form-success" id="form-success">
+        <div class="check">✅</div>
+        <h3>Message received!</h3>
+        <p>Ticket <span class="ticket-num" id="ticket-num-display"></span> created.<br>Check your email — we sent a response immediately.</p>
+        <p style="margin-top:12px;font-size:0.8rem;color:#94a3b8">Didn't receive it? Check your spam folder or <a href="#" onclick="resetForm()">send another message</a>.</p>
+      </div>
+    </div>
+
+    <!-- Also helpful -->
+    <div style="margin-top:20px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px">
+      <div style="font-weight:700;margin-bottom:12px;font-size:0.9rem">📚 Also Helpful</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <a href="/policies/" style="font-size:0.88rem;color:#2563eb">→ Airline Refund Policy Hub</a>
+        <a href="/dashboard/" style="font-size:0.88rem;color:#2563eb">→ Access Your Dashboard</a>
+        <a href="/calculator/" style="font-size:0.88rem;color:#2563eb">→ Free Price Drop Calculator</a>
+        <a href="/blog/flight-price-drop-refund/" style="font-size:0.88rem;color:#2563eb">→ How Price Drop Refunds Work</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 TripReclaim · <a href="/privacy/">Privacy Policy</a> · <a href="/terms/">Terms</a> · <a href="/support/">Support</a></p>
+</footer>
+
+<script>
+const API = 'https://tripreclaim-production.up.railway.app';
+
+function toggleFAQ(el) {
+  const answer = el.nextElementSibling;
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.faq-q.open').forEach(q => {
+    q.classList.remove('open');
+    q.nextElementSibling.classList.remove('open');
+  });
+  if (!isOpen) {
+    el.classList.add('open');
+    answer.classList.add('open');
+  }
+}
+
+function filterFAQ(query) {
+  const q = query.toLowerCase().trim();
+  const items = document.querySelectorAll('.faq-item');
+  let visible = 0;
+  items.forEach(item => {
+    const tags = (item.dataset.tags || '').toLowerCase();
+    const text = item.textContent.toLowerCase();
+    const match = !q || tags.includes(q) || text.includes(q);
+    item.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+  document.getElementById('no-results').style.display = visible === 0 ? 'block' : 'none';
+}
+
+async function submitTicket() {
+  const email    = document.getElementById('s-email').value.trim();
+  const name     = document.getElementById('s-name').value.trim();
+  const category = document.getElementById('s-category').value;
+  const subject  = document.getElementById('s-subject').value.trim();
+  const message  = document.getElementById('s-message').value.trim();
+
+  if (!email || !subject || !message || !category) {
+    alert('Please fill in all required fields (email, category, subject, message).');
+    return;
+  }
+
+  const btn = document.querySelector('.submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  try {
+    const res = await fetch(`${API}/api/support`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, name, category, subject, message }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('contact-form').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+      document.getElementById('ticket-num-display').textContent = `#${data.ticketNumber}`;
+    } else {
+      throw new Error(data.error || 'Failed');
+    }
+  } catch (err) {
+    alert('Failed to send. Please try again or email support@tripreclaim.com directly.');
+    btn.disabled = false;
+    btn.textContent = 'Send Message →';
+  }
+}
+
+function resetForm() {
+  document.getElementById('contact-form').style.display = 'block';
+  document.getElementById('form-success').style.display = 'none';
+  document.querySelector('.submit-btn').disabled = false;
+  document.querySelector('.submit-btn').textContent = 'Send Message →';
+}
+</script>
+</body>
+</html>

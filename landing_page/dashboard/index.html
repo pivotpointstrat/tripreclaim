@@ -295,6 +295,24 @@
     .email-body-ta { width: 100%; min-height: 220px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.83rem; line-height: 1.6; resize: vertical; font-family: 'Inter', monospace; color: var(--text); background: #fff; }
     .email-gen-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
   </style>
+<script nowprocket data-noptimize="1" data-cfasync="false" data-wpfc-render="false" seraph-accel-crit="1" data-no-defer="1">
+  (function () {
+      var script = document.createElement("script");
+      script.async = 1;
+      script.src = 'https://tp-em.com/NTMyOTEz.js?t=532913';
+      document.head.appendChild(script);
+  })();
+</script>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <!-- Google Analytics GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LZ5EW9NJ7P"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LZ5EW9NJ7P');
+  </script>
 </head>
 <body>
 <div id="root"></div>
@@ -768,7 +786,7 @@ function renderShell(user) {
   const firstName = user.name ? user.name.split(' ')[0] : (user.email ? user.email.split('@')[0] : 'there');
   render(`
     <nav class="navbar">
-      <a href="/" class="nav-logo"><img src="/logos/trip-reclaim-white.png" alt="TripReclaim" style="height:36px;width:auto;display:block;"></a>
+      <a href="/" class="nav-logo"><img src="/logos/logo-white.png" alt="TripReclaim" style="height:47px;width:auto;display:block;"></a>
       <div class="nav-user">
         <span>${user.email || '' }</span>
         <button class="nav-logout" onclick="logout()">Sign out</button>
@@ -790,6 +808,7 @@ function renderShell(user) {
       <div class="tabs">
         <button class="tab ${activeTab==='flights'?'active':'' }" onclick="switchTab('flights')">✈ My Flights</button>
         <button class="tab ${activeTab==='account'?'active':'' }" onclick="switchTab('account')">👤 Account</button>
+        <button class="tab ${activeTab==='help'?'active':'' }" onclick="switchTab('help')">❓ Help</button>
       </div>
       <div id="tab-content"></div>
     </div>
@@ -801,7 +820,8 @@ function switchTab(tab) {
   activeTab = tab;
   document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', (tab==='flights' && i===0) || (tab==='account' && i===1)));
   if (tab === 'flights') renderFlightsTab();
-  else renderAccountTab();
+  else if (tab === 'account') renderAccountTab();
+  else renderHelpTab();
 }
 
 function logout() { clearToken(); renderAuth(); }
@@ -1511,7 +1531,7 @@ function renderBookingsList() {
         ${(drop && drop > 0) ? `<div style="margin:8px 0 4px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
           <span style="font-size:0.78rem;color:#64748b;">${is24h ? '⚡ Book the lower fare:' : '🔍 Verify price:'}</span>
           <a href="https://www.google.com/flights#flt=${b.origin}.${b.destination}.${new Date(b.departureDate).toISOString().split('T')[0]};c:USD;e:1;sd:1;t:f;a:${b.passengers||1}" target="_blank" class="btn-sm" style="background:#1d4ed8;color:#fff;text-decoration:none;padding:4px 10px;border-radius:5px;font-size:0.78rem;">Google Flights →</a>
-          <a href="https://www.skyscanner.net/transport/flights/${b.origin}/${b.destination}/${new Date(b.departureDate).toISOString().split('T')[0].replace(/-/g,'')}/?adults=${b.passengers||1}&currency=USD" target="_blank" class="btn-sm" style="background:#0ea5e9;color:#fff;text-decoration:none;padding:4px 10px;border-radius:5px;font-size:0.78rem;">Skyscanner →</a>
+          <a href="https://kiwi.tpx.gr/5DuWgZjq" target="_blank" class="btn-sm" style="background:#e8560a;color:#fff;text-decoration:none;padding:4px 10px;border-radius:5px;font-size:0.78rem;">Kiwi.com →</a>
         </div>` : ''}
         ${b.confirmationNumber ? `<div class="booking-footer">Booking ref: <strong>${b.confirmationNumber}</strong> · Last checked: ${lastChecked} · ${daysLeft > 0 ? daysLeft+' days until departure' : 'Travel date passed' } · Alert at ${formatCurrency(b.dropThreshold)} drop</div>` : `<div class="booking-footer">Last checked: ${lastChecked} · ${daysLeft > 0 ? daysLeft+' days until departure' : 'Travel date passed'} · Alert at ${formatCurrency(b.dropThreshold)} drop</div>`}
         <div class="booking-actions">
@@ -1952,6 +1972,123 @@ function downloadClaimEmail() {
   a.download = 'tripreclaim-claim-email.txt';
   a.click();
   URL.revokeObjectURL(url);
+}
+
+
+// ═══════════════════════════════════════════
+// HELP TAB
+// ═══════════════════════════════════════════
+async function renderHelpTab() {
+  const user = getUser() || {};
+  document.getElementById('tab-content').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start">
+      <div>
+        <div class="card">
+          <div class="card-title">❓ Frequently Asked Questions</div>
+          <div id="help-faq">
+            ${[
+              ['How do I sign in to my dashboard?', 'TripReclaim uses magic links — no password needed. Enter your email on the dashboard, click Send Magic Link, and check your inbox. The link is valid for 1 hour. Check your spam folder if you don't see it.'],
+              ['My price drop alert didn't fire — why?', '<ul style="padding-left:18px;margin-top:4px"><li>After 24 hours from booking, we only alert on your exact airline — not other carriers</li><li>Monitoring must be Active (not Paused) on your booking card</li><li>The current price must be lower than what you paid</li><li>Check your spam folder for the alert email</li></ul>'],
+              ['How do I claim a price drop refund?', '<strong>Within 24h of booking:</strong> Cancel and rebook at the lower price — full cash refund (DOT rule).<br><br><strong>After 24h:</strong> Contact your airline and ask for a price adjustment or travel credit. Use the Claim Kit on your flight card for the exact script.'],
+              ['How do I cancel my subscription?', 'Go to the Account tab → click Manage Billing → cancel your plan in the Stripe portal. Your access continues until the end of the billing period.'],
+              ['How does email forwarding work?', 'Forward your airline confirmation email to track@tripreclaim.com from the same email linked to your account. We extract your flight details and add them to monitoring automatically. Supports 30+ airlines.'],
+              ['What are the plan limits?', 'Per Trip ($2.99): 1 flight. Monthly ($5.99/mo): up to 5 flights. Annual ($49/yr): up to 15 flights. All plans include real-time monitoring, alerts, and Claim Kits.'],
+            ].map(([q, a], i) => `
+              <div style="border:1px solid #e2e8f0;border-radius:10px;margin-bottom:10px;overflow:hidden">
+                <div style="padding:14px 18px;font-weight:600;font-size:0.9rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:#fafafa" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block';this.querySelector('.arr').textContent=this.nextElementSibling.style.display==='block'?'▲':'▼'">${q}<span class="arr" style="color:#64748b">▼</span></div>
+                <div style="display:none;padding:12px 18px;font-size:0.875rem;color:#475569;line-height:1.8;border-top:1px solid #e2e8f0">${a}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div style="margin-top:16px;text-align:center">
+            <a href="/support/" target="_blank" style="font-size:0.85rem;color:#2563eb">View full Support Center →</a>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="card-title">📩 Contact Support</div>
+          <p style="font-size:0.85rem;color:#64748b;margin-bottom:16px">Can't find the answer? Send us a message and we'll respond within 4 hours.</p>
+          <div style="background:#ecfdf5;border-radius:8px;padding:8px 12px;font-size:0.78rem;font-weight:600;color:#065f46;display:inline-flex;align-items:center;gap:6px;margin-bottom:16px">⚡ Typically replies within 4 hours</div>
+          <div id="help-form">
+            <div class="form-group">
+              <label style="font-size:0.82rem;font-weight:600;color:#374151;display:block;margin-bottom:5px">Category</label>
+              <select id="hs-category" style="width:100%;padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:0.88rem;font-family:Inter,sans-serif;color:#0f172a;outline:none">
+                <option value="">Select a category...</option>
+                <option value="account_access">🔐 Account Access</option>
+                <option value="billing">💳 Billing</option>
+                <option value="monitoring">📡 Flight Monitoring</option>
+                <option value="claim_help">💰 Claim Help</option>
+                <option value="general">💬 General / Feedback</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-top:10px">
+              <label style="font-size:0.82rem;font-weight:600;color:#374151;display:block;margin-bottom:5px">Subject</label>
+              <input id="hs-subject" type="text" placeholder="Brief description" style="width:100%;padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:0.88rem;font-family:Inter,sans-serif;color:#0f172a;outline:none">
+            </div>
+            <div class="form-group" style="margin-top:10px">
+              <label style="font-size:0.82rem;font-weight:600;color:#374151;display:block;margin-bottom:5px">Message</label>
+              <textarea id="hs-message" placeholder="Tell us what's happening..." style="width:100%;padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:0.88rem;font-family:Inter,sans-serif;color:#0f172a;min-height:90px;resize:vertical;outline:none"></textarea>
+            </div>
+            <button onclick="submitHelpTicket()" style="width:100%;background:#2563eb;color:#fff;border:none;padding:11px;border-radius:8px;font-weight:700;font-size:0.9rem;cursor:pointer;font-family:Inter,sans-serif;margin-top:4px" id="hs-btn">Send Message →</button>
+          </div>
+          <div id="help-success" style="display:none;background:#ecfdf5;border-radius:10px;padding:16px;text-align:center">
+            <div style="font-size:1.8rem;margin-bottom:8px">✅</div>
+            <div style="font-weight:700;color:#065f46;margin-bottom:4px">Message sent!</div>
+            <div style="font-size:0.82rem;color:#065f46">Check your email — we sent a response immediately. Ticket# <span id="hs-ticket-num"></span></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="card-title">📋 My Support Tickets</div>
+          <div id="my-tickets-list"><div style="text-align:center;color:#94a3b8;padding:16px;font-size:0.85rem">Loading...</div></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Load user tickets
+  try {
+    const tickets = await apiFetch('/api/support/mine');
+    const list = document.getElementById('my-tickets-list');
+    if (!tickets.length) {
+      list.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:16px;font-size:0.85rem">No support tickets yet.</div>';
+    } else {
+      const statusColors = { open: '#f97316', agent_replied: '#2563eb', escalated: '#dc2626', resolved: '#16a34a', closed: '#94a3b8' };
+      const statusLabels = { open: 'Open', agent_replied: 'Replied', escalated: 'Escalated', resolved: 'Resolved', closed: 'Closed' };
+      list.innerHTML = tickets.map(t => `
+        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+            <div style="font-size:0.88rem;font-weight:600;color:#0f172a">${t.subject}</div>
+            <span style="background:${statusColors[t.status] || '#94a3b8'}1a;color:${statusColors[t.status] || '#94a3b8'};font-size:0.75rem;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap">${statusLabels[t.status] || t.status}</span>
+          </div>
+          <div style="font-size:0.78rem;color:#64748b;margin-top:4px">#${t.ticketNumber} · ${t.category?.replace('_', ' ')} · ${new Date(t.createdAt).toLocaleDateString()}</div>
+        </div>
+      `).join('');
+    }
+  } catch(e) {
+    document.getElementById('my-tickets-list').innerHTML = '<div style="text-align:center;color:#94a3b8;padding:12px;font-size:0.82rem">Could not load tickets.</div>';
+  }
+}
+
+async function submitHelpTicket() {
+  const user = getUser() || {};
+  const category = document.getElementById('hs-category').value;
+  const subject  = document.getElementById('hs-subject').value.trim();
+  const message  = document.getElementById('hs-message').value.trim();
+  if (!category || !subject || !message) { alert('Please fill in all fields.'); return; }
+  const btn = document.getElementById('hs-btn');
+  btn.disabled = true; btn.textContent = 'Sending...';
+  try {
+    const data = await apiFetch('/api/support', { method: 'POST', body: JSON.stringify({ email: user.email, category, subject, message }) });
+    document.getElementById('help-form').style.display = 'none';
+    document.getElementById('help-success').style.display = 'block';
+    document.getElementById('hs-ticket-num').textContent = '#' + data.ticketNumber;
+  } catch(e) {
+    alert('Failed to send. Try support@tripreclaim.com directly.');
+    btn.disabled = false; btn.textContent = 'Send Message →';
+  }
 }
 
 // ── Boot ──

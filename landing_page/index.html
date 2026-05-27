@@ -9,22 +9,14 @@
   <meta property="og:description" content="Post-booking flight price monitoring. We watch your fare 24/7 and alert you the moment it drops so you can get money back.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://tripreclaim.com/">
-  <meta property="og:image" content="https://tripreclaim.com/logos/logo.png">
+  <meta property="og:image" content="https://tripreclaim.com/og-image.jpg">
   <meta property="og:site_name" content="TripReclaim">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="TripReclaim — Get Refunded When Your Flight Price Drops">
   <meta name="twitter:description" content="Post-booking flight price monitoring. We watch your fare 24/7 and alert you the moment it drops so you can get money back.">
-  <meta name="twitter:image" content="https://tripreclaim.com/logos/logo.png">
+  <meta name="twitter:image" content="https://tripreclaim.com/og-image.jpg">
   <link rel="canonical" href="https://tripreclaim.com/">
   <link rel="sitemap" type="application/xml" href="/sitemap.xml">
-  <!-- Google Analytics: Replace G-XXXXXXXXXX with your GA4 Measurement ID -->
-  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX');
-  </script> -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -309,6 +301,7 @@
       display: flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: 0.9rem; color: #fff; flex-shrink: 0;
     }
+    .avatar img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; object-position: center top; display: block; }
     .author-name { font-weight: 600; font-size: 0.9rem; }
     .author-meta { color: var(--slate); font-size: 0.82rem; }
     .refund-amount {
@@ -381,14 +374,230 @@
     }
     .footer-bottom a { color: #64748b; text-decoration: none; }
     .footer-bottom a:hover { color: #94a3b8; }
+    .footer-social { display: flex; gap: 12px; margin-top: 16px; }
+    .footer-social a { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; background: rgba(255,255,255,0.08); color: #94a3b8; text-decoration: none; transition: background 0.2s, color 0.2s; }
+    .footer-social a:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .footer-social svg { width: 18px; height: 18px; fill: currentColor; }
+
+    /* ── FOUNDING MEMBER URGENCY ── */
+    .founding-banner {
+      background: linear-gradient(90deg, #fef3c7, #fde68a);
+      border: 1px solid #f59e0b;
+      border-radius: 10px;
+      padding: 12px 20px;
+      text-align: center;
+      margin-bottom: 32px;
+      font-size: 0.9rem;
+      color: #92400e;
+    }
+    .founding-banner strong { color: #78350f; }
+
+    /* ── LEGAL CALLOUT ── */
+    .legal-callout {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 48px 24px;
+      text-align: center;
+    }
+    .legal-callout-inner {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .legal-callout .icon { font-size: 2rem; margin-bottom: 12px; }
+    .legal-callout h3 { color: #1e3a5f; font-size: 1.3rem; margin-bottom: 12px; }
+    .legal-callout p { color: #374151; font-size: 1rem; line-height: 1.7; margin: 0; }
+
+    /* ── EMAIL CAPTURE ── */
+    .email-capture {
+      margin: 32px auto 0;
+      max-width: 480px;
+      text-align: center;
+    }
+    .email-capture p {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+    .email-capture-form {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .email-capture-form input {
+      flex: 1;
+      min-width: 200px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .email-capture-form button {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .email-capture-form button:hover { background: #2563eb; }
+    .email-capture-success { display: none; color: #86efac; font-size: 0.9rem; margin-top: 8px; }
+    /* ── THE PROBLEM SECTION ── */
+    .problem-section {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      padding: 80px 24px;
+      text-align: center;
+    }
+    .problem-section .container { max-width: 760px; }
+    .problem-eyebrow {
+      display: inline-block;
+      background: rgba(239,68,68,0.15);
+      color: #f87171;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+    .problem-section h2 {
+      color: #f1f5f9;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      line-height: 1.3;
+      margin-bottom: 24px;
+    }
+    .problem-section h2 em { color: #f87171; font-style: normal; }
+    .problem-section p {
+      color: #94a3b8;
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 0;
+    }
+    .problem-section p strong { color: #e2e8f0; }
+
+
+    /* ── AIRLINE POLICY TABLE ── */
+    .airline-table-section {
+      background: #fff;
+      padding: 80px 24px;
+    }
+    .airline-table-section .container { max-width: 900px; }
+    .airline-table-wrap { overflow-x: auto; margin-top: 40px; }
+    .airline-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .airline-table th {
+      background: #0f172a; color: #e2e8f0;
+      padding: 14px 16px; text-align: left;
+      font-weight: 600; font-size: 0.82rem;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .airline-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #374151;
+      vertical-align: top;
+    }
+    .airline-table tr:last-child td { border-bottom: none; }
+    .airline-table tr:hover td { background: #f8fafc; }
+    .policy-good { color: #16a34a; font-weight: 600; }
+    .policy-ok { color: #ca8a04; font-weight: 600; }
+    .policy-limited { color: #dc2626; font-weight: 600; }
+    .airline-logo-cell { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #0f172a; white-space: nowrap; }
+    .airline-logo-cell img { height: 28px; width: auto; }
+    .table-disclaimer { font-size: 0.78rem; color: #94a3b8; margin-top: 16px; text-align: center; }
+
+    /* ── BLOG SECTION ── */
+    .blog-section {
+      background: var(--slate-light);
+      padding: 80px 24px;
+    }
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .blog-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      transition: box-shadow 0.2s;
+      text-decoration: none;
+      display: block;
+    }
+    .blog-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.1); transform: translateY(-2px); }
+    .blog-tag {
+      display: inline-block;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .blog-card h3 { font-size: 1rem; color: #0f172a; line-height: 1.4; margin-bottom: 10px; }
+    .blog-card p { font-size: 0.88rem; color: var(--slate); line-height: 1.6; margin-bottom: 14px; }
+    .blog-read-more { font-size: 0.85rem; color: #1d4ed8; font-weight: 600; }
+
+    /* ── TRUST SIGNALS BAR ── */
+    .trust-signals {
+      background: #0f172a;
+      padding: 28px 24px;
+    }
+    .trust-signals-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 32px;
+    }
+    .trust-signal {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #94a3b8;
+      font-size: 0.85rem;
+    }
+    .trust-signal span:first-child { font-size: 1rem; }
+    .trust-signal strong { color: #e2e8f0; }
   </style>
+<script nowprocket data-noptimize="1" data-cfasync="false" data-wpfc-render="false" seraph-accel-crit="1" data-no-defer="1">
+  (function () {
+      var script = document.createElement("script");
+      script.async = 1;
+      script.src = 'https://tp-em.com/NTMyOTEz.js?t=532913';
+      document.head.appendChild(script);
+  })();
+</script>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <!-- Google Analytics GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LZ5EW9NJ7P"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LZ5EW9NJ7P');
+  </script>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
   <div class="nav-inner">
-    <a href="/" class="logo"><img src="/logos/logo.png" alt="TripReclaim" style="height:36px;width:auto;display:block;"></a>
+    <a href="/" class="logo"><img src="/logos/logo.png" alt="TripReclaim" style="height:47px;width:auto;display:block;"></a>
     <ul class="nav-links">
       <li><a href="#how-it-works">How It Works</a></li>
       <li><a href="#pricing">Pricing</a></li>
@@ -416,12 +625,12 @@
   </div>
   <div class="hero-stats">
     <div class="hero-stat">
-      <div class="num">$142</div>
-      <div class="label">Average refund recovered</div>
+      <div class="num">Avg. $100+</div>
+      <div class="label">Refund recovered per trip*</div>
     </div>
     <div class="hero-stat">
       <div class="num">68%</div>
-      <div class="label">Of monitored flights drop in price</div>
+      <div class="label">Of monitored flights drop in price*</div>
     </div>
     <div class="hero-stat">
       <div class="num">24/7</div>
@@ -447,17 +656,31 @@
   </div>
 </div>
 
+<!-- THE PROBLEM -->
+<section class="problem-section">
+  <div class="container">
+    <div class="problem-eyebrow">Sound Familiar?</div>
+    <h2>You booked early. You were responsible.<br>Then the price <em>dropped</em> — and nobody told you.</h2>
+    <p>
+      You planned ahead, locked in your seat, felt good about it.<br>
+      Two weeks later, the <strong>exact same flight</strong> is $120 cheaper.<br>
+      That money was yours. Airlines just don't remind you to ask for it back.<br><br>
+      <strong>TripReclaim watches the price 24/7 and tells you the moment to act.</strong>
+    </p>
+  </div>
+</section>
+
 <!-- HOW IT WORKS -->
 <section class="hiw" id="how-it-works">
   <div class="container">
     <div class="section-label">How It Works</div>
     <h2>Three steps to getting money back</h2>
-    <p class="section-sub">No complicated setup. Just submit your booking and let TripReclaim do the work.</p>
+    <p class="section-sub" style="white-space:nowrap">No complicated setup — submit your booking and let TripReclaim do the work.</p>
     <div class="hiw-grid">
       <div class="hiw-step">
         <div class="step-num"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg></div>
         <h3>Submit Your Booking</h3>
-        <p>Enter your flight booking details — airline, route, travel dates, and the price you paid. Takes less than 60 seconds.</p>
+        <p>Just your airline, route, travel dates, and the price you paid — nothing more. No login credentials, no payment info, no frequent flyer passwords. Takes less than 60 seconds.</p>
       </div>
       <div class="hiw-step">
         <div class="step-num"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><polyline points="11 8 11 11 13 13"/></svg></div>
@@ -485,6 +708,11 @@
         <p>Email and mobile notifications the moment a qualifying price drop is detected — no manual checking required.</p>
       </div>
       <div class="feature-card">
+        <div class="feature-icon" style="background:#fff7ed">💳</div>
+        <h3>Double Protection: Airline + Credit Card</h3>
+        <p>Airline won't budge? Many credit cards have price protection built in. We guide you through both — so you have two shots at getting money back.</p>
+      </div>
+      <div class="feature-card">
         <div class="feature-icon" style="background:#f0fdf4">📋</div>
         <h3>Step-by-Step Refund Guides</h3>
         <p>We provide airline-specific refund instructions so you know exactly what to say and do to get your money back.</p>
@@ -500,11 +728,6 @@
         <p>256-bit encryption. We never store complete booking details or payment info. Your data stays yours.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon" style="background:#eff6ff">💳</div>
-        <h3>Credit Card Protection Too</h3>
-        <p>Airline won't refund? We guide you through credit card price protection claims — another way to recover your money.</p>
-      </div>
-      <div class="feature-card">
         <div class="feature-icon" style="background:#f0fdf4">✈️</div>
         <h3>All Major Airlines Covered</h3>
         <p>US and international carriers. If you can book it, we can monitor it. Coverage expands every week.</p>
@@ -513,12 +736,75 @@
   </div>
 </section>
 
+<!-- AIRLINE POLICY TABLE -->
+<section class="airline-table-section" id="airline-policies">
+  <div class="container">
+    <div class="section-label">Airline Policies</div>
+    <h2>What each airline will actually do</h2>
+    <p class="section-sub">Know what each airline owes you — and exactly how to claim it.</p>
+    <div class="airline-table-wrap">
+      <table class="airline-table">
+        <thead>
+          <tr>
+            <th>Airline</th>
+            <th>Price Drop Policy</th>
+            <th>How to Claim</th>
+            <th>Refund Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="airline-logo-cell"><img src="/logos/southwest.png" alt="Southwest"></div></td>
+            <td><span class="policy-good">✓ Best Policy</span><br>Cancel &amp; rebook anytime at lower price. No fees. No restrictions.</td>
+            <td>Cancel online, rebook at new price</td>
+            <td>Travel credit <em>or</em> cash (Anytime/Business Select)</td>
+          </tr>
+          <tr>
+            <td><div class="airline-logo-cell"><img src="/logos/jetblue.png" alt="JetBlue"></div></td>
+            <td><span class="policy-good">✓ Friendly</span><br>Cancel &amp; rebook at lower price. Difference issued as travel credit.</td>
+            <td>Cancel online via Manage Trips</td>
+            <td>Travel credit (valid 12 months)</td>
+          </tr>
+          <tr>
+            <td><div class="airline-logo-cell"><img src="/logos/alaska.png" alt="Alaska Airlines"></div></td>
+            <td><span class="policy-ok">~ Moderate</span><br>No change fees on most fares. Cancel &amp; rebook at lower price.</td>
+            <td>Cancel &amp; rebook online. Saver fares excluded.</td>
+            <td>Travel credit (non-refundable fares)</td>
+          </tr>
+          <tr>
+            <td><div class="airline-logo-cell"><img src="/logos/united.png" alt="United" style="height:38px"></div></td>
+            <td><span class="policy-ok">~ Moderate</span><br>No change fees on most fares originating in the US. Cancel &amp; rebook at lower price.</td>
+            <td>Cancel &amp; rebook online via My Trips</td>
+            <td>eCredit (non-refundable) or cash refund (refundable)</td>
+          </tr>
+          <tr>
+            <td><div class="airline-logo-cell"><img src="/logos/delta.png" alt="Delta"></div></td>
+            <td><span class="policy-ok">~ Moderate</span><br>No direct price matching. Cancel &amp; rebook using eCredit on non-refundable fares.</td>
+            <td>Cancel via My Trips, rebook at lower fare</td>
+            <td>eCredit (non-refundable) or cash (refundable)</td>
+          </tr>
+          <tr>
+            <td><div class="airline-logo-cell"><img src="/logos/american.png" alt="American Airlines" style="height:38px"></div></td>
+            <td><span class="policy-limited">⚠ Limited</span><br>No price matching after 24 hours. 24-hour free cancellation only.</td>
+            <td>Must cancel &amp; rebook within 24 hrs of booking</td>
+            <td>Full cash refund (within 24 hrs only)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-disclaimer">Policies subject to change. Fare type restrictions apply. TripReclaim monitors drops and gives you airline-specific claim instructions the moment they occur. <a href="/policies/" style="color:#3b82f6;">View full policy details →</a></p>
+  </div>
+</section>
+
 <!-- PRICING -->
 <section class="pricing" id="pricing">
   <div class="container">
     <div class="section-label">Pricing</div>
     <h2>Start for less than a coffee</h2>
-    <p class="section-sub">One price drop typically pays for years of TripReclaim. Choose the plan that fits how often you fly.</p>
+    <p class="section-sub" style="white-space:nowrap">One price drop typically pays for years of TripReclaim — choose your plan below.</p>
+    <div class="founding-banner">
+      🔒 <strong>Founding member pricing</strong> — your rate is locked in forever. Price increases when we open publicly.
+    </div>
     <div class="pricing-grid">
 
       <!-- Per Trip -->
@@ -577,52 +863,58 @@
       </div>
 
     </div>
-    <p style="text-align:center;margin-top:28px;color:var(--slate);font-size:0.9rem;">💡 The average refund recovered is <strong>$142</strong> — that's 71× the cost of a per-trip plan.</p>
+    <p style="text-align:center;margin-top:28px;color:var(--slate);font-size:0.9rem;">💡 A single price drop can easily pay for years of TripReclaim. *Based on industry data. Individual results vary.</p>
   </div>
 </section>
+
+<!-- LEGAL CALLOUT -->
+<div class="legal-callout">
+  <div class="legal-callout-inner">
+    <div class="icon">⚖️</div>
+    <h3>Is this a loophole? Totally legitimate.</h3>
+    <p>Price adjustments are an <strong>official airline policy</strong>, not a trick or a loophole. Most airlines allow you to claim the difference when your fare drops — they just don't remind you to ask. TripReclaim simply watches the price and tells you exactly when and how to claim what you're already owed.</p>
+  </div>
+</div>
 
 <!-- TESTIMONIALS -->
 <section class="testimonials">
   <div class="container">
-    <div class="section-label">Real Results</div>
-    <h2>Travelers are getting money back</h2>
+    <div class="section-label">Early Supporters</div>
+    <h2>People are already obsessed</h2>
     <div class="testimonials-grid">
 
       <div class="testimonial-card">
         <div class="stars">★★★★★</div>
-        <p class="testimonial-text">"Booked a flight to Miami for $380. Three weeks later TripReclaim alerted me the price dropped to $219. I called Delta, got a travel credit for the difference. Paid for itself 80 times over."</p>
+        <p class="testimonial-text">"I book flights months out for better seats and then watch the price drop two weeks later with nothing I can do about it. I never even knew I could claim the difference. TripReclaim is the thing I didn't know I needed — and for $5.99 a month? Honestly embarrassing how cheap that is."</p>
         <div class="testimonial-author">
-          <div class="avatar" style="background:#3b82f6">JM</div>
+          <div class="avatar"><img src="/avatars/shaun-k.jpg" alt="Shaun K."></div>
           <div>
-            <div class="author-name">Jason M.</div>
+            <div class="author-name">Shaun K.</div>
+            <div class="author-meta">Vienna, VA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"My wife and I fly three or four times a year. Even if TripReclaim catches just one small price drop, it pays for itself ten times over. I signed up the same day I heard about it. Honestly — why wouldn't you?"</p>
+        <div class="testimonial-author">
+          <div class="avatar"><img src="/avatars/anthony-washington.jpg" alt="Anthony Washington"></div>
+          <div>
+            <div class="author-name">Anthony W.</div>
+            <div class="author-meta">Washington D.C.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"I'm the person who books a flight and then checks the price every single week wondering if I overpaid. TripReclaim just removes that whole stress. It watches for me and tells me when to act. I genuinely wish this had existed years ago."</p>
+        <div class="testimonial-author">
+          <div class="avatar"><img src="/avatars/alyza-k.jpg" alt="Alyza K."></div>
+          <div>
+            <div class="author-name">Alyza K.</div>
             <div class="author-meta">Chicago, IL</div>
-            <div class="refund-amount">Recovered $161</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="testimonial-card">
-        <div class="stars">★★★★★</div>
-        <p class="testimonial-text">"I fly every few weeks for work. With the annual plan at $49 I've already recovered over $400 this year. This should be standard for every frequent flyer."</p>
-        <div class="testimonial-author">
-          <div class="avatar" style="background:#8b5cf6">SR</div>
-          <div>
-            <div class="author-name">Sarah R.</div>
-            <div class="author-meta">Austin, TX · Frequent Flyer</div>
-            <div class="refund-amount">Recovered $400+</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="testimonial-card">
-        <div class="stars">★★★★★</div>
-        <p class="testimonial-text">"Skeptical at first but tried the $2.99 per trip plan. Got alerted about a $98 drop on my United flight two weeks after booking. The refund instructions were exactly what I needed."</p>
-        <div class="testimonial-author">
-          <div class="avatar" style="background:#10b981">DK</div>
-          <div>
-            <div class="author-name">David K.</div>
-            <div class="author-meta">Seattle, WA</div>
-            <div class="refund-amount">Recovered $98</div>
           </div>
         </div>
       </div>
@@ -646,7 +938,7 @@
 
     <div class="faq-item">
       <div class="faq-question">How much can I realistically expect to recover?</div>
-      <div class="faq-answer">Our monitored travelers recover an average of $142 per trip when a price drop is detected. Flight prices fluctuate constantly — sales, seat sales, and schedule adjustments cause drops all the time, especially 2–8 weeks after booking.</div>
+      <div class="faq-answer">Travelers who successfully claim price drops often recover anywhere from $50 to $300+ depending on the route and how much the fare dropped. The bigger the trip, the more potential upside. Individual results vary based on airline, route, and timing. *Based on Expedia/IATA industry data.</div>
     </div>
 
     <div class="faq-item">
@@ -661,7 +953,7 @@
 
     <div class="faq-item">
       <div class="faq-question">What if my airline doesn't offer refunds for price drops?</div>
-      <div class="faq-answer">Many credit cards offer price protection that's totally separate from airline policy. We provide guides for both airline-direct refunds AND credit card claims. You'd be surprised how often card benefits cover the gap.</div>
+      <div class="faq-answer">You actually have <strong>two ways to recover your money</strong>. First, many airlines have price adjustment policies even if they don't advertise them — TripReclaim gives you the exact script and form to use. Second, and this is the one most people miss: <strong>many credit cards include price protection as a built-in benefit</strong>. If your airline says no, we'll walk you through your card's claim process step by step. Between these two options, most travelers have at least one path to a refund.</div>
     </div>
 
     <div class="faq-item">
@@ -677,20 +969,79 @@
   </div>
 </section>
 
+<!-- BLOG / GUIDES -->
+<section class="blog-section">
+  <div class="container">
+    <div class="section-label">Travel Guides</div>
+    <h2>Know your rights. Claim your refund.</h2>
+    <p class="section-sub" style="white-space:nowrap">Free guides to help every traveler understand what they're owed — and exactly how to get it.</p>
+    <div class="blog-grid">
+      <a href="/blog/flight-price-drop-refund/" class="blog-card">
+        <div class="blog-tag">Flight Refunds</div>
+        <h3>How to Get a Refund When Your Flight Price Drops</h3>
+        <p>A step-by-step guide for every major US airline — what to say, where to click, and how much you can expect back.</p>
+        <span class="blog-read-more">Read guide →</span>
+      </a>
+      <a href="/blog/american-airlines-price-drop-policy/" class="blog-card">
+        <div class="blog-tag">Airline Policy</div>
+        <h3>American Airlines Price Drop Policy: Complete 2026 Guide</h3>
+        <p>Everything you need to know about American's 24-hour rule, Basic Economy restrictions, and how to maximize your claim.</p>
+        <span class="blog-read-more">Read guide →</span>
+      </a>
+      <a href="/blog/dot-24-hour-flight-cancellation-rule/" class="blog-card">
+        <div class="blog-tag">Your Rights</div>
+        <h3>The DOT 24-Hour Flight Cancellation Rule Explained</h3>
+        <p>Federal law gives you 24 hours to cancel any flight for a full refund. Here's exactly how to use it and what qualifies.</p>
+        <span class="blog-read-more">Read guide →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- FINAL CTA -->
 <section class="final-cta">
   <h2>Your next flight might already be cheaper.</h2>
-  <p>Book your flight, then let TripReclaim watch the price. The average recovery is $142 — for $2.99.</p>
+  <p>Book your flight, then let TripReclaim watch the price. Most travelers who catch a drop recover far more than the cost of the service.</p>
   <a href="#pricing" class="btn-primary">Start Monitoring for $2.99 →</a>
-  <p class="guarantee">No subscription required. <a href="/privacy">Privacy policy</a> · <a href="/terms">Terms</a></p>
+  <div class="email-capture">
+    <p style="white-space:nowrap">Not ready yet? Drop your email — we'll remind you before your next flight.</p>
+    <form class="email-capture-form" name="waitlist" data-netlify="true" onsubmit="handleEmailCapture(event, this)">
+      <input type="hidden" name="form-name" value="waitlist">
+      <input type="email" name="email" placeholder="you@example.com" required>
+      <button type="submit">Notify Me</button>
+    </form>
+    <div class="email-capture-success" id="capture-success">✅ You're on the list!</div>
+  </div>
+  <p class="guarantee">Not satisfied? Cancel anytime, no questions asked. &nbsp;&middot;&nbsp; <a href="/privacy">Privacy policy</a> &nbsp;&middot;&nbsp; <a href="/terms">Terms</a></p>
 </section>
+
+<!-- TRUST SIGNALS -->
+<div class="trust-signals">
+  <div class="trust-signals-inner">
+    <div class="trust-signal"><span>🔒</span> <span><strong>256-bit encryption</strong></span></div>
+    <div class="trust-signal"><span>🚫</span> <span><strong>No login credentials</strong> ever required</span></div>
+    <div class="trust-signal"><span>✈️</span> <span><strong>200+ airlines</strong> covered worldwide</span></div>
+    <div class="trust-signal"><span>💳</span> <span><strong>Airline + credit card</strong> protection</span></div>
+    <div class="trust-signal"><span>⭐</span> <span><strong>Cancel anytime</strong>, no questions asked</span></div>
+    <div class="trust-signal"><span>📧</span> <span>Support at <strong>hello@tripreclaim.com</strong></span></div>
+  </div>
+</div>
 
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
-      <a href="/" class="logo"><img src="/logos/logo.png" alt="TripReclaim" style="height:32px;width:auto;display:block;filter:brightness(0) invert(1);"></a>
+      <a href="/" class="logo"><img src="/logos/logo-white.png" alt="TripReclaim" style="height:32px;width:auto;display:block;"></a>
       <p>Post-booking flight price monitoring. We watch your fare so you don't have to.</p>
+      <div class="footer-social">
+        <a href="https://x.com/real_tripclaim" target="_blank" rel="noopener" aria-label="Follow TripReclaim on X">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.261 5.636 5.903-5.636zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+
+        <a href="https://tiktok.com/@tripreclaim" target="_blank" rel="noopener" aria-label="Follow TripReclaim on TikTok">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V9.01a8.16 8.16 0 0 0 4.77 1.52V7.07a4.85 4.85 0 0 1-1-.38z"/></svg>
+        </a>
+      </div>
     </div>
     <div class="footer-links">
       <h4>Product</h4>
@@ -703,7 +1054,7 @@
     <div class="footer-links">
       <h4>Support</h4>
       <ul>
-        <li><a href="mailto:hello@getreclaimapp.com">Contact Us</a></li>
+        <li><a href="mailto:hello@tripreclaim.com">Contact Us</a></li>
         <li><a href="/privacy">Privacy Policy</a></li>
         <li><a href="/terms">Terms of Service</a></li>
       </ul>
@@ -711,7 +1062,7 @@
   </div>
   <div class="footer-bottom">
     <span>© 2026 TripReclaim. All rights reserved.</span>
-    <span><a href="mailto:hello@getreclaimapp.com">hello@getreclaimapp.com</a></span>
+    <span><a href="mailto:hello@tripreclaim.com">hello@tripreclaim.com</a></span>
   </div>
   <div style="max-width:1100px;margin:12px auto 0;font-size:0.72rem;color:#475569;line-height:1.6;">
     <strong style="color:#64748b;">Disclaimer:</strong> All logos, brands, and trademarks are the property of their respective owners. This site is independent and not affiliated with, endorsed by, or sponsored by any airline.
@@ -729,5 +1080,20 @@
   });
 </script>
 
+<script>
+function handleEmailCapture(e, form) {
+  e.preventDefault();
+  const data = new FormData(form);
+  fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams(data).toString() })
+    .then(() => {
+      form.style.display = 'none';
+      document.getElementById('capture-success').style.display = 'block';
+    }).catch(() => {
+      form.style.display = 'none';
+      document.getElementById('capture-success').style.display = 'block';
+    });
+}
+</script>
 </body>
 </html>
