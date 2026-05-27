@@ -272,3 +272,41 @@ process.on('SIGTERM', () => {
   console.log('Monitor shutting down gracefully...');
   process.exit(0);
 });
+
+// ── Credit Expiry Reminders ──────────────────────────────────────────────────
+async function checkCreditExpiry() {
+  try {
+    const AirlineCredit = require('./models/AirlineCredit');
+    const { sendCreditExpiryReminder } = require('./services/email');
+    const User = require('./models/User');
+    const now = new Date();
+    const THRESHOLDS = [90, 30, 7, 0];
+    let reminded = 0;
+    for (const days of THRESHOLDS) {
+      const targetDate = new Date(now);
+      targetDate.setDate(targetDate.getDate() + days);
+      const start = new Date(targetDate); start.setHours(0,0,0,0);
+      const end   = new Date(targetDate); end.setHours(23,59,59,999);
+      const credits = await AirlineCredit.find({
+        status: 'active',
+        expiryDate: { $gte: start, $lte: end },
+        remindersSent: { $ne: days }
+      }).populate('userId');
+      for (const credit of credits) {
+        try {
+          const user = await User.findById(credit.userId);
+          if (!user || !user.email) continue;
+          await sendCreditExpiryReminder(user.email, credit, days);
+          credit.remindersSent.push(days);
+          if (days === 0) credit.status = 'expired';
+          credit.history.push({ action: 'expiry_reminder_sent', note: `${days}-day reminder sent` });
+          await credit.save();
+          reminded++;
+        } catch(e) { console.error('Credit reminder error:', e.message); }
+      }
+    }
+    if (reminded > 0) console.log(`[CREDIT EXPIRY] ${reminded} reminders sent`);
+  } catch(err) {
+    console.error('[CREDIT EXPIRY] Error:', err.message);
+  }
+}
