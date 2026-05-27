@@ -5,6 +5,36 @@ const { getPolicyForAirline } = require('./policyAgent');
 const { triggerPriceDropEvent } = require('./ghl');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const crypto = require('crypto');
+
+/**
+ * Generate a stateless HMAC unsubscribe token for an email address.
+ * No DB needed — verified server-side on click.
+ */
+const generateUnsubscribeToken = (email) => {
+  const secret = process.env.JWT_SECRET || 'tripreclaim-unsub-secret';
+  return crypto.createHmac('sha256', secret).update(email.toLowerCase()).digest('hex').slice(0, 32);
+};
+
+/**
+ * CAN-SPAM compliant footer HTML for all outgoing emails.
+ * ⚠️ Update PHYSICAL_ADDRESS with your registered business address.
+ */
+const PHYSICAL_ADDRESS = 'Pivot Point Media Holdings LLC · Washington, DC';
+
+const getCanSpamFooter = (email) => {
+  const token = generateUnsubscribeToken(email);
+  const unsubUrl = `https://tripreclaim.com/unsubscribe/?email=${encodeURIComponent(email)}&t=${token}`;
+  return `
+    <hr style="border:none;border-top:1px solid #e2e8f0;margin:28px 0 16px;">
+    <p style="color:#94a3b8;font-size:11px;text-align:center;line-height:1.7;margin:0;">
+      You're receiving this because you have an active TripReclaim account.<br>
+      <a href="${unsubUrl}" style="color:#94a3b8;">Unsubscribe</a> &nbsp;·&nbsp;
+      <a href="https://tripreclaim.com/privacy/" style="color:#94a3b8;">Privacy Policy</a><br>
+      ${PHYSICAL_ADDRESS}
+    </p>`;
+};
+
 const FROM = `${process.env.EMAIL_FROM_NAME || 'TripReclaim'} <${process.env.EMAIL_FROM || 'hello@tripreclaim.com'}>`;
 
 // Map airline display names → IATA codes for policy lookup
@@ -37,7 +67,7 @@ const sendMagicLink = async (email, magicUrl, plan) => {
         <a href="${magicUrl}" style="display:inline-block;margin:24px 0;padding:14px 28px;background:#1d4ed8;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">Open My Dashboard →</a>
         <p style="color:#94a3b8;font-size:13px;">This link expires in 1 hour. If you didn't sign up for TripReclaim, you can safely ignore this email.</p>
         <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
-        <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a></p>
+        ${getCanSpamFooter(email)}
       </div>
     `,
   });
@@ -66,7 +96,7 @@ const sendWelcome = async (email, booking) => {
         <p style="color:#475569;">We'll check this route regularly and alert you the moment the price drops by $${booking.dropThreshold} or more. You'll receive instructions on how to claim your refund directly from the airline.</p>
         <p style="color:#475569;">Sit back — we've got it from here. 🙌</p>
         <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
-        <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a></p>
+        ${getCanSpamFooter(email)}
       </div>
     `,
   });
@@ -294,7 +324,7 @@ const sendPriceDropAlert = async (email, booking, currentPrice, opts = {}) => {
         </div>` : '' }
         <p style="color:#94a3b8;font-size:13px;margin-top:24px;">Act quickly — airline prices can change within hours. We'll keep monitoring until your travel date.</p>
         <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
-        <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a> · <a href="https://tripreclaim.com/unsubscribe" style="color:#94a3b8;">Unsubscribe</a></p>
+        ${getCanSpamFooter(email)}
       </div>
     `,
   });
@@ -341,7 +371,7 @@ const sendCreditExpiryReminder = async (email, booking, daysLeft) => {
         <p style="color:#475569;">You claimed a travel credit for your <strong>${route}</strong> price drop. Don't let it go to waste — use it before it expires!</p>
         <p style="color:#475569;">Book any ${booking.airline} flight using your credit before it's gone.</p>
         <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
-        <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a></p>
+        ${getCanSpamFooter(email)}
       </div>
     `,
   });
@@ -371,7 +401,7 @@ const sendPolicyChangeAlert = async (email, airlineName, affectedBookingRoutes) 
         <ul style="color:#334155;">${routeList}</ul>
         <p style="color:#475569;">We've updated our records. Your next price drop alert will include the latest claim instructions. You may also want to review the current policy directly on ${airlineName}'s website.</p>
         <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
-        <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a></p>
+        ${getCanSpamFooter(email)}
       </div>
     `,
   });
@@ -481,7 +511,7 @@ const sendOnboardingDay0 = async (email, user) => {
         </div>
         <a href="https://tripreclaim.com/dashboard/" style="display:inline-block;margin:8px 0 24px;padding:14px 28px;background:#1d4ed8;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">Add Your First Flight →</a>
         <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
-        <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a> · <a href="https://tripreclaim.com/dashboard/" style="color:#94a3b8;">Manage account</a></p>
+        ${getCanSpamFooter(email)}
       </div>
     `,
   });
@@ -522,7 +552,7 @@ const sendOnboardingDay3 = async (email, user) => {
         ${!user.onboardingComplete ? '<p style="color:#475569;"><strong>Haven\'t added a flight yet?</strong> You can add any upcoming booking — even flights you booked weeks ago.</p>' : ''}
         <a href="https://tripreclaim.com/dashboard/" style="display:inline-block;margin:8px 0 24px;padding:14px 28px;background:#1d4ed8;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">View My Dashboard →</a>
         <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
-        <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a> · <a href="https://tripreclaim.com/dashboard/" style="color:#94a3b8;">Manage account</a></p>
+        ${getCanSpamFooter(email)}
       </div>
     `,
   });
@@ -555,7 +585,7 @@ const sendOnboardingDay7 = async (email, user) => {
         <p style="color:#475569;">The next time you book a flight, add it to TripReclaim the moment you confirm your booking. That\'s when it matters most.</p>
         <a href="https://tripreclaim.com/dashboard/" style="display:inline-block;margin:8px 0 24px;padding:14px 28px;background:#1d4ed8;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">Open My Dashboard →</a>
         <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
-        <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a> · You\'re receiving this because you subscribed to TripReclaim. <a href="https://tripreclaim.com/dashboard/" style="color:#94a3b8;">Manage preferences</a></p>
+        ${getCanSpamFooter(email)}
       </div>
     `,
   });
@@ -589,7 +619,7 @@ const sendReferralCreditEmail = async (referrerEmail, referredEmail, creditAmoun
           </div>
           <a href="https://tripreclaim.com/dashboard/" style="display:inline-block;margin:8px 0 24px;padding:14px 28px;background:#1d4ed8;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">View My Dashboard →</a>
           <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
-          <p style="color:#94a3b8;font-size:12px;">TripReclaim · <a href="https://tripreclaim.com" style="color:#94a3b8;">tripreclaim.com</a></p>
+          ${getCanSpamFooter(email)}
         </div>
       `,
     });

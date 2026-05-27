@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const User = require('../models/User');
 const { generateSessionToken, generateMagicToken } = require('../middleware/auth');
 const { sendMagicLink } = require('../services/email');
@@ -151,6 +152,40 @@ router.get('/referral', require('../middleware/auth').requireAuth, async (req, r
   } catch (err) {
     console.error('[auth] Referral error:', err.message);
     res.status(500).json({ error: 'Failed to get referral info' });
+  }
+});
+
+/**
+ * GET /auth/unsubscribe?email=xxx&t=token
+ * Stateless one-click unsubscribe — verifies HMAC token, sets emailOptOut: true
+ */
+router.get('/unsubscribe', async (req, res) => {
+  const { email, t } = req.query;
+  const frontendUrl = (process.env.FRONTEND_URL || 'https://tripreclaim.com').replace(/\/$/, '');
+
+  if (!email || !t) {
+    return res.redirect(`${frontendUrl}/unsubscribe/?status=invalid`);
+  }
+
+  // Verify HMAC token (stateless — no DB needed)
+  const secret = process.env.JWT_SECRET || 'tripreclaim-unsub-secret';
+  const expected = crypto.createHmac('sha256', secret)
+    .update(email.toLowerCase()).digest('hex').slice(0, 32);
+
+  if (t !== expected) {
+    return res.redirect(`${frontendUrl}/unsubscribe/?status=invalid`);
+  }
+
+  try {
+    await User.findOneAndUpdate(
+      { email: email.toLowerCase() },
+      { emailOptOut: true, emailOptOutAt: new Date() }
+    );
+    console.log(`[auth] Unsubscribe: ${email}`);
+    return res.redirect(`${frontendUrl}/unsubscribe/?status=success&email=${encodeURIComponent(email)}`);
+  } catch (err) {
+    console.error('[auth] Unsubscribe error:', err.message);
+    return res.redirect(`${frontendUrl}/unsubscribe/?status=error`);
   }
 });
 

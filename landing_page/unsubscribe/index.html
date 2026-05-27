@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unsubscribe — TripReclaim</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Inter, sans-serif; background: #f8fafc; color: #0f172a; min-height: 100vh; display: flex; flex-direction: column; }
+    nav { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 16px 24px; }
+    nav a { display: inline-block; }
+    nav img { height: 36px; width: auto; }
+    main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px 24px; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 48px 40px; max-width: 480px; width: 100%; text-align: center; }
+    .icon { font-size: 48px; margin-bottom: 20px; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 12px; }
+    p { color: #64748b; font-size: 0.95rem; line-height: 1.6; margin-bottom: 8px; }
+    .email { font-weight: 600; color: #0f172a; }
+    .btn { display: inline-block; margin-top: 28px; padding: 12px 28px; background: #1d4ed8; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; }
+    .btn:hover { background: #1e40af; }
+    .btn-outline { background: transparent; border: 1px solid #e2e8f0; color: #64748b; margin-left: 8px; }
+    .btn-outline:hover { background: #f8fafc; }
+    .error-card .icon { filter: grayscale(1); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/"><img src="/logos/logo.png" alt="TripReclaim"></a>
+</nav>
+
+<main>
+  <div class="card" id="card">
+    <div class="icon" id="icon">✅</div>
+    <h1 id="heading">You've been unsubscribed</h1>
+    <p id="msg">You will no longer receive email notifications from TripReclaim.</p>
+    <p id="email-line" style="display:none;">Unsubscribed: <span class="email" id="email-display"></span></p>
+    <p style="margin-top:16px;font-size:0.85rem;">You can re-enable notifications anytime from your <a href="/dashboard/" style="color:#1d4ed8;">dashboard settings</a>.</p>
+    <div>
+      <a href="/" class="btn">Go to Homepage</a>
+      <a href="/dashboard/" class="btn btn-outline">My Account</a>
+    </div>
+  </div>
+</main>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get('status');
+  const email = params.get('email');
+
+  const icon = document.getElementById('icon');
+  const heading = document.getElementById('heading');
+  const msg = document.getElementById('msg');
+  const emailLine = document.getElementById('email-line');
+  const emailDisplay = document.getElementById('email-display');
+
+  if (status === 'success') {
+    icon.textContent = '✅';
+    heading.textContent = 'You've been unsubscribed';
+    msg.textContent = 'You will no longer receive marketing emails from TripReclaim. Transactional emails (login links, receipts) may still be sent.';
+    if (email) {
+      emailLine.style.display = 'block';
+      emailDisplay.textContent = decodeURIComponent(email);
+    }
+  } else if (status === 'invalid') {
+    icon.textContent = '⚠️';
+    heading.textContent = 'Invalid unsubscribe link';
+    msg.textContent = 'This unsubscribe link is invalid or has expired. Please use the link from your most recent email, or manage preferences from your dashboard.';
+  } else if (status === 'error') {
+    icon.textContent = '❌';
+    heading.textContent = 'Something went wrong';
+    msg.textContent = 'We could not process your unsubscribe request. Please try again or contact us at info@tripreclaim.com.';
+  } else {
+    // No status — show generic page
+    icon.textContent = '📧';
+    heading.textContent = 'Manage Email Preferences';
+    msg.textContent = 'To unsubscribe, use the unsubscribe link in any TripReclaim email, or manage your preferences from your account dashboard.';
+  }
+</script>
+
+</body>
+</html>
