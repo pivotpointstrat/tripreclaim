@@ -208,3 +208,14 @@
 - **Bug**: _redirects missing SPA routes for /support/*, /calculator/*, /sms-consent/* → added [commit 0d5852f]
 - **Bug**: AirlinePolicy.js cancellationFees Map type was Number → fixed to String [commit 8e6c267]
 - **Fix**: Policy DB seeded with all 6 airlines (DL, WN, B6, AS, UA, AA) → 6 policies now in MongoDB
+
+## v1.2 — 2026-05-27
+### Added
+- 7 new airline policy pages: Emirates, Air France, Turkish Airlines, Etihad Airways, Qantas, Hawaiian Airlines, WestJet
+- Policy hub now covers 20 airlines total (13 → 20)
+- All 7 new airlines seeded in MongoDB with full claimSteps, cancellationFees, refundTypes, loopholes, customerServiceUrl, claimPhone
+- Policy pages include EU261 rights for Air France, Turkish Airlines; APPR rights for WestJet; Australian Consumer Law for Qantas; Hawaiian-Alaska merger notes
+- Dashboard getAirlinePolicySlug() updated for all 7 new airlines
+- policies/index.html URLS map updated with all 20 airline slugs
+- _redirects updated with 7 new SPA routes
+- sitemap.xml updated with 7 new policy page URLs
