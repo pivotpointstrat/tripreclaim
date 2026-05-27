@@ -608,7 +608,7 @@ const AIRLINE_LOOKUP_URLS = {
 const MAJOR_US_AIRLINES = [
   'American Airlines', 'Delta Air Lines', 'JetBlue', 'Southwest Airlines', 'United Airlines',
 ];
-const OTHER_AIRLINES = [
+const EXTENDED_AIRLINES_LIST = [
   'Aer Lingus', 'Air Arabia', 'Air Canada', 'Air China', 'Air France', 'Air New Zealand',
   'Alaska Airlines', 'Allegiant Air', 'ANA All Nippon Airways', 'Asiana Airlines',
   'Austrian Airlines', 'Avianca', 'Azul Brazilian Airlines', 'British Airways',
@@ -1105,7 +1105,7 @@ async function renderFlightsTab() {
                   ${MAJOR_US_AIRLINES.map(a => `<option>${a}</option>`).join('')}
                 </optgroup>
                 <optgroup label="── All Airlines ──">
-                  ${OTHER_AIRLINES.map(a => `<option>${a}</option>`).join('')}
+                  ${EXTENDED_AIRLINES_LIST.map(a => `<option>${a}</option>`).join('')}
                 </optgroup>
               </select>
             </div>
@@ -1133,7 +1133,7 @@ async function renderFlightsTab() {
                   ${MAJOR_US_AIRLINES.map(a => `<option>${a}</option>`).join('')}
                 </optgroup>
                 <optgroup label="── All Airlines ──">
-                  ${OTHER_AIRLINES.map(a => `<option>${a}</option>`).join('')}
+                  ${EXTENDED_AIRLINES_LIST.map(a => `<option>${a}</option>`).join('')}
                 </optgroup>
               </select>
             </div>
@@ -2337,20 +2337,21 @@ const POLICY_SLUGS_WALLET = {
   EY:'etihad-airways',QF:'qantas',HA:'hawaiian-airlines',WS:'westjet'
 };
 
-const AIRLINES_LIST = [
+const POPULAR_AIRLINES = [
   {code:'AA',name:'American Airlines'},{code:'DL',name:'Delta Air Lines'},
   {code:'UA',name:'United Airlines'},{code:'WN',name:'Southwest Airlines'},
-  {code:'B6',name:'JetBlue Airways'},{code:'AS',name:'Alaska Airlines'},
-  {code:'BA',name:'British Airways'},{code:'LH',name:'Lufthansa'},
-  {code:'QR',name:'Qatar Airways'},{code:'SQ',name:'Singapore Airlines'},
-  {code:'CX',name:'Cathay Pacific'},{code:'AC',name:'Air Canada'},
-  {code:'KE',name:'Korean Air'},{code:'EK',name:'Emirates'},
-  {code:'AF',name:'Air France'},{code:'TK',name:'Turkish Airlines'},
-  {code:'EY',name:'Etihad Airways'},{code:'QF',name:'Qantas'},
-  {code:'HA',name:'Hawaiian Airlines'},{code:'WS',name:'WestJet'},
-  {code:'OTHER',name:'Other Airline'}
+  {code:'B6',name:'JetBlue Airways'},{code:'AS',name:'Alaska Airlines'}
 ];
-
+const OTHER_AIRLINES = [
+  {code:'AC',name:'Air Canada'},{code:'AF',name:'Air France'},
+  {code:'BA',name:'British Airways'},{code:'CX',name:'Cathay Pacific'},
+  {code:'EK',name:'Emirates'},{code:'EY',name:'Etihad Airways'},
+  {code:'HA',name:'Hawaiian Airlines'},{code:'KE',name:'Korean Air'},
+  {code:'LH',name:'Lufthansa'},{code:'QF',name:'Qantas'},
+  {code:'QR',name:'Qatar Airways'},{code:'SQ',name:'Singapore Airlines'},
+  {code:'TK',name:'Turkish Airlines'},{code:'WS',name:'WestJet'}
+];
+const AIRLINES_LIST = [...POPULAR_AIRLINES, ...OTHER_AIRLINES];
 function getExpiryBadge(credit) {
   if (credit.status === 'used') return ' <span class="expiry-badge expiry-used">✓ Used</span>';
   if (credit.status === 'expired') return ' <span class="expiry-badge expiry-expired">Expired</span>';
@@ -2415,9 +2416,9 @@ async function renderWalletTab() {
     const el = document.getElementById('tab-content');
     if (!el) { console.error('[Wallet] tab-content element not found'); return; }
 
-    const airlineOptions = AIRLINES_LIST.map(a =>
-      `<option value="${a.code}">${a.name}</option>`
-    ).join('');
+    const popularOpts = POPULAR_AIRLINES.map(a => `<option value="${a.code}">${a.name}</option>`).join('');
+    const otherOpts  = OTHER_AIRLINES.map(a => `<option value="${a.code}">${a.name}</option>`).join('');
+    const airlineOptions = `<optgroup label="Major US Carriers">${popularOpts}</optgroup><optgroup label="International">${otherOpts}</optgroup>`;
 
     const trustBar = `
     <div class="wallet-trust-bar">
@@ -2440,11 +2441,11 @@ async function renderWalletTab() {
 
     const securityNote = `
     <div class="security-note">
-      🔒 <strong>Your data stays private.</strong> This is a personal tracker — you enter your own credits. TripReclaim never accesses your airline accounts, passwords, or loyalty numbers.
+      <strong>Your data stays private.</strong> This is a personal tracker — you enter your own credits. TripReclaim never accesses your airline accounts, passwords, or loyalty numbers.
     </div>`;
 
     const addForm = `
-    <div id="add-credit-form" class="add-credit-form">
+    <div id="add-credit-form" class="add-credit-form" style="display:none">
       <h3 style="margin:0 0 18px;font-size:1rem;font-weight:700">+ Add Airline Credit</h3>
       <div class="form-row">
         <div><label class="form-label">Airline *</label>
@@ -2481,7 +2482,16 @@ async function renderWalletTab() {
       <div style="max-width:720px;margin:0 auto;padding:24px 0">
         ${trustBar}
         ${securityNote}
-        <div id="wallet-total-area"></div>
+        <div id="wallet-total-area">
+          <div style="background:#0f172a;color:#fff;border-radius:12px;padding:24px 28px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+            <div>
+              <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;opacity:0.6;margin-bottom:6px">Total Active Credits</div>
+              <div style="font-size:2rem;font-weight:800;letter-spacing:-0.02em" id="wallet-total-amount">$0.00</div>
+              <div style="font-size:0.8rem;opacity:0.7;margin-top:4px" id="wallet-credit-counts">Loading...</div>
+            </div>
+            <button type="button" onclick="toggleAddCredit()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;font-weight:700;padding:11px 22px;border-radius:8px;cursor:pointer;font-size:14px;white-space:nowrap">+ Add Credit</button>
+          </div>
+        </div>
         ${addForm}
         <div id="wallet-credits-area">
           <div style="text-align:center;padding:32px"><div class="spinner"></div><p style="color:#64748b;margin-top:8px;font-size:14px">Loading your credits...</p></div>
@@ -2498,19 +2508,11 @@ async function renderWalletTab() {
       const used     = credits.filter(c => c.status === 'used');
       const expired  = credits.filter(c => c.status === 'expired');
 
-      // Update total card
-      const totalEl = document.getElementById('wallet-total-area');
-      if (totalEl) {
-        totalEl.innerHTML = `
-          <div class="wallet-total">
-            <div>
-              <div style="font-size:0.85rem;opacity:.8;margin-bottom:4px">Total Active Credits</div>
-              <h2>$${totalActive.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</h2>
-              <p>${active.length} active · ${used.length} used · ${expired.length} expired</p>
-            </div>
-            <button type="button" onclick="toggleAddCredit()" style="background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;font-weight:700;padding:12px 22px;border-radius:8px;cursor:pointer;font-size:14px">+ Add Credit</button>
-          </div>`;
-      }
+      // Update total amounts in the static box
+      const amtEl = document.getElementById('wallet-total-amount');
+      const cntEl = document.getElementById('wallet-credit-counts');
+      if (amtEl) amtEl.textContent = '$' + totalActive.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+      if (cntEl) cntEl.textContent = active.length + ' active · ' + used.length + ' used · ' + expired.length + ' expired';
 
       // Update credits area
       const creditsEl = document.getElementById('wallet-credits-area');
@@ -2542,8 +2544,9 @@ async function renderWalletTab() {
 function toggleAddCredit() {
   const form = document.getElementById('add-credit-form');
   if (!form) return;
-  form.classList.toggle('open');
-  if (form.classList.contains('open')) form.scrollIntoView({behavior:'smooth',block:'nearest'});
+  const isHidden = form.style.display === 'none' || form.style.display === '';
+  form.style.display = isHidden ? 'block' : 'none';
+  if (isHidden) form.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 
 function updateWalletAirlineName() {
