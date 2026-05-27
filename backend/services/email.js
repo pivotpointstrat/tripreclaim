@@ -598,4 +598,46 @@ const sendReferralCreditEmail = async (referrerEmail, referredEmail, creditAmoun
   }
 };
 
-module.exports = { sendMagicLink, sendWelcome, sendPriceDropAlert, sendCreditExpiryReminder, sendPolicyChangeAlert, sendSmsAlert, sendSmsPriceDropAlert, sendOnboardingDay0, sendOnboardingDay3, sendOnboardingDay7, sendReferralCreditEmail };
+const PLAN_LABELS = { per_trip: 'Per Trip', monthly: 'Monthly', annual: 'Annual' };
+const PLAN_AMOUNTS = { per_trip: '$2.99', monthly: '$5.99/mo', annual: '$49/yr' };
+
+const sendSaleNotification = async (email, plan, isReferral = false, referralCode = null) => {
+  try {
+    const planLabel = PLAN_LABELS[plan] || plan;
+    const amount = PLAN_AMOUNTS[plan] || '';
+    const now = new Date().toLocaleString('en-US', { timeZone: 'America/New_York', dateStyle: 'medium', timeStyle: 'short' });
+    const stripeUrl = 'https://dashboard.stripe.com/customers';
+    const dashUrl = 'https://tripreclaim.com/dashboard/';
+    await client.emails.send({
+      from: FROM,
+      to: 'sales@tripreclaim.com',
+      subject: `New Sale — TripReclaim ${planLabel} (${amount})`,
+      html: `
+        <div style="font-family:Inter,sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;background:#fff;">
+          <div style="background:#0f172a;padding:20px 24px;border-radius:10px 10px 0 0;">
+            <p style="color:#94a3b8;font-size:12px;margin:0 0 4px;text-transform:uppercase;letter-spacing:0.08em;">TripReclaim</p>
+            <h1 style="color:#fff;font-size:22px;margin:0;">New Sale</h1>
+          </div>
+          <div style="border:1px solid #e2e8f0;border-top:none;border-radius:0 0 10px 10px;padding:24px;">
+            <table style="width:100%;border-collapse:collapse;">
+              <tr><td style="padding:8px 0;color:#64748b;font-size:13px;width:120px;">Customer</td><td style="padding:8px 0;font-weight:600;color:#0f172a;font-size:13px;">${email}</td></tr>
+              <tr><td style="padding:8px 0;color:#64748b;font-size:13px;">Plan</td><td style="padding:8px 0;font-weight:600;color:#0f172a;font-size:13px;">${planLabel}</td></tr>
+              <tr><td style="padding:8px 0;color:#64748b;font-size:13px;">Amount</td><td style="padding:8px 0;font-weight:700;color:#16a34a;font-size:16px;">${amount}</td></tr>
+              <tr><td style="padding:8px 0;color:#64748b;font-size:13px;">Referral</td><td style="padding:8px 0;font-size:13px;">${isReferral ? `Yes — code <strong>${referralCode}</strong> ($3 credit applied)` : 'No'}</td></tr>
+              <tr><td style="padding:8px 0;color:#64748b;font-size:13px;">Time</td><td style="padding:8px 0;color:#0f172a;font-size:13px;">${now} ET</td></tr>
+            </table>
+            <div style="margin-top:20px;display:flex;gap:12px;">
+              <a href="${stripeUrl}" style="display:inline-block;padding:10px 18px;background:#0f172a;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">View in Stripe →</a>
+              <a href="${dashUrl}" style="display:inline-block;padding:10px 18px;background:#1d4ed8;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">Dashboard →</a>
+            </div>
+          </div>
+        </div>
+      `,
+    });
+    console.log(`[email] Sale notification sent to sales@tripreclaim.com — ${email} (${planLabel})`);
+  } catch (e) {
+    console.warn('[email] sendSaleNotification failed:', e.message);
+  }
+};
+
+module.exports = { sendMagicLink, sendWelcome, sendPriceDropAlert, sendCreditExpiryReminder, sendPolicyChangeAlert, sendSmsAlert, sendSmsPriceDropAlert, sendOnboardingDay0, sendOnboardingDay3, sendOnboardingDay7, sendReferralCreditEmail, sendSaleNotification };

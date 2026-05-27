@@ -3,7 +3,7 @@ const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const User = require('../models/User');
 const { generateMagicToken } = require('../middleware/auth');
-const { sendMagicLink, sendOnboardingDay0, sendReferralCreditEmail } = require('../services/email');
+const { sendMagicLink, sendOnboardingDay0, sendReferralCreditEmail, sendSaleNotification } = require('../services/email');
 const { upsertContact, moveOpportunityToStage } = require('../services/ghl');
 
 // Plan mapping from Stripe price IDs
@@ -99,6 +99,9 @@ router.post('/stripe', express.raw({ type: 'application/json' }), async (req, re
         if (session.mode === 'subscription') break;
 
         await handleNewUser(email, session.customer, 'per_trip', null);
+        // Notify sales@tripreclaim.com of new per-trip sale
+        sendSaleNotification(email, 'per_trip', !!pendingReferredBy, pendingReferredBy)
+          .catch(e => console.warn('[webhook] Sale notification failed:', e.message));
         // Now user exists — store referredBy if this was a referral
         if (pendingReferredBy) {
           await User.findOneAndUpdate(
@@ -121,6 +124,12 @@ router.post('/stripe', express.raw({ type: 'application/json' }), async (req, re
         const plan = PRICE_TO_PLAN[priceId] || 'monthly';
 
         await handleNewUser(email, sub.customer, plan, sub.id);
+        // Notify sales@tripreclaim.com of new subscription sale
+        const clientRef = event.data.object?.metadata?.client_reference_id || '';
+        const isRef = clientRef.startsWith('ref:');
+        const refCode = isRef ? clientRef.replace('ref:', '').split('|')[0].trim() : null;
+        sendSaleNotification(email, plan, isRef, refCode)
+          .catch(e => console.warn('[webhook] Sale notification failed:', e.message));
         break;
       }
 
