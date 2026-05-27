@@ -208,7 +208,12 @@ const sendPriceDropAlert = async (email, booking, currentPrice, opts = {}) => {
   } else if (isMiles) {
     subject = `💰 Miles drop alert! ${route} award ticket dropped in price`;
   } else {
-    subject = `💰 Price drop alert! ${route} is now $${currentPrice} (you paid $${booking.pricePaid})`;
+    if (within24h && booking.purchasedAt) {
+      const hoursLeft = Math.max(0, Math.floor((new Date(booking.purchasedAt).getTime() + 24 * 3600 * 1000 - Date.now()) / 3600000));
+      subject = `⚡ ACT NOW — $${Math.round(net)} savings on ${route} · ${hoursLeft}h left to claim full refund`;
+    } else {
+      subject = `💰 $${Math.round(net)} price drop on your ${route} flight — here's how to claim`;
+    }
   }
 
   // ── Price table ──
