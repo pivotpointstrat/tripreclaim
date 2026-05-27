@@ -818,7 +818,7 @@ function renderShell(user) {
     </nav>
     <div class="page">
       <div class="welcome-bar">
-        <h1>Welcome back${user.name ? ', ' + user.name.split(' ')[0] : '' }! ✈️</h1>
+        <h1>Welcome back${user.name ? ', ' + user.name.split(' ')[0] : '' }! <img src="/logos/favicon.png" style="height:24px;width:auto;vertical-align:middle;margin-right:4px"></h1>
         <p>Monitor your flight prices and claim refunds when they drop.</p>
       </div>
       ${user.plan === 'trial' ? `
@@ -986,7 +986,7 @@ async function obFinish() {
   } catch(e) {}
   document.getElementById('onboarding-overlay').style.display = 'none';
   const wb = document.querySelector('.welcome-bar h1');
-  if (wb && obData.name) wb.textContent = `Welcome, ${obData.name.split(' ')[0]}! ✈️`;
+  if (wb && obData.name) wb.textContent = `Welcome, ${obData.name.split(' ')[0]}! <img src="/logos/favicon.png" style="height:20px;width:auto;vertical-align:middle;margin-right:4px">`;
   switchTab('flights');
 }
 
@@ -1022,7 +1022,7 @@ async function renderFlightsTab() {
           <label style="font-size:0.85rem;font-weight:600;color:#374151;display:block;margin-bottom:8px;">Booking Type</label>
           <div class="booking-type-toggle">
             <div class="btype-opt selected" id="btype-cash" onclick="setBookingType('cash')">💳 Paid with Cash/Card</div>
-            <div class="btype-opt" id="btype-miles" onclick="setBookingType('miles')">✈️ Paid with Miles/Points</div>
+            <div class="btype-opt" id="btype-miles" onclick="setBookingType('miles')"><img src="/logos/favicon.png" style="height:14px;width:auto;vertical-align:middle;margin-right:3px">Paid with Miles/Points</div>
           </div>
           <div class="miles-fields" id="miles-fields">
             <div class="form-grid">
@@ -1529,7 +1529,7 @@ function renderSavings() {
 function renderBookingsList() {
   const el = document.getElementById('bookings-list' );
   if (!bookings.length) {
-    el.innerHTML = `<div class="empty-state"><div class="icon">✈️</div><h3>No flights monitored yet</h3><p>Use the form above to add your first booking.</p></div>`;
+    el.innerHTML = `<div class="empty-state"><div class="icon"><img src="/logos/favicon.png" style="height:48px;width:auto;display:block;margin:0 auto 16px"></div><h3>No flights monitored yet</h3><p>Use the form above to add your first booking.</p></div>`;
     return;
   }
   el.innerHTML = bookings.map(b => {
@@ -1567,7 +1567,7 @@ function renderBookingsList() {
         <div class="booking-actions">
           <button class="btn-sm" onclick="viewBookingHistory('${b._id}' )">📈 History</button>
           <button class="btn-sm policy" onclick="viewClaimKit('${b._id}','${b.airline.replace(/'/g,"\\'")}')">📋 Claim Kit</button>
-          <button class="btn-sm share-crew" onclick="openCrewShare('${b._id}')">✈️ Share with Crew</button>
+          <button class="btn-sm share-crew" onclick="openCrewShare('${b._id}')"><img src="/logos/favicon.png" style="height:14px;width:auto;vertical-align:middle;margin-right:3px">Share with Crew</button>
           <button class="btn-sm track-claim" onclick="openClaimTracker('${b._id}')">🗓️ Track Claim</button>
           ${drop && drop > 0 && !b.creditClaimed ? `<button class="btn-sm claim" onclick="openClaimCreditModal('${b._id}', ${drop.toFixed(2)})">✅ Mark Credit Claimed</button>` : ''}
           ${b.status === 'active'  ? `<button class="btn-sm" onclick="toggleBooking('${b._id}', 'paused')">Pause</button>` : '' }
@@ -1576,7 +1576,7 @@ function renderBookingsList() {
         </div>
         ${b.creditClaimed ? `<div style="margin-top:8px;"><span class="credit-claimed-badge">✅ Credit claimed: ${formatCurrency(b.creditAmount||0)} ${b.creditExpiryDate ? '<span class="expiry-pill ' + (new Date(b.creditExpiryDate) - Date.now() < 30*86400000 ? (new Date(b.creditExpiryDate) - Date.now() < 7*86400000 ? 'expiry-urgent' : 'expiry-soon') : 'expiry-ok') + '">Expires ' + new Date(b.creditExpiryDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + '</span>' : ''}</span></div>` : ''}
         <div class="crew-share-panel" id="crew-share-${b._id}" data-airline="${b.airline.replace(/"/g,'&quot;')}" data-origin="${b.origin}" data-dest="${b.destination}" data-date="${dep}" data-savings="${drop && drop > 0 ? drop.toFixed(2) : 0}" style="display:none;">
-          <p style="margin:0 0 4px 0;font-size:0.85rem;font-weight:600;color:#15803d;">✈️ Share with your travel crew</p>
+          <p style="margin:0 0 4px 0;font-size:0.85rem;font-weight:600;color:#15803d;"><img src="/logos/favicon.png" style="height:14px;width:auto;vertical-align:middle;margin-right:3px">Share with your travel crew</p>
           <p style="margin:0 0 8px 0;font-size:0.78rem;color:#475569;">If they are on the same flight, they can save too.</p>
           <div class="crew-share-msg" id="crew-msg-${b._id}"></div>
           <div class="crew-share-actions">
@@ -1746,7 +1746,7 @@ async function renderAccountTab() {
 
   document.getElementById('tab-content' ).innerHTML = `
     <div class="plan-card">
-      <div class="plan-name">✈️ ${planLabel} Plan</div>
+      <div class="plan-name"><img src="/logos/favicon.png" style="height:20px;width:auto;vertical-align:middle;margin-right:4px">${planLabel} Plan</div>
       <div class="plan-detail">${planPrices[user.plan] || 'No active plan'}</div>
       <div class="plan-badges">
         <span class="plan-badge">${user.planStatus === 'active'  ? '✅ Active'  : user.planStatus || 'Inactive'}</span>
@@ -1835,7 +1835,7 @@ async function saveProfile() {
     setUser(data);
     document.getElementById('profile-msg' ).innerHTML = `<div class="alert alert-success">✅ Profile saved successfully.</div>`;
     const wb = document.querySelector('.welcome-bar h1' );
-    if (wb && name) wb.textContent = `Welcome back, ${name.split('' )[0]}! ✈️`;
+    if (wb && name) wb.textContent = `Welcome back, ${name.split('' )[0]}! <img src="/logos/favicon.png" style="height:20px;width:auto;vertical-align:middle;margin-right:4px">`;
     setTimeout(() => { const el = document.getElementById('profile-msg' ); if (el) el.innerHTML = ''; }, 3000);
   } catch(e) {
     document.getElementById('profile-msg' ).innerHTML = `<div class="alert alert-error">❌ Failed to save profile.</div>`;
