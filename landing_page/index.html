@@ -777,8 +777,8 @@
 <script>
   /* ── TripReclaim Referral Tracking ──
      Read ?ref= URL param → store in localStorage.
-     On DOMContentLoaded, append client_reference_id to Stripe payment link buttons.
-     This enables referral attribution in Stripe webhooks. */
+     On DOMContentLoaded, append &ref=CODE to checkout endpoint buttons.
+     Server sets client_reference_id in Stripe session for reliable attribution. */
   (function() {
     try {
       var params = new URLSearchParams(window.location.search);
@@ -793,13 +793,12 @@
     try {
       var ref = localStorage.getItem('tr_ref');
       if (!ref) return;
-      var encoded = encodeURIComponent('ref:' + ref);
       ['btn-per-trip', 'btn-monthly', 'btn-annual'].forEach(function(id) {
         var btn = document.getElementById(id);
         if (!btn) return;
         var href = btn.getAttribute('href');
-        if (href && !href.includes('client_reference_id')) {
-          btn.setAttribute('href', href + (href.includes('?') ? '&' : '?') + 'client_reference_id=' + encoded);
+        if (href && !href.includes('&ref=')) {
+          btn.setAttribute('href', href + '&ref=' + encodeURIComponent(ref));
         }
       });
     } catch(e) {}
@@ -1036,7 +1035,7 @@
           <li><span class="check">✓</span> Refund instructions included</li>
           <li><span class="check">✓</span> Valid until travel date</li>
         </ul>
-        <a href="https://buy.stripe.com/eVq4grfIfeWR1eu0iL4wM04" class="pricing-btn pricing-btn-outline" id="btn-per-trip" target="_blank">Get Started →</a>
+        <a href="https://tripreclaim-production.up.railway.app/api/checkout?plan=per_trip" class="pricing-btn pricing-btn-outline" id="btn-per-trip">Get Started →</a>
       </div>
 
       <!-- Monthly -->
@@ -1056,7 +1055,7 @@
           <li><span class="check">✓</span> Credit card protection tips</li>
           <li><span class="check">✓</span> Cancel anytime</li>
         </ul>
-        <a href="https://buy.stripe.com/eVqaEPgMj8ytaP45D54wM05" class="pricing-btn pricing-btn-primary" id="btn-monthly" target="_blank">Start Monthly Plan →</a>
+        <a href="https://tripreclaim-production.up.railway.app/api/checkout?plan=monthly" class="pricing-btn pricing-btn-primary" id="btn-monthly">Start Monthly Plan →</a>
       </div>
 
       <!-- Annual -->
@@ -1073,7 +1072,7 @@
           <li><span class="check">✓</span> Early access to new features</li>
           <li><span class="check">✓</span> Hotel & car rental monitoring <span style="font-size:0.75rem;color:#94a3b8;">(coming soon)</span></li>
         </ul>
-        <a href="https://buy.stripe.com/bJe28j3ZxeWR6yO0iL4wM06" class="pricing-btn pricing-btn-outline" id="btn-annual" target="_blank">Get Annual Plan →</a>
+        <a href="https://tripreclaim-production.up.railway.app/api/checkout?plan=annual" class="pricing-btn pricing-btn-outline" id="btn-annual">Get Annual Plan →</a>
       </div>
 
     </div>
