@@ -843,9 +843,14 @@ function renderShell(user) {
 
 function switchTab(tab) {
   activeTab = tab;
-  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', (tab==='flights' && i===0) || (tab==='account' && i===1)));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const tabOrder = ['flights','account','wallet','help'];
+  const btns = document.querySelectorAll('.tab');
+  const idx = tabOrder.indexOf(tab);
+  if (btns[idx]) btns[idx].classList.add('active');
   if (tab === 'flights') renderFlightsTab();
   else if (tab === 'account') renderAccountTab();
+  else if (tab === 'wallet') renderWalletTab();
   else renderHelpTab();
 }
 
