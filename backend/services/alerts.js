@@ -239,6 +239,12 @@ const checkBooking = async (booking) => {
               } catch (smsErr) {
                 console.warn('[alerts] Miles SMS send failed (non-fatal):', smsErr.message);
               }
+              // Push notification (non-fatal)
+              sendPushByEmail(booking.email, 'Miles Drop — TripReclaim',
+                Save ~{milesSavings.toLocaleString()} miles on {booking.origin}→{booking.destination}. Tap to claim.,
+                'https://tripreclaim.com/dashboard/')
+              .catch(() => {});
+              }
               update.alertsSent = (booking.alertsSent || 0) + 1;
               update.lastAlertAt = now;
               update.lastAlertPrice = price;
@@ -315,6 +321,12 @@ const checkBooking = async (booking) => {
                   }
                 } catch (smsErr) {
                   console.warn('[alerts] SMS send failed (non-fatal):', smsErr.message);
+              }
+              // Push notification (non-fatal)
+              sendPushByEmail(booking.email, Price Drop — {Math.round(netSavings)} Savings,
+                {booking.origin}→{booking.destination} dropped {Math.round(rawDrop)}. Tap to claim.,
+                'https://tripreclaim.com/dashboard/')
+              .catch(() => {});
                 }
                 // ── Sync price drop event to GHL CRM (non-fatal) ──
                 try {

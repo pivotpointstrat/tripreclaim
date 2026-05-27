@@ -242,6 +242,11 @@
     .referral-link-box { background: rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; font-family: monospace; margin-bottom: 12px; word-break: break-all; }
     .btn-copy { background: #fff; color: var(--blue); border: none; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
     .btn-copy:hover { background: #e0e7ff; }
+    .referral-share-btns { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+    .btn-ref-wa { background: #25d366; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-size: 0.83rem; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+    .btn-ref-wa:hover { background: #1ebe5d; }
+    .btn-ref-sms { background: #3b82f6; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-size: 0.83rem; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+    .btn-ref-sms:hover { background: #2563eb; }
     .referral-stats { display: flex; gap: 16px; margin-top: 12px; }
     .ref-stat { text-align: center; }
     .ref-stat .val { font-size: 1.4rem; font-weight: 800; }
@@ -734,6 +739,95 @@ document.addEventListener('click', (e) => {
 // ═══════════════════════════════════════════
 // ROUTER
 // ═══════════════════════════════════════════
+
+// ═══════════════════════════════════════════
+// PUSH NOTIFICATIONS
+// ═══════════════════════════════════════════
+const VAPID_PUBLIC_KEY = 'BBood0botxHbl5WpmzhsVlFcClL8th3wAYWwCS5ieKGmdVf34zVCvo16P8uUyhO7Rq9PUpwUB7YYfXSVpOWws3Y';
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = atob(base64);
+  return new Uint8Array([...rawData].map(c => c.charCodeAt(0)));
+}
+
+async function initPushNotifications() {
+  const area = document.getElementById('push-status-area');
+  if (!area) return;
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+    document.getElementById('push-unsupported').style.display = 'block';
+    return;
+  }
+  const permission = Notification.permission;
+  if (permission === 'denied') {
+    document.getElementById('push-blocked').style.display = 'block';
+    return;
+  }
+  try {
+    const reg = await navigator.serviceWorker.register('/push-sw.js');
+    const sub = await reg.pushManager.getSubscription();
+    if (sub) {
+      document.getElementById('push-enabled').style.display = 'block';
+    } else {
+      document.getElementById('push-disabled').style.display = 'block';
+    }
+  } catch (e) {
+    document.getElementById('push-disabled').style.display = 'block';
+  }
+}
+
+async function enablePush() {
+  try {
+    const reg = await navigator.serviceWorker.register('/push-sw.js');
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      alert('Notification permission was not granted. Please allow notifications in your browser settings.');
+      return;
+    }
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+    });
+    await apiFetch('/push/subscribe', { method: 'POST', body: JSON.stringify({ subscription: sub }) });
+    document.getElementById('push-disabled').style.display = 'none';
+    document.getElementById('push-blocked').style.display = 'none';
+    document.getElementById('push-enabled').style.display = 'block';
+    showMsg('push-notif-group', 'Push notifications enabled on this device.', 'success');
+  } catch (e) {
+    alert('Could not enable push notifications: ' + e.message);
+  }
+}
+
+async function disablePush() {
+  try {
+    const reg = await navigator.serviceWorker.getRegistration('/push-sw.js');
+    if (reg) {
+      const sub = await reg.pushManager.getSubscription();
+      if (sub) {
+        await apiFetch('/push/unsubscribe', { method: 'DELETE', body: JSON.stringify({ endpoint: sub.endpoint }) });
+        await sub.unsubscribe();
+      }
+    }
+    document.getElementById('push-enabled').style.display = 'none';
+    document.getElementById('push-disabled').style.display = 'block';
+  } catch (e) {
+    alert('Could not disable push notifications: ' + e.message);
+  }
+}
+
+async function testPush() {
+  const btn = document.getElementById('btn-test-push');
+  if (btn) { btn.textContent = 'Sending...'; btn.disabled = true; }
+  try {
+    await apiFetch('/push/test', { method: 'POST' });
+    if (btn) { btn.textContent = 'Sent! Check your notifications'; btn.disabled = false; }
+    setTimeout(() => { if (btn) { btn.textContent = 'Send Test Notification'; } }, 4000);
+  } catch (e) {
+    if (btn) { btn.textContent = 'Failed — try again'; btn.disabled = false; }
+  }
+}
+
 async function init() {
   const params = new URLSearchParams(window.location.search);
   const token = params.get('token');
@@ -833,7 +927,7 @@ function renderShell(user) {
         <button class="tab ${activeTab==='flights'?'active':'' }" onclick="switchTab('flights')">✈ My Flights</button>
         <button class="tab ${activeTab==='account'?'active':'' }" onclick="switchTab('account')">👤 Account</button>
         <button class="tab ${activeTab==='wallet'?'active':'' }" onclick="switchTab('wallet')">💳 Wallet</button>
-        <button class="tab ${activeTab==='help'?'active':'' }" onclick="switchTab('help')">❓ Help</button>
+        <button class="tab ${activeTab==='help'?'active':'' }" onclick="switchTab('help')"><img src="/logos/help-icon.png" style="height:16px;width:16px;vertical-align:middle;margin-right:5px;">Help</button>
       </div>
       <div id="tab-content"></div>
     </div>
@@ -849,7 +943,7 @@ function switchTab(tab) {
   const idx = tabOrder.indexOf(tab);
   if (btns[idx]) btns[idx].classList.add('active');
   if (tab === 'flights') renderFlightsTab();
-  else if (tab === 'account') renderAccountTab();
+  else if (tab === 'account') renderAccountTab().then(() => setTimeout(initPushNotifications, 100));
   else if (tab === 'wallet') renderWalletTab();
   else renderHelpTab();
 }
@@ -1798,6 +1892,25 @@ async function renderAccountTab() {
             </select>
             <p style="font-size:0.78rem;color:#94a3b8;margin:4px 0 0;line-height:1.5;">By enabling SMS, you consent to receive recurring automated flight price drop text messages from TripReclaim at the number above, sent from (888)&nbsp;516-5777. Msg &amp; data rates may apply. Reply <strong>STOP</strong> to unsubscribe. <a href="/privacy/" target="_blank">Privacy Policy</a></p>
           </div>
+          <div class="form-group" id="push-notif-group">
+            <label>Browser Push Notifications</label>
+            <div id="push-status-area" style="margin-top:6px;">
+              <div id="push-unsupported" style="display:none;font-size:0.82rem;color:#94a3b8;">Push notifications are not supported in this browser.</div>
+              <div id="push-blocked" style="display:none;font-size:0.82rem;color:#ef4444;">Notifications are blocked. Please enable them in your browser settings, then reload.</div>
+              <div id="push-disabled" style="display:none;">
+                <p style="font-size:0.82rem;color:#64748b;margin-bottom:8px;">Get instant price drop alerts on this device — no phone number needed.</p>
+                <button onclick="enablePush()" style="background:#1d4ed8;color:#fff;border:none;padding:9px 18px;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;">Enable Push Notifications</button>
+              </div>
+              <div id="push-enabled" style="display:none;">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                  <span style="font-size:0.85rem;color:#16a34a;font-weight:600;">Active on this device</span>
+                  <button onclick="testPush()" id="btn-test-push" style="background:#f1f5f9;border:1px solid #e2e8f0;padding:6px 14px;border-radius:6px;font-size:0.82rem;font-weight:600;cursor:pointer;">Send Test Notification</button>
+                  <button onclick="disablePush()" style="background:transparent;border:none;color:#94a3b8;font-size:0.82rem;cursor:pointer;text-decoration:underline;">Disable</button>
+                </div>
+                <p style="font-size:0.78rem;color:#94a3b8;margin-top:6px;">You'll receive notifications when a price drop is detected on any monitored flight.</p>
+              </div>
+            </div>
+          </div>
           <div class="form-group">
             <label>Default Alert Threshold ($)</label>
             <input type="number" id="acc-threshold" value="${user.notificationPrefs?.dropThresholdDefault || 10}" min="5" step="1">
@@ -1925,6 +2038,9 @@ async function loadReferral() {
   el.innerHTML = '<div style="padding:16px;color:#94a3b8;">Loading referral info...</div>';
   try {
     const data = await apiFetch('/auth/referral' );
+    const _refMsg = 'Hey! I use TripReclaim to get refunds when flight prices drop after booking. Starting at $2.99/trip. Try it: ' + data.referralLink;
+    const waShareHref = 'https://wa.me/?text=' + encodeURIComponent(_refMsg);
+    const smsShareHref = 'sms:?body=' + encodeURIComponent(_refMsg);
     el.innerHTML = `
       ${ data.accountCredit > 0 ? `
       <div style="background:linear-gradient(135deg,#16a34a,#15803d);border-radius:12px;padding:18px 20px;color:#fff;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
@@ -1946,7 +2062,11 @@ async function loadReferral() {
           <div class="ref-stat"><div class="val">$${data.accountCredit.toFixed(2)}</div><div class="lbl">Credit balance</div></div>
         </div>
         <div class="referral-link-box" id="ref-link-box">${data.referralLink}</div>
-        <button class="btn-copy" onclick="copyReferralLink('${data.referralLink}')">Copy Link</button>
+        <div class="referral-share-btns">
+          <button class="btn-copy" onclick="copyReferralLink('${data.referralLink}')">📋 Copy Link</button>
+          <a class="btn-ref-wa" href="${waShareHref}" target="_blank" rel="noopener">📱 WhatsApp</a>
+          <a class="btn-ref-sms" href="${smsShareHref}">💬 Text</a>
+        </div>
       </div>
     `;
   } catch(e) { el.innerHTML = '<div class="alert alert-error">Could not load referral info.</div>'  ; }
@@ -2219,7 +2339,7 @@ async function renderHelpTab() {
     <div style="display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start">
       <div>
         <div class="card">
-          <div class="card-title">❓ Frequently Asked Questions</div>
+          <div class="card-title"><img src="/logos/help-icon.png" style="height:18px;width:18px;vertical-align:middle;margin-right:6px;">Frequently Asked Questions</div>
           <div id="help-faq">
             ${[
               ['How do I sign in to my dashboard?', 'TripReclaim uses magic links — no password needed. Enter your email on the dashboard, click Send Magic Link, and check your inbox. The link is valid for 1 hour. Check your spam folder if you don’t see it.'],

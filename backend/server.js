@@ -67,6 +67,7 @@ app.use('/policy', policyRoutes);
 app.use('/billing', require('./routes/billing'));
 app.use('/api/leads', require('./routes/leads'));
 app.use('/api/checkout', require('./routes/checkout'));
+app.use('/api/push', require('./routes/push'));
 app.use('/api/support', require('./routes/support'));
 
 // ── Health check ──
