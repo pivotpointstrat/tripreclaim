@@ -268,6 +268,21 @@
     .btn-sm.claim:hover { background: var(--green-light); }
     .btn-sm.share-crew { border-color: #0ea5e9; color: #0369a1; }
     .btn-sm.share-crew:hover { background: #f0f9ff; }
+    /* Claim status tracking */
+    .claim-status-badge { display: inline-flex; align-items: center; gap: 5px; border-radius: 20px; padding: 2px 9px; font-size: 0.73rem; font-weight: 600; margin-top: 6px; }
+    .claim-status-badge.not_submitted { background: #f1f5f9; color: #64748b; }
+    .claim-status-badge.submitted    { background: #dbeafe; color: #1d4ed8; }
+    .claim-status-badge.in_progress  { background: #fef3c7; color: #b45309; }
+    .claim-status-badge.approved     { background: #dcfce7; color: #15803d; }
+    .claim-status-badge.denied       { background: #fee2e2; color: #dc2626; }
+    .claim-status-badge.expired      { background: #f1f5f9; color: #94a3b8; }
+    .btn-sm.track-claim { border-color: #7c3aed; color: #7c3aed; }
+    .btn-sm.track-claim:hover { background: #f5f3ff; }
+    .claim-tracker-panel { margin-top: 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; display: none; }
+    .claim-tracker-panel label { font-size: 0.78rem; font-weight: 600; color: #475569; display: block; margin-bottom: 4px; }
+    .claim-tracker-panel select, .claim-tracker-panel textarea { width: 100%; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.82rem; color: #1e293b; background: #fff; margin-bottom: 8px; box-sizing: border-box; }
+    .claim-tracker-panel textarea { resize: vertical; min-height: 60px; }
+    .claim-tracker-meta { font-size: 0.72rem; color: #94a3b8; margin-top: 4px; }
     .crew-share-panel { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 14px 16px; margin-top: 10px; }
     .crew-share-msg { background: #fff; border: 1px solid #d1fae5; border-radius: 6px; padding: 10px 12px; font-size: 0.82rem; color: #334155; font-style: italic; line-height: 1.5; margin: 8px 0 12px 0; word-break: break-word; }
     .crew-share-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
@@ -1547,6 +1562,7 @@ function renderBookingsList() {
           <button class="btn-sm" onclick="viewBookingHistory('${b._id}' )">📈 History</button>
           <button class="btn-sm policy" onclick="viewClaimKit('${b._id}','${b.airline.replace(/'/g,"\\'")}')">📋 Claim Kit</button>
           <button class="btn-sm share-crew" onclick="openCrewShare('${b._id}')">✈️ Share with Crew</button>
+          <button class="btn-sm track-claim" onclick="openClaimTracker('${b._id}')">🗓️ Track Claim</button>
           ${drop && drop > 0 && !b.creditClaimed ? `<button class="btn-sm claim" onclick="openClaimCreditModal('${b._id}', ${drop.toFixed(2)})">✅ Mark Credit Claimed</button>` : ''}
           ${b.status === 'active'  ? `<button class="btn-sm" onclick="toggleBooking('${b._id}', 'paused')">Pause</button>` : '' }
           ${b.status === 'paused'  ? `<button class="btn-sm" onclick="toggleBooking('${b._id}', 'active')">Resume</button>` : '' }
@@ -1562,6 +1578,26 @@ function renderBookingsList() {
             <a class="btn-crew-sms" id="crew-sms-${b._id}" href="#">💬 iMessage / SMS</a>
             <button class="btn-crew-copy" onclick="copyCrewMessage('${b._id}')">📋 Copy</button>
             <button class="btn-crew-close" onclick="closeCrewShare('${b._id}')">✕ Close</button>
+          </div>
+        </div>
+        <div class="claim-tracker-panel" id="claim-tracker-${b._id}">
+          <p style="margin:0 0 10px 0;font-size:0.85rem;font-weight:600;color:#7c3aed;">🗓️ Track Your Claim</p>
+          <label>Claim Status</label>
+          <select id="claim-status-sel-${b._id}" onchange="updateClaimStatusBadge('${b._id}')">
+            <option value="not_submitted"  ${(b.claimStatus||'not_submitted')==='not_submitted'  ? 'selected' : ''}>📋 Not Submitted</option>
+            <option value="submitted"      ${(b.claimStatus||'not_submitted')==='submitted'      ? 'selected' : ''}>📤 Submitted to Airline</option>
+            <option value="in_progress"    ${(b.claimStatus||'not_submitted')==='in_progress'    ? 'selected' : ''}>⏳ In Progress</option>
+            <option value="approved"       ${(b.claimStatus||'not_submitted')==='approved'       ? 'selected' : ''}>✅ Approved</option>
+            <option value="denied"         ${(b.claimStatus||'not_submitted')==='denied'         ? 'selected' : ''}>❌ Denied</option>
+            <option value="expired"        ${(b.claimStatus||'not_submitted')==='expired'        ? 'selected' : ''}>⌛ Expired</option>
+          </select>
+          <label>Notes <span style="font-weight:400;color:#94a3b8;">(optional — e.g. "Emailed AA on May 27, awaiting reply")</span></label>
+          <textarea id="claim-notes-${b._id}" placeholder="Add notes about your claim progress...">${b.claimNotes ? b.claimNotes.replace(/</g,'&lt;') : ''}</textarea>
+          ${b.claimSubmittedAt ? `<div class="claim-tracker-meta">📤 Submitted: ${new Date(b.claimSubmittedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>` : ''}
+          ${b.claimUpdatedAt   ? `<div class="claim-tracker-meta">🔄 Last updated: ${new Date(b.claimUpdatedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>` : ''}
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button class="btn-sm claim" onclick="saveClaimStatus('${b._id}')">💾 Save</button>
+            <button class="btn-sm" onclick="closeClaimTracker('${b._id}')">✕ Close</button>
           </div>
         </div>
       </div>`;
@@ -1594,6 +1630,69 @@ function openCrewShare(id) {
 function closeCrewShare(id) {
   const panel = document.getElementById('crew-share-' + id);
   if (panel) panel.style.display = 'none';
+}
+
+// ── Claim Status Tracker ──────────────────────────────────────────────────
+const CLAIM_STATUS_LABELS = {
+  not_submitted: { icon: '📋', label: 'Not Submitted', cls: 'not_submitted' },
+  submitted:     { icon: '📤', label: 'Submitted',     cls: 'submitted' },
+  in_progress:   { icon: '⏳', label: 'In Progress',   cls: 'in_progress' },
+  approved:      { icon: '✅', label: 'Approved',      cls: 'approved' },
+  denied:        { icon: '❌', label: 'Denied',        cls: 'denied' },
+  expired:       { icon: '⌛', label: 'Expired',       cls: 'expired' },
+};
+
+function openClaimTracker(id) {
+  // close any other open panels for this booking
+  const crew = document.getElementById('crew-share-' + id);
+  if (crew) crew.style.display = 'none';
+  const panel = document.getElementById('claim-tracker-' + id);
+  if (!panel) return;
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'block';
+  if (!isOpen) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function closeClaimTracker(id) {
+  const panel = document.getElementById('claim-tracker-' + id);
+  if (panel) panel.style.display = 'none';
+}
+
+function updateClaimStatusBadge(id) {
+  // Live-update the inline badge as user changes the dropdown
+  const sel = document.getElementById('claim-status-sel-' + id);
+  if (!sel) return;
+  const badge = document.getElementById('claim-badge-' + id);
+  if (!badge) return;
+  const meta = CLAIM_STATUS_LABELS[sel.value] || CLAIM_STATUS_LABELS.not_submitted;
+  badge.className = 'claim-status-badge ' + meta.cls;
+  badge.textContent = meta.icon + ' ' + meta.label;
+  badge.style.display = sel.value === 'not_submitted' ? 'none' : 'inline-flex';
+}
+
+async function saveClaimStatus(id) {
+  const sel   = document.getElementById('claim-status-sel-' + id);
+  const notes = document.getElementById('claim-notes-' + id);
+  if (!sel) return;
+  const status = sel.value;
+  const btn = document.querySelector(`#claim-tracker-${id} .btn-sm.claim`);
+  if (btn) { const orig = btn.textContent; btn.textContent = 'Saving…'; btn.disabled = true;
+    try {
+      await apiFetch(`/bookings/${id}/claim-status`, {
+        method: 'PUT',
+        body: JSON.stringify({ status, notes: notes ? notes.value : '' })
+      });
+      btn.textContent = '✅ Saved!';
+      setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 2000);
+      // Update the inline badge
+      updateClaimStatusBadge(id);
+      // Reload bookings so the badge reflects saved state
+      setTimeout(() => loadBookings(), 2200);
+    } catch(e) {
+      btn.textContent = orig; btn.disabled = false;
+      alert('Failed to save claim status. Please try again.');
+    }
+  }
 }
 
 function copyCrewMessage(id) {
