@@ -298,6 +298,15 @@ async function checkCreditExpiry() {
           if (!user || !user.email) continue;
           await sendCreditExpiryReminder(user.email, credit, days);
           credit.remindersSent.push(days);
+          if (days === 0) {
+            // Notify GHL that this user's credit has expired (churn signal)
+            try {
+              const { markChurned } = require('./services/ghl');
+              await markChurned(user.email, 'credit-expired');
+            } catch (ghlErr) {
+              console.warn('[cron] GHL markChurned failed (non-fatal):', ghlErr.message);
+            }
+          }
           if (days === 0) credit.status = 'expired';
           credit.history.push({ action: 'expiry_reminder_sent', note: `${days}-day reminder sent` });
           await credit.save();

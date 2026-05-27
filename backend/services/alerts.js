@@ -3,7 +3,9 @@ const User = require('../models/User');
 const { sendSmsPriceDropAlert } = require('./email');
 const { getLowestPrice } = require('./monitor');
 const { sendPriceDropAlert } = require('./email');
+const { sendPushByEmail } = require('./push');
 const { getPolicyForAirline } = require('./policyAgent');
+const { triggerPriceDropEvent } = require('./ghl');
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 
@@ -313,6 +315,12 @@ const checkBooking = async (booking) => {
                   }
                 } catch (smsErr) {
                   console.warn('[alerts] SMS send failed (non-fatal):', smsErr.message);
+                }
+                // ── Sync price drop event to GHL CRM (non-fatal) ──
+                try {
+                  await triggerPriceDropEvent(booking.email, booking, price, netSavings, within24h);
+                } catch (ghlErr) {
+                  console.warn('[alerts] GHL triggerPriceDropEvent failed (non-fatal):', ghlErr.message);
                 }
                 update.alertsSent = (booking.alertsSent || 0) + 1;
                 update.lastAlertAt = now;
