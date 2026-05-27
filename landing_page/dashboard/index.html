@@ -2353,14 +2353,15 @@ const OTHER_AIRLINES = [
 ];
 const AIRLINES_LIST = [...POPULAR_AIRLINES, ...OTHER_AIRLINES];
 function getExpiryBadge(credit) {
-  if (credit.status === 'used') return ' <span class="expiry-badge expiry-used">✓ Used</span>';
-  if (credit.status === 'expired') return ' <span class="expiry-badge expiry-expired">Expired</span>';
+  const base = 'display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase';
+  if (credit.status === 'used')    return `<span style="${base};background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0">Used</span>`;
+  if (credit.status === 'expired') return `<span style="${base};background:#f8fafc;color:#94a3b8;border:1px solid #e2e8f0">Expired</span>`;
   const days = credit.daysRemaining;
   if (days === null || days === undefined) return '';
-  if (days <= 7)  return `<span class="expiry-badge expiry-critical">🚨 ${days}d left</span>`;
-  if (days <= 30) return `<span class="expiry-badge expiry-warning">⚠️ ${days} days left</span>`;
-  if (days <= 90) return `<span class="expiry-badge expiry-warning">${days} days left</span>`;
-  return `<span class="expiry-badge expiry-ok">${days} days left</span>`;
+  if (days <= 7)  return `<span style="${base};background:#fef2f2;color:#dc2626;border:1px solid #fecaca">${days}d left — Act Now</span>`;
+  if (days <= 30) return `<span style="${base};background:#fffbeb;color:#d97706;border:1px solid #fde68a">${days} days left</span>`;
+  if (days <= 90) return `<span style="${base};background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe">${days} days left</span>`;
+  return `<span style="${base};background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0">${days} days left</span>`;
 }
 
 function getCreditCardClass(credit) {
@@ -2372,41 +2373,62 @@ function getCreditCardClass(credit) {
   return 'credit-card expiring-ok';
 }
 
+function getCardAccentColor(credit) {
+  if (credit.status === 'used' || credit.status === 'expired') return '#e2e8f0';
+  const days = credit.daysRemaining;
+  if (!days && days !== 0) return '#e2e8f0';
+  if (days <= 7)  return '#ef4444';
+  if (days <= 30) return '#f59e0b';
+  if (days <= 90) return '#3b82f6';
+  return '#22c55e';
+}
 function renderCreditCard(c) {
   const policySlug = POLICY_SLUGS_WALLET[c.airlineCode];
-  const policyLink = policySlug
-    ? `<a href="/policies/${policySlug}/" target="_blank" class="credit-btn policy-btn">📋 Credit Policy</a>`
-    : '';
-  const expiryDate  = c.expiryDate ? new Date(c.expiryDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '-';
-  const issueDate   = c.issueDate  ? new Date(c.issueDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
-  const usedLine    = c.status === 'used' && c.usedFor ? `<div>Used for: ${c.usedFor}</div>` : '';
-  const notesLine   = c.notes ? `<div>📝 ${c.notes}</div>` : '';
-  const codeLine    = c.creditCode ? `<div>Code: <code style="background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:12px">${c.creditCode}</code></div>` : '';
+  const accent     = getCardAccentColor(c);
+  const opacity    = (c.status === 'used' || c.status === 'expired') ? '0.6' : '1';
 
-  const usedBtn = c.status === 'active'
-    ? `<button class="credit-btn used-btn" onclick="markCreditUsed('${c._id}')">✓ Mark Used</button>`
+  const expiryDate = c.expiryDate ? new Date(c.expiryDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '-';
+  const issueDate  = c.issueDate  ? new Date(c.issueDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+
+  const codeHtml  = c.creditCode
+    ? `<span style="display:inline-block;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:2px 8px;font-family:monospace;font-size:0.78rem;color:#334155;letter-spacing:0.05em">${c.creditCode}</span>`
+    : '<span style="color:#94a3b8;font-size:0.8rem">No code saved</span>';
+
+  const notesHtml = c.notes
+    ? `<div style="font-size:0.8rem;color:#64748b;margin-top:10px;padding-top:10px;border-top:1px solid #f1f5f9">${c.notes}</div>`
     : '';
-  const deleteBtn = `<button class="credit-btn delete-btn" onclick="deleteCredit('${c._id}')">✕ Remove</button>`;
+  const usedHtml  = (c.status === 'used' && c.usedFor)
+    ? `<div style="font-size:0.8rem;color:#64748b;margin-top:10px;padding-top:10px;border-top:1px solid #f1f5f9">Used for: ${c.usedFor}</div>`
+    : '';
+
+  const policyBtn = policySlug
+    ? `<a href="/policies/${policySlug}/" target="_blank" style="font-size:0.78rem;font-weight:600;color:#2563eb;text-decoration:none;padding:6px 12px;border:1px solid #dbeafe;border-radius:6px;background:#eff6ff;white-space:nowrap">Credit Policy</a>`
+    : '';
+  const usedBtn = c.status === 'active'
+    ? `<button onclick="markCreditUsed('${c._id}')" style="font-size:0.78rem;font-weight:600;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:6px 12px;cursor:pointer;white-space:nowrap">Mark as Used</button>`
+    : '';
+  const deleteBtn = `<button onclick="deleteCredit('${c._id}')" style="font-size:0.78rem;font-weight:600;color:#94a3b8;background:transparent;border:1px solid #e2e8f0;border-radius:6px;padding:6px 12px;cursor:pointer;white-space:nowrap">Remove</button>`;
 
   return `
-  <div class="${getCreditCardClass(c)}" id="credit-${c._id}">
-    <div class="credit-card-header">
-      <div>
-        <div class="credit-amount">$${(c.amount||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-        <div class="credit-airline">${c.airline}</div>
-        ${codeLine}
+  <div id="credit-${c._id}" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:12px;overflow:hidden;opacity:${opacity};display:flex">
+    <div style="width:4px;background:${accent};flex-shrink:0"></div>
+    <div style="flex:1;padding:18px 20px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:0.8rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">${c.airline}</div>
+          <div style="font-size:1.6rem;font-weight:800;color:#0f172a;letter-spacing:-0.02em">$${(c.amount||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+          <div style="margin-top:8px">${codeHtml}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          ${getExpiryBadge(c)}
+          <div style="font-size:0.78rem;color:#64748b;margin-top:6px">Expires ${expiryDate}</div>
+          ${issueDate ? `<div style="font-size:0.78rem;color:#94a3b8;margin-top:2px">Issued ${issueDate}</div>` : ''}
+        </div>
       </div>
-      <div style="text-align:right">
-        ${getExpiryBadge(c)}
-        <div class="credit-meta" style="margin-top:6px">Expires ${expiryDate}</div>
-        ${issueDate ? `<div class="credit-meta">Issued ${issueDate}</div>` : ''}
+      ${notesHtml}${usedHtml}
+      <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+        ${usedBtn}${policyBtn}${deleteBtn}
       </div>
-    </div>
-    <div class="credit-meta">${notesLine}${usedLine}</div>
-    <div class="credit-actions">
-      ${usedBtn}
-      ${policyLink}
-      ${deleteBtn}
     </div>
   </div>`;
 }
