@@ -11,7 +11,7 @@
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);background:#f8fafc}
     nav{background:#fff;border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:16px}
-    nav img{height:34px}
+    nav img{height:44px}
     nav a.nl{margin-left:auto;color:var(--blue);text-decoration:none;font-weight:600;font-size:14px}
     .hero{background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 100%);color:#fff;padding:48px 24px;text-align:center}
     .hero h1{font-size:2rem;font-weight:800;margin-bottom:12px}
@@ -43,6 +43,24 @@
     @keyframes spin{to{transform:rotate(360deg)}}
     @media(max-width:600px){.grid{grid-template-columns:1fr}.hero h1{font-size:1.5rem}}
   </style>
+<script nowprocket data-noptimize="1" data-cfasync="false" data-wpfc-render="false" seraph-accel-crit="1" data-no-defer="1">
+  (function () {
+      var script = document.createElement("script");
+      script.async = 1;
+      script.src = 'https://tp-em.com/NTMyOTEz.js?t=532913';
+      document.head.appendChild(script);
+  })();
+</script>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <!-- Google Analytics GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LZ5EW9NJ7P"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LZ5EW9NJ7P');
+  </script>
 </head>
 <body>
 <nav>
@@ -77,7 +95,10 @@
 </footer>
 <script>
 const API='https://tripreclaim-production.up.railway.app';
-const LOGOS={AA:'/logos/american.png',DL:'/logos/delta.png',UA:'/logos/united.png',WN:'/logos/southwest.png',B6:'/logos/jetblue.png',AS:'/logos/alaska.png',BA:'/logos/british.png',LH:'/logos/lufthansa.png',QR:'/logos/qatar.png'};
+const LOGOS={AA:'/logos/american.png',DL:'/logos/delta.png',UA:'/logos/united.png',WN:'/logos/southwest.png',B6:'/logos/jetblue.png',AS:'/logos/alaska.png',BA:'/logos/british.png',LH:'/logos/lufthansa.png',QR:'/logos/qatar.png',SQ:'/logos/singapore.png',CX:'/logos/cathay.png',AC:'/logos/aircanada.png'};
+const SIZES={AA:36,UA:47,AS:36,SQ:36,AC:36,CX:20};
+const SLUGS={AA:'american-airlines',DL:'delta-air-lines',UA:'united-airlines',WN:'southwest-airlines',B6:'jetblue-airways',AS:'alaska-airlines',BA:'british-airways',LH:'lufthansa',QR:'qatar-airways',SQ:'singapore-airlines',CX:'cathay-pacific',AC:'air-canada'};
+const URLS={AA:'/policies/american-airlines/',DL:'/policies/delta-air-lines/',UA:'/policies/united-airlines/',WN:'/policies/southwest-airlines/',B6:'/policies/jetblue-airways/',AS:'/policies/alaska-airlines/',BA:'/policies/british-airways/',LH:'/policies/lufthansa/',QR:'/policies/qatar-airways/',SQ:'/policies/singapore-airlines/',CX:'/policies/cathay-pacific/',AC:'/policies/air-canada/'};
 const FB=[
   {c:'AA',n:'American Airlines',p:'Basic Economy non-refundable after 24h. Main Cabin and above: $0 change fee and travel credit.',f:'$0 (Main Cabin+)',v:'12 months',s:['aa.com/refunds or 800-433-7300','Enter confirmation code and last name','Request price adjustment or travel credit','Allow 7 business days for processing'],dot:true,verified:'2026-05-22'},
   {c:'DL',n:'Delta Air Lines',p:'eCredits for non-refundable cancellations. $0 change fee on most fares. Medallion members get same-day changes.',f:'$0 most fares',v:'12 months',s:['delta.com/refunds or 800-221-1212','Enter booking confirmation number','Select Request eCredit option','Credit issued within 7 days'],dot:true,verified:'2026-05-22'},
@@ -88,6 +109,9 @@ const FB=[
   {c:'BA',n:'British Airways',p:'Cash refund depends on fare conditions. Avios credited for award cancellations. Change fees vary by cabin class.',f:'35-50 GBP Economy, 0 GBP Business',v:'12 months',s:['ba.com/managebooking or +44 344 493 0787','Enter booking reference and last name','Request fare adjustment or eVoucher','eVoucher issued within 14 days'],dot:false,verified:'2026-05-22'},
   {c:'LH',n:'Lufthansa',p:'Voucher credits for non-refundable fares. Fully Flexible fares are fully refundable. Light fares have rebooking fees.',f:'Light: fee applies, Flex: free',v:'12 months',s:['lufthansa.com or regional hotline','Navigate to My Bookings','Request rebooking at lower fare or voucher','Processing takes 5-7 business days'],dot:false,verified:'2026-05-22'},
   {c:'QR',n:'Qatar Airways',p:'Economy Saver non-refundable. Business and First Class generally fully refundable. Credits valid 12 months.',f:'$200 Saver, lower or free Flex',v:'12 months',s:['qatarairways.com or regional office','Access Manage Booking with reference number','Request credit or fare adjustment','Allow 14-21 days for international processing'],dot:false,verified:'2026-05-22'},
+  {c:'SQ',n:'Singapore Airlines',p:'Saver fares non-refundable. Advantage and Flexi fares allow changes with fee or are fully refundable. Business/First Class generally fully refundable.',f:'Varies by fare class',v:'12 months',s:['singaporeair.com/manage-booking or regional contact centre','Enter booking reference and last name','Select change or refund option','Processing 7-14 business days'],dot:false,verified:'2026-05-24'},
+  {c:'CX',n:'Cathay Pacific',p:'Economy Light non-refundable. Economy Standard allows changes with fee. Business and First Class generally fully refundable. Refunds to original payment method.',f:'Economy Light: non-refundable; Flex: fee applies',v:'12 months',s:['cathaypacific.com/manage-booking or regional office','Enter booking reference and surname','Request change or refund based on fare conditions','Allow 7-21 days for processing'],dot:false,verified:'2026-05-24'},
+  {c:'AC',n:'Air Canada',p:'Basic fares non-refundable after 24h. Standard and Flex fares: $0 change fee. Comfort and higher: fully refundable. All fares: 24h risk-free cancellation.',f:'$0 Standard+, fees on Basic',v:'24 months (Aeroplan)',s:['aircanada.com/refunds or 1-888-247-2262','Sign in and navigate to My Bookings','Select your flight and choose Change or Cancel','Refund or credit issued within 7-10 business days'],dot:true,verified:'2026-05-24'},
 ];
 function ago(d){if(!d)return null;const diff=Date.now()-new Date(d);const days=Math.floor(diff/86400000);if(days===0)return'Updated today';if(days===1)return'Updated yesterday';if(days<7)return'Updated '+days+' days ago';return'Updated '+Math.floor(days/7)+' weeks ago';}
 function card(p,live){
@@ -96,7 +120,7 @@ function card(p,live){
   const fresh=age&&(age.includes('today')||age.includes('yesterday')||age.includes('days'));
   return `<div class="card">
     <div class="ch">
-      <img src="${LOGOS[p.c]||''}" alt="${p.n}">
+      <img src="${LOGOS[p.c]||''}" alt="${p.n}" style="${SIZES[p.c]?'height:'+SIZES[p.c]+'px':''}">
       ${LOGOS[p.c]?'':'<h3>'+p.n+'</h3>'}
       <span class="age ${fresh?'fresh':'stale'}">${age||ago(p.verified)||'Verified May 2026'}</span>
     </div>
@@ -106,6 +130,8 @@ function card(p,live){
     <div class="det"><strong>Credit validity:</strong> ${l.creditValidity||p.v}</div>
     <div class="det"><strong>How to claim:</strong></div>
     <ul class="steps">${p.s.map(s=>`<li>${s}</li>`).join('')}</ul>
+    ${SLUGS[p.c]?`<a href="/policies/${SLUGS[p.c]}/" style="display:inline-block;margin-top:14px;font-size:12px;font-weight:600;color:#1d4ed8;text-decoration:none;">Read full policy &rarr;</a>`:``}
+    ${URLS[p.c]?`<a href="${URLS[p.c]}" style="display:inline-block;margin-top:10px;font-size:12px;font-weight:600;color:var(--blue);text-decoration:none;">View Full Policy &rarr;</a>`:''}
   </div>`;
 }
 async function load(){

@@ -1,4 +1,5 @@
 const { Resend } = require('resend');
+const User = require('../models/User');
 const twilio = require('twilio');
 const { getPolicyForAirline } = require('./policyAgent');
 const { triggerPriceDropEvent } = require('./ghl');
@@ -154,6 +155,15 @@ const sendPriceDropAlert = async (email, booking, currentPrice, opts = {}) => {
     console.warn('[email] Could not load policy for', booking.airline, e.message);
   }
 
+  // Look up user referral code for crew share link
+  let referralCode = null;
+  try {
+    const userDoc = await User.findOne({ email }).select('referralCode').lean();
+    referralCode = userDoc?.referralCode || null;
+  } catch (e) {
+    console.warn('[email] Could not load referralCode', e.message);
+  }
+
   const claimKit   = buildClaimKitHtml(policy, booking);
   const banner24h  = buildTwentyFourHourBanner(booking);
 
@@ -225,6 +235,15 @@ const sendPriceDropAlert = async (email, booking, currentPrice, opts = {}) => {
       <div style="background:#f8fafc;border-radius:8px;padding:16px;color:#334155;line-height:1.7;">${getRefundGuide(booking.airline)}</div>`
     : '';
 
+  // ── Crew share message (used in email HTML below) ──
+  const shareMsg = `Hey! Prices just dropped on ${booking.airline} ${route} on ${date}${
+    !notWorthClaiming && net > 0 ? ` — I saved $${net.toFixed(2)}` : ''
+  } using TripReclaim. If you're on the same flight, add yours now: https://tripreclaim.com${
+    referralCode ? '?ref=' + referralCode : ''
+  }`;
+  const shareWa  = encodeURIComponent(shareMsg);
+  const shareSms = encodeURIComponent(shareMsg);
+
   await resend.emails.send({
     from: FROM,
     to: email,
@@ -262,6 +281,16 @@ const sendPriceDropAlert = async (email, booking, currentPrice, opts = {}) => {
             📄 <strong>Price Evidence Report</strong> — timestamped proof of this price drop for your records and any airline claim forms.
             <br><a href="${evidenceUrl}" style="color:#1d4ed8;font-weight:600;">View Evidence Report →</a>
           </p>
+        </div>` : '' }
+        ${ !notWorthClaiming ? `
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:16px 18px;margin:20px 0;">
+          <p style="margin:0 0 6px 0;font-size:14px;font-weight:600;color:#15803d;">✈️ Traveling with others?</p>
+          <p style="margin:0 0 12px 0;font-size:13px;color:#475569;">Share this with your travel crew — if they are on the same flight, they can save too.</p>
+          <div style="background:#fff;border:1px solid #d1fae5;border-radius:6px;padding:10px 12px;font-size:13px;color:#334155;margin-bottom:12px;font-style:italic;line-height:1.5;">${shareMsg}</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <a href="https://wa.me/?text=${shareWa}" target="_blank" style="display:inline-block;background:#25d366;color:#fff;padding:8px 14px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;">📱 Share via WhatsApp</a>
+            <a href="sms:?body=${shareSms}" style="display:inline-block;background:#3b82f6;color:#fff;padding:8px 14px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;">💬 Share via iMessage / SMS</a>
+          </div>
         </div>` : '' }
         <p style="color:#94a3b8;font-size:13px;margin-top:24px;">Act quickly — airline prices can change within hours. We'll keep monitoring until your travel date.</p>
         <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">

@@ -266,6 +266,15 @@
     /* ── Sprint 3: Claim kit / credits ── */
     .btn-sm.claim { border-color: var(--green); color: var(--green); }
     .btn-sm.claim:hover { background: var(--green-light); }
+    .btn-sm.share-crew { border-color: #0ea5e9; color: #0369a1; }
+    .btn-sm.share-crew:hover { background: #f0f9ff; }
+    .crew-share-panel { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 14px 16px; margin-top: 10px; }
+    .crew-share-msg { background: #fff; border: 1px solid #d1fae5; border-radius: 6px; padding: 10px 12px; font-size: 0.82rem; color: #334155; font-style: italic; line-height: 1.5; margin: 8px 0 12px 0; word-break: break-word; }
+    .crew-share-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+    .btn-crew-wa { background: #25d366; color: #fff; border: none; padding: 7px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
+    .btn-crew-sms { background: #3b82f6; color: #fff; border: none; padding: 7px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
+    .btn-crew-copy { background: #fff; color: #334155; border: 1px solid #d1d5db; padding: 7px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 500; cursor: pointer; }
+    .btn-crew-close { background: none; color: #94a3b8; border: none; padding: 7px 10px; font-size: 0.8rem; cursor: pointer; }
     .btn-sm.policy { border-color: var(--blue); color: var(--blue); }
     .btn-sm.policy:hover { background: var(--blue-light); }
     .credit-claimed-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--green-light); color: var(--green); border-radius: 20px; padding: 3px 10px; font-size: 0.78rem; font-weight: 600; margin-top: 6px; }
@@ -1537,14 +1546,73 @@ function renderBookingsList() {
         <div class="booking-actions">
           <button class="btn-sm" onclick="viewBookingHistory('${b._id}' )">📈 History</button>
           <button class="btn-sm policy" onclick="viewClaimKit('${b._id}','${b.airline.replace(/'/g,"\\'")}')">📋 Claim Kit</button>
+          <button class="btn-sm share-crew" onclick="openCrewShare('${b._id}')">✈️ Share with Crew</button>
           ${drop && drop > 0 && !b.creditClaimed ? `<button class="btn-sm claim" onclick="openClaimCreditModal('${b._id}', ${drop.toFixed(2)})">✅ Mark Credit Claimed</button>` : ''}
           ${b.status === 'active'  ? `<button class="btn-sm" onclick="toggleBooking('${b._id}', 'paused')">Pause</button>` : '' }
           ${b.status === 'paused'  ? `<button class="btn-sm" onclick="toggleBooking('${b._id}', 'active')">Resume</button>` : '' }
           <button class="btn-sm danger" onclick="deleteBooking('${b._id}' )">Remove</button>
         </div>
         ${b.creditClaimed ? `<div style="margin-top:8px;"><span class="credit-claimed-badge">✅ Credit claimed: ${formatCurrency(b.creditAmount||0)} ${b.creditExpiryDate ? '<span class="expiry-pill ' + (new Date(b.creditExpiryDate) - Date.now() < 30*86400000 ? (new Date(b.creditExpiryDate) - Date.now() < 7*86400000 ? 'expiry-urgent' : 'expiry-soon') : 'expiry-ok') + '">Expires ' + new Date(b.creditExpiryDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + '</span>' : ''}</span></div>` : ''}
+        <div class="crew-share-panel" id="crew-share-${b._id}" data-airline="${b.airline.replace(/"/g,'&quot;')}" data-origin="${b.origin}" data-dest="${b.destination}" data-date="${dep}" data-savings="${drop && drop > 0 ? drop.toFixed(2) : 0}" style="display:none;">
+          <p style="margin:0 0 4px 0;font-size:0.85rem;font-weight:600;color:#15803d;">✈️ Share with your travel crew</p>
+          <p style="margin:0 0 8px 0;font-size:0.78rem;color:#475569;">If they are on the same flight, they can save too.</p>
+          <div class="crew-share-msg" id="crew-msg-${b._id}"></div>
+          <div class="crew-share-actions">
+            <a class="btn-crew-wa" id="crew-wa-${b._id}" href="#" target="_blank">📱 WhatsApp</a>
+            <a class="btn-crew-sms" id="crew-sms-${b._id}" href="#">💬 iMessage / SMS</a>
+            <button class="btn-crew-copy" onclick="copyCrewMessage('${b._id}')">📋 Copy</button>
+            <button class="btn-crew-close" onclick="closeCrewShare('${b._id}')">✕ Close</button>
+          </div>
+        </div>
       </div>`;
   }).join('');
+}
+
+function openCrewShare(id) {
+  const panel = document.getElementById('crew-share-' + id);
+  if (!panel) return;
+  const airline  = panel.getAttribute('data-airline');
+  const origin   = panel.getAttribute('data-origin');
+  const dest     = panel.getAttribute('data-dest');
+  const date     = panel.getAttribute('data-date');
+  const savings  = parseFloat(panel.getAttribute('data-savings')) || 0;
+  const user     = getUser() || {};
+  const ref      = user.referralCode ? '?ref=' + user.referralCode : '';
+  const savingsPart = savings > 0 ? ' \u2014 I saved ' + formatCurrency(savings) : '';
+  const msg = 'Hey! Prices just dropped on ' + airline + ' ' + origin + '\u2192' + dest + ' on ' + date + savingsPart + ' using TripReclaim. If you\'re on the same flight, add yours now: https://tripreclaim.com' + ref;
+  const msgEl = document.getElementById('crew-msg-' + id);
+  const waEl  = document.getElementById('crew-wa-'  + id);
+  const smsEl = document.getElementById('crew-sms-' + id);
+  if (msgEl) msgEl.textContent = msg;
+  if (waEl)  waEl.href  = 'https://wa.me/?text=' + encodeURIComponent(msg);
+  if (smsEl) smsEl.href = 'sms:?body=' + encodeURIComponent(msg);
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'block';
+  if (!isOpen) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function closeCrewShare(id) {
+  const panel = document.getElementById('crew-share-' + id);
+  if (panel) panel.style.display = 'none';
+}
+
+function copyCrewMessage(id) {
+  const msgEl = document.getElementById('crew-msg-' + id);
+  if (!msgEl) return;
+  const text = msgEl.textContent;
+  const btn  = msgEl.parentNode.querySelector('.btn-crew-copy');
+  const done = () => { if (btn) { const o = btn.textContent; btn.textContent = '\u2705 Copied!'; setTimeout(() => btn.textContent = o, 2000); } };
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(done).catch(() => {
+      const ta = document.createElement('textarea'); ta.value = text;
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta); done();
+    });
+  } else {
+    const ta = document.createElement('textarea'); ta.value = text;
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta); done();
+  }
 }
 
 async function toggleBooking(id, status) {

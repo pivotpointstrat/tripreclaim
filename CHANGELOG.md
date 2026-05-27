@@ -119,3 +119,25 @@
 - All 3 testimonial slots filled with real supporter photos and names
 - Shaun K. (Vienna, VA), Anthony W. (Washington D.C.), Alyza K. (Chicago, IL)
 - Circular avatar photos with real names and cities
+
+## Analytics, Tracking & Social — 2026-05-26
+- Favicon (favicon.ico) and Apple Touch Icon (180x180) generated from logo and deployed
+- OG social preview image (1200x630) created and applied to all 24 pages
+- Contact email standardized to hello@tripreclaim.com across all pages
+- GA4 analytics (G-LZ5EW9NJ7P) activated on all 24 pages
+- X social icon added to footer → x.com/real_tripclaim
+- TikTok social icon added to footer → tiktok.com/@tripreclaim
+- Instagram not being used
+
+## API & Monitoring — 2026-05-26
+- Switched flight price monitoring from SerpAPI to SearchAPI.io ($40/mo, 10K searches)
+  - monitor.js updated: endpoint → searchapi.io, key var → SEARCHAPI_KEY
+  - User added SEARCHAPI_KEY to Railway API service
+- Cron monitoring integrated into server.js as fallback (cron.js still separate service)
+- ⚠️ PENDING: Add SEARCHAPI_KEY to Railway CRON service (currently NEVER checking prices)
+  - Once fixed, revert cron integration from server.js to avoid duplicate API calls
+
+## TravelPayouts Affiliate — 2026-05-26
+- Next steps: Activate Kiwi.com + JetRadar deep links in dashboard booking cards
+  - Pre-fill user's route/date for better conversion
+  - Add contextual affiliate links to blog + policy pages
