@@ -100,7 +100,7 @@
   banner.innerHTML = [
     '<div id="tr-cookie-inner">',
     '  <div id="tr-cookie-text">',
-    '    \uD83C\uDF6A We use analytics cookies to understand how visitors use TripReclaim and improve your experience.',
+    '    We use analytics cookies to understand how visitors use TripReclaim and improve your experience.',
     '    <a href="/privacy/" target="_blank">Privacy Policy</a>',
     '  </div>',
     '  <div id="tr-cookie-actions">',

@@ -1316,7 +1316,7 @@ async function openAirlineLookup() {
     // Fallback: open manage booking page for unsupported airlines
     const fa = document.getElementById('f-airline'); if (fa) fa.value = airline;
     const fi = document.getElementById('f-conf');    if (fi) fi.value = conf;
-    hint.innerHTML = `⚠️ Auto-lookup isn't available for ${airline} yet. <a href="${AIRLINE_LOOKUP_URLS[airline] || 'https://www.google.com/search?q='+encodeURIComponent(airline+' manage booking')}" target="_blank" style="color:#1d4ed8;">Open manage booking →</a> and enter details below.`;
+    hint.innerHTML = `⚠️ Auto-lookup isn’t available for ${airline} yet. <a href="${AIRLINE_LOOKUP_URLS[airline] || 'https://www.google.com/search?q='+encodeURIComponent(airline+' manage booking')}" target="_blank" style="color:#1d4ed8;">Open manage booking →</a> and enter details below.`;
     return;
   }
 
@@ -1536,7 +1536,7 @@ function renderBookingsList() {
     const lastChecked = b.lastCheckedAt ? new Date(b.lastCheckedAt).toLocaleString('en-US', {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : 'Pending';
     const returnStr = b.returnDate ? ` · Return ${new Date(b.returnDate).toLocaleDateString('en-US',{month:'short',day:'numeric'})}` : '' ;
     const flightStr = b.flightNumber ? ` · ${b.flightNumber}` : '' ;
-    const modeStr = b.matchMode === 'flexible' ? '🔄 flexible'  : '🎯 exact';
+    const modeStr = b.matchMode === 'flexible' ? '🔄 Flexible Match' : 'Exact Match';
     return `
       <div class="booking-card ${b.status}">
         ${is24h ? `<div class="window-24h">⚡ <div><strong>24-Hour Full Refund Window Active!</strong> DOT rules give you a full cash refund if you cancel now. <a href="#" onclick="viewClaimKit('${b._id}','${b.airline}'); return false;" style="color:#fff;text-decoration:underline;">See how →</a></div><div class="time-left">${hoursLeft}h left</div></div>` : ''}
@@ -1549,7 +1549,7 @@ function renderBookingsList() {
         <div class="booking-meta">${b.airline}${flightStr} · ${dep}${returnStr} · ${b.cabinClass.replace('_'  ,' ' )} · ${b.passengers} pax</div>
         <div class="booking-stats">
           <div class="stat-box"><div class="stat-label">Price Paid</div><div class="stat-value">${formatCurrency(b.pricePaid)}</div></div>
-          <div class="stat-box"><div class="stat-label">Lowest Seen</div><div class="stat-value">${formatCurrency(b.lowestPriceSeen)}</div></div>
+          <div class="stat-box"><div class="stat-label">Lowest Seen</div><div class="stat-value">${formatCurrency(b.lowestPriceSeen)}</div><div style="font-size:0.68rem;color:#94a3b8;margin-top:1px;">as of ${lastChecked}</div></div>
           <div class="stat-box"><div class="stat-label">Savings</div><div class="stat-value ${drop && drop > 0 ? 'drop'  : '' }">${drop && drop > 0 ? formatCurrency(drop) : '—'}</div></div>
         </div>
         ${(drop && drop > 0) ? `<div style="margin:8px 0 4px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
@@ -2017,6 +2017,19 @@ async function loadPolicyChanges() {
 
 function viewPolicyChanges() { window.open(API + '/policy/changes', '_blank'); }
 
+// Airline policy page slug mapping
+function getAirlinePolicySlug(name) {
+  const m = {
+    'American Airlines':'american-airlines','Delta Air Lines':'delta-air-lines',
+    'United Airlines':'united-airlines','Southwest Airlines':'southwest-airlines',
+    'JetBlue Airways':'jetblue-airways','Alaska Airlines':'alaska-airlines',
+    'British Airways':'british-airways','Lufthansa':'lufthansa',
+    'Qatar Airways':'qatar-airways','Singapore Airlines':'singapore-airlines',
+    'Cathay Pacific':'cathay-pacific','Air Canada':'air-canada','Korean Air':'korean-air'
+  };
+  return m[name] || null;
+}
+
 // Claim Kit Modal
 async function viewClaimKit(bookingId, airline) {
   let overlay = document.getElementById('policy-modal');
@@ -2040,14 +2053,25 @@ async function viewClaimKit(bookingId, airline) {
     const mb = overlay.querySelector('.modal-box');
     let html = '<div class="modal-header"><div class="modal-title">\uD83D\uDCCB Claim Kit &mdash; ' + b.origin + ' &rarr; ' + b.destination + ' &middot; ' + airline + '</div><button class="modal-close" onclick="closePolicyModal()">&times;</button></div>';
     if (isIn24h) html += '<div style="background:linear-gradient(135deg,#d97706,#b45309);color:#fff;border-radius:10px;padding:14px 16px;margin-bottom:16px;"><strong>\u26A1 24-Hour Full Cash Refund Available!</strong><br><span style="font-size:0.88rem;opacity:0.9;">DOT rules entitle you to a FULL CASH REFUND right now. Cancel and rebook at the lower price.</span></div>';
-    if (drop && drop > 0) html += '<div style="background:var(--green-light);border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;margin-bottom:16px;"><div style="font-weight:700;color:var(--green);margin-bottom:4px;">\uD83D\uDCB0 $' + drop.toFixed(2) + ' savings detected</div><div style="font-size:0.88rem;color:#166534;">Paid: $' + b.pricePaid.toFixed(2) + ' &rarr; Current: $' + b.lowestPriceSeen.toFixed(2) + '</div></div>';
+    if (drop && drop > 0) html += '<div style="background:var(--green-light);border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;margin-bottom:16px;"><div style="font-weight:700;color:var(--green);margin-bottom:4px;">\uD83D\uDCB0 $' + drop.toFixed(2) + ' savings detected</div><div style="font-size:0.88rem;color:#166534;">Paid: ' + formatCurrency(b.pricePaid) + ' → Lowest seen: ' + formatCurrency(b.lowestPriceSeen) + '</div><div style='font-size:0.75rem;color:#92400e;margin-top:3px;'>⚠️ Verify current price on Google Flights before claiming</div></div>';
     html += '<div style="border-left:4px solid var(--blue);padding:16px;background:var(--blue-light);border-radius:0 10px 10px 0;margin-bottom:16px;"><div style="font-weight:700;color:var(--blue);margin-bottom:10px;">How to Claim &mdash; ' + airline + '</div>';
     if (steps.length > 0) {
       html += '<ol style="margin:0;padding-left:18px;">' + steps.map(function(s){ return '<li style="margin-bottom:8px;font-size:0.9rem;color:#1e40af;">' + s + '</li>'; }).join('') + '</ol>';
     } else {
       html += '<p style="font-size:0.9rem;color:#1e40af;">Contact ' + airline + ' customer service to request a price adjustment for booking ' + (b.confirmationNumber || 'your booking') + '.</p>';
     }
-    html += '<div style="margin-top:12px;font-size:0.82rem;color:#1e40af;">\uD83D\uDCC5 Credit valid: <strong>' + expiry + '</strong>' + (claimPhone ? ' &middot; \uD83D\uDCDE ' + claimPhone : '') + '</div><div style="margin-top:6px;font-size:0.78rem;color:#64748b;">\u2705 Policy last verified: ' + lastVerified + ' &middot; <a href="/policies/" target="_blank" style="color:#1d4ed8;text-decoration:none;">View Policy Hub</a></div></div>';
+    const csUrl = (policy && policy.policies && policy.policies.customerServiceUrl) || '';
+    const policySlug = getAirlinePolicySlug(airline);
+    const policyHubLink = policySlug ? '/policies/' + policySlug + '/' : '/policies/';
+    html += '<div style="margin-top:12px;font-size:0.82rem;color:#1e40af;">📅 Credit valid: <strong>' + expiry + '</strong></div>';
+    if (claimPhone || csUrl) {
+      html += '<div style="margin-top:6px;font-size:0.82rem;color:#1e40af;">📞 ';
+      if (claimPhone) html += '<strong>' + claimPhone + '</strong>';
+      if (claimPhone && csUrl) html += ' &middot; ';
+      if (csUrl) html += '<a href="' + csUrl + '" target="_blank" style="color:#1d4ed8;text-decoration:none;">Service Center &rarr;</a>';
+      html += '</div>';
+    }
+    html += '<div style="margin-top:6px;font-size:0.78rem;color:#64748b;">✅ Policy last verified: ' + lastVerified + ' &middot; <a href="' + policyHubLink + '" target="_blank" style="color:#1d4ed8;text-decoration:none;">View ' + airline + ' Policy &rarr;</a></div></div>';
     if (b.confirmationNumber) html += '<div style="background:var(--slate-light);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:0.88rem;"><strong>Booking:</strong> ' + airline + ' &middot; ' + b.origin + '&rarr;' + b.destination + ' &middot; Ref: <strong>' + b.confirmationNumber + '</strong>' + (b.flightNumber ? ' &middot; Flight: <strong>' + b.flightNumber + '</strong>' : '') + '</div>';
     html += '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">';
     if (claimUrl) html += '<a href="' + claimUrl + '" target="_blank" class="btn-primary" style="text-decoration:none;">Claim at ' + airline + ' &rarr;</a>';
@@ -2192,8 +2216,8 @@ async function renderHelpTab() {
           <div class="card-title">❓ Frequently Asked Questions</div>
           <div id="help-faq">
             ${[
-              ['How do I sign in to my dashboard?', 'TripReclaim uses magic links — no password needed. Enter your email on the dashboard, click Send Magic Link, and check your inbox. The link is valid for 1 hour. Check your spam folder if you don't see it.'],
-              ['My price drop alert didn't fire — why?', '<ul style="padding-left:18px;margin-top:4px"><li>After 24 hours from booking, we only alert on your exact airline — not other carriers</li><li>Monitoring must be Active (not Paused) on your booking card</li><li>The current price must be lower than what you paid</li><li>Check your spam folder for the alert email</li></ul>'],
+              ['How do I sign in to my dashboard?', 'TripReclaim uses magic links — no password needed. Enter your email on the dashboard, click Send Magic Link, and check your inbox. The link is valid for 1 hour. Check your spam folder if you don’t see it.'],
+              ['My price drop alert didn’t fire — why?', '<ul style="padding-left:18px;margin-top:4px"><li>After 24 hours from booking, we only alert on your exact airline — not other carriers</li><li>Monitoring must be Active (not Paused) on your booking card</li><li>The current price must be lower than what you paid</li><li>Check your spam folder for the alert email</li></ul>'],
               ['How do I claim a price drop refund?', '<strong>Within 24h of booking:</strong> Cancel and rebook at the lower price — full cash refund (DOT rule).<br><br><strong>After 24h:</strong> Contact your airline and ask for a price adjustment or travel credit. Use the Claim Kit on your flight card for the exact script.'],
               ['How do I cancel my subscription?', 'Go to the Account tab → click Manage Billing → cancel your plan in the Stripe portal. Your access continues until the end of the billing period.'],
               ['How does email forwarding work?', 'Forward your airline confirmation email to track@tripreclaim.com from the same email linked to your account. We extract your flight details and add them to monitoring automatically. Supports 30+ airlines.'],
@@ -2234,7 +2258,7 @@ async function renderHelpTab() {
             </div>
             <div class="form-group" style="margin-top:10px">
               <label style="font-size:0.82rem;font-weight:600;color:#374151;display:block;margin-bottom:5px">Message</label>
-              <textarea id="hs-message" placeholder="Tell us what's happening..." style="width:100%;padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:0.88rem;font-family:Inter,sans-serif;color:#0f172a;min-height:90px;resize:vertical;outline:none"></textarea>
+              <textarea id="hs-message" placeholder="Tell us what’s happening..." style="width:100%;padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:0.88rem;font-family:Inter,sans-serif;color:#0f172a;min-height:90px;resize:vertical;outline:none"></textarea>
             </div>
             <button onclick="submitHelpTicket()" style="width:100%;background:#2563eb;color:#fff;border:none;padding:11px;border-radius:8px;font-weight:700;font-size:0.9rem;cursor:pointer;font-family:Inter,sans-serif;margin-top:4px" id="hs-btn">Send Message →</button>
           </div>

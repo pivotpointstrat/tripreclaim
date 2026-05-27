@@ -41,7 +41,8 @@
         "Same-Day Confirmed ($75) can be used the day of travel to grab a lower-priced earlier/later flight on same route",
         "Medallion status holders often get waived redeposit fees on SkyMiles awards — check status before assuming fees apply",
         "eCredits can be applied to new bookings for any passenger if transferred — check transfer rules"
-      ]
+      ],
+      "customerServiceUrl": "https://www.delta.com/us/en/need-help/overview"
     }
   },
   {
@@ -84,7 +85,8 @@
         "Book Anytime fare for full flexibility with cash refunds, then switch to Wanna Get Away if price drops significantly",
         "Monitor southwest.com directly for price changes — no GDS fees or OTA markups",
         "If Southwest cancels/significantly changes your flight, you get a full cash refund regardless of fare type"
-      ]
+      ],
+      "customerServiceUrl": "https://www.southwest.com/contact-us/contact-us.html"
     }
   },
   {
@@ -129,7 +131,8 @@
         "JetBlue Best Fare Guarantee: if you find a lower JetBlue fare elsewhere, they may match it — check jetblue.com/customer-assurance/our-promise",
         "Travel credit refunds for fare changes go to Travel Bank (not original payment) — this is stated policy, cannot be reversed once processed",
         "Seats/bags/extras are always refunded to original payment, not travel credit — useful for partial recovery"
-      ]
+      ],
+      "customerServiceUrl": "https://www.jetblue.com/help"
     }
   },
   {
@@ -172,7 +175,8 @@
         "Alaska's price match: not officially offered, but proactive re-pricing requests via chat have succeeded",
         "Book via Alaska's app for easiest online change/cancel management",
         "Main Cabin (non-Saver) has zero change fees — freely rebook at lower price and apply eCredit difference"
-      ]
+      ],
+      "customerServiceUrl": "https://www.alaskaair.com/content/about-alaska/contact-us"
     }
   },
   {
@@ -216,7 +220,8 @@
         "Refunds for significantly delayed/cancelled flights: DOT requires cash refund for flights cancelled by airline — do not accept eCredit without asking for cash first",
         "United credit cards (Chase) often come with rebooking protections — check card benefits before paying change fees",
         "Book directly on united.com (not OTAs) to retain full change/cancel rights and access eCredit system"
-      ]
+      ],
+      "customerServiceUrl": "https://www.united.com/en/us/fly/contact-us.html"
     }
   },
   {
@@ -262,7 +267,8 @@
         "The AA app 'Change Trip' feature can sometimes rebook at lower fare same-day and issue difference as credit without full cancellation",
         "Basic Economy $99 fee: only worth claiming if price drop exceeds $99 per person; calculate net savings first",
         "Book directly on aa.com — OTA bookings require the OTA to process changes, not AA directly"
-      ]
+      ],
+      "customerServiceUrl": "https://www.aa.com/i18n/customer-service/contact-american/customer-relations.jsp"
     }
   },
   {
@@ -308,7 +314,8 @@
         "Check whether your ticket was booked via AMEX Platinum or high-tier travel card — many include trip protection covering price drops and cancellations",
         "HBO fares: baggage fees are charged separately — if price drops enough, it may be worth paying the cancellation fee and rebooking with the savings",
         "BA.com price drops at T-21 days or less sometimes trigger better revenue management fares — monitor using TripReclaim"
-      ]
+      ],
+      "customerServiceUrl": "https://www.britishairways.com/en-us/information/contact-us"
     }
   },
   {
@@ -355,7 +362,8 @@
         "Economy Classic change fee is often worth paying if the price drop exceeds the fee — calculate net savings first",
         "Lufthansa HON Circle, Senator, and Frequent Traveller members get significant fee waivers — check your status before assuming full fees apply",
         "Book directly at lufthansa.com — OTA bookings complicate change/cancel requests significantly"
-      ]
+      ],
+      "customerServiceUrl": "https://www.lufthansa.com/us/en/contact"
     }
   },
   {
@@ -401,7 +409,8 @@
         "Qatar's award chart is distance-based — cancelling and rebooking at a lower Avios rate can yield significant savings on peak routes",
         "Privilege Club Silver/Gold members get enhanced change/cancel rights and reduced redeposit fees — worth checking status thresholds before booking non-refundable fares",
         "Qatar regularly offers upgrade bids and fare promotions — monitor email marketing after booking for discounted upgrades"
-      ]
+      ],
+      "customerServiceUrl": "https://www.qatarairways.com/en-us/help.html"
     }
   },
   {
@@ -448,7 +457,8 @@
         "Singapore Airlines' partnership with Star Alliance means significant schedule changes by a codeshare partner may entitle you to SQ refund rights",
         "Book via singaporeair.com directly — OTA bookings significantly complicate change/cancel requests and may not qualify for direct airline protections",
         "Economy Standard change fees can be partially offset if the price drop savings exceed the fee — always calculate net savings before deciding"
-      ]
+      ],
+      "customerServiceUrl": "https://www.singaporeair.com/en_UK/us/help-support/"
     }
   },
   {
@@ -495,7 +505,8 @@
         "Cathay is part of oneworld alliance — schedule changes by AA, JAL, or other partners on connecting itineraries may trigger Cathay refund rights",
         "Asia Miles / Cathay Miles: the 18-month activity requirement is strict — set a reminder if you're holding miles and not planning to fly soon",
         "Book directly at cathaypacific.com to retain full change/cancel rights — OTA bookings may not qualify for direct airline processing"
-      ]
+      ],
+      "customerServiceUrl": "https://www.cathaypacific.com/cx/en_US/help-and-support.html"
     }
   },
   {
@@ -543,6 +554,55 @@
         "Aeroplan Elite members (35K+) get completely free award cancellations — no redeposit fee, making Aeroplan very flexible for status holders",
         "Air Canada Credit Card (TD Aeroplan Visa, AMEX Aeroplan): may include trip protection or change fee waivers — check card benefits before paying fees",
         "Air Canada regularly runs seat sales (Latitude and up) — if you booked Standard and a Latitude sale appears at a similar price, upgrade may be worth it for full refund flexibility"
+      ],
+      "customerServiceUrl": "https://www.aircanada.com/us/en/aco/home/support.html"
+    }
+  },
+  {
+    "airline": "Korean Air",
+    "code": "KE",
+    "dataSource": "knowledge_base",
+    "scrapedUrl": "https://www.koreanair.com/us/en/support",
+    "lastUpdated": "2026-05-27",
+    "policies": {
+      "priceDropPolicy": "Korean Air does not offer a formal price-drop refund or price-match guarantee. Options after a price drop depend on fare class: Saver/Promo fares: non-refundable, non-changeable after booking — full forfeiture except within 24-hour US DOT window. Flexible/Standard fares: changes permitted with a fee. Fully Flexible/Business/First: changeable and refundable. For non-refundable fares, cancellation and rebooking at the lower price is the primary strategy.",
+      "twentyFourHourRule": "For tickets originating in the United States, Korean Air complies with the US DOT 24-hour cancellation rule: full refund within 24 hours of booking if the departure date is at least 7 days away. Korean Air operates nonstop from JFK, LAX, and SEA to Incheon (ICN) and onward. Cancel via Manage My Reservation at koreanair.com or by phone at 1-800-438-5000.",
+      "basicEconomyRules": "Korean Air Saver/Promo economy fares (lowest fare class): non-refundable and non-changeable after the 24-hour US DOT window. Cancellation results in full forfeiture of ticket value. No seat selection. No upgrade eligibility. For flexibility, book Economy Standard or higher fare classes. Check fare conditions carefully at time of booking as Korean Air has multiple economy sub-classes with different rules.",
+      "awardTicketPolicy": "SKYPASS award tickets: miles refunded to SKYPASS account upon cancellation. Cancellation fee applies for non-elite members (approximately $50 USD per person). SKYPASS Morning Calm members and above receive reduced or waived cancellation fees. Cancel at least 24 hours before departure. Taxes and fees refunded to original payment method within 7-14 business days.",
+      "claimSteps": [
+        "Step 1: Log in to koreanair.com and navigate to \"Manage My Reservation\"",
+        "Step 2: Enter your booking reference number and last name to access your reservation",
+        "Step 3: Review your fare conditions to determine if changes or cancellation are permitted",
+        "Step 4: For Standard/Flexible fares: select \"Change Flight\" to rebook at the lower fare, paying any applicable change fee",
+        "Step 5: For Saver/Promo fares within the 24-hour US DOT window: cancel for full refund, then rebook at the lower price",
+        "Step 6: For refund requests: complete the refund form online or call Korean Air reservations at 1-800-438-5000",
+        "Step 7: Refunds processed within 7-14 business days to original payment method"
+      ],
+      "claimUrl": "https://www.koreanair.com/us/en/booking/manage",
+      "refundFormUrl": "https://www.koreanair.com/us/en/support",
+      "customerServiceUrl": "https://www.koreanair.com/us/en/support",
+      "claimPhone": "1-800-438-5000",
+      "creditExpiry": "Korean Air travel credits and vouchers: typically valid 12 months from original ticket issue date. SKYPASS miles: valid as long as account shows any earning or redemption activity within 10 years. Inactive accounts may have miles expire — contact SKYPASS customer service for extensions.",
+      "cancellationFees": {
+        "saverPromo": "100% forfeiture after 24-hour window — no refund or credit issued",
+        "economyStandard": "Change fee approximately $100-200 USD depending on route; remaining value as travel credit",
+        "economyFlexible": "$0 change fee or reduced fee — full or partial refund depending on sub-class",
+        "prestige": "Varies by sub-class — Prestige Saver: fees apply; Prestige Flexible: reduced or no fee",
+        "first": "$0 cancellation fee for First Class Flexible — full refund to original payment",
+        "skypassRedeposit": "~$50 USD per person for non-elite members; waived for Morning Calm and above"
+      },
+      "refundTypes": {
+        "cash": "Flexible and fully refundable fare classes; also when Korean Air cancels or significantly changes your flight",
+        "travelCredit": "Standard non-refundable fare cancellations; valid 12 months from issue",
+        "miles": "SKYPASS award cancellations — miles redeposited to account (fee applies for non-elite members)"
+      },
+      "loopholes": [
+        "If Korean Air cancels your flight or changes your schedule by 2+ hours, you are entitled to a full cash refund on any fare class — always ask for cash, not a credit",
+        "Korean Air is a member of SkyTeam alliance — schedule changes by Delta or other SkyTeam partners on connecting itineraries may trigger Korean Air refund rights",
+        "The US DOT 24-hour rule applies for all US-originating Korean Air tickets — use this window aggressively if you spot a lower fare after booking",
+        "Korean Air occasionally runs flash sales on ICN routes — monitoring IAD/JFK/LAX to ICN can yield $100-400 savings on popular dates",
+        "SKYPASS Morning Calm members get free or reduced award redeposit fees — worth checking status before canceling an award ticket",
+        "Book directly at koreanair.com — OTA bookings complicate change/cancel requests significantly and may not qualify for direct airline refund processing"
       ]
     }
   }
