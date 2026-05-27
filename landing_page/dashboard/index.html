@@ -1057,7 +1057,7 @@ async function renderFlightsTab() {
       <div class="method-tabs">
         <button class="method-tab active" id="mtab-email" onclick="setMethod('email')">
           <span class="tab-icon">📧</span>
-          <span class="tab-col"><span class="tab-label">Forward Email</span><span class="tab-sub">Every airline worldwide</span></span>
+          <span class="tab-col"><span class="tab-label">Forward Your Booking Email</span><span class="tab-sub">Every airline worldwide</span></span>
         </button>
         <button class="method-tab" id="mtab-lookup" onclick="setMethod('lookup')">
           <span class="tab-icon">🔍</span>
@@ -1082,7 +1082,7 @@ async function renderFlightsTab() {
               <span id="track-copy-msg" style="color:#16a34a;font-size:0.82rem;display:none;">✅ Copied!</span>
             </div>
             <div style="font-size:0.85rem;color:#475569;margin-top:10px;line-height:1.5;">
-              Works for <strong>every airline worldwide</strong> — British Airways, Lufthansa, Southwest, Korean Air, and more.<br>
+              Works for <strong>every airline worldwide</strong> — American Airlines, British Airways, Lufthansa, Southwest, United, Korean Air, and more.<br>
               We parse it automatically and set up price monitoring. You'll get a confirmation email within 30 seconds.
             </div>
           </div>
@@ -2025,7 +2025,7 @@ function getAirlinePolicySlug(name) {
     'JetBlue Airways':'jetblue-airways','Alaska Airlines':'alaska-airlines',
     'British Airways':'british-airways','Lufthansa':'lufthansa',
     'Qatar Airways':'qatar-airways','Singapore Airlines':'singapore-airlines',
-    'Cathay Pacific':'cathay-pacific','Air Canada':'air-canada','Korean Air':'korean-air'
+    'Cathay Pacific':'cathay-pacific','Air Canada':'air-canada','Korean Air':'korean-air','Emirates':'emirates','Air France':'air-france','Turkish Airlines':'turkish-airlines','Etihad Airways':'etihad-airways','Qantas':'qantas','Hawaiian Airlines':'hawaiian-airlines','WestJet':'westjet'
   };
   return m[name] || null;
 }
@@ -2053,7 +2053,7 @@ async function viewClaimKit(bookingId, airline) {
     const mb = overlay.querySelector('.modal-box');
     let html = '<div class="modal-header"><div class="modal-title">\uD83D\uDCCB Claim Kit &mdash; ' + b.origin + ' &rarr; ' + b.destination + ' &middot; ' + airline + '</div><button class="modal-close" onclick="closePolicyModal()">&times;</button></div>';
     if (isIn24h) html += '<div style="background:linear-gradient(135deg,#d97706,#b45309);color:#fff;border-radius:10px;padding:14px 16px;margin-bottom:16px;"><strong>\u26A1 24-Hour Full Cash Refund Available!</strong><br><span style="font-size:0.88rem;opacity:0.9;">DOT rules entitle you to a FULL CASH REFUND right now. Cancel and rebook at the lower price.</span></div>';
-    if (drop && drop > 0) html += '<div style="background:var(--green-light);border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;margin-bottom:16px;"><div style="font-weight:700;color:var(--green);margin-bottom:4px;">\uD83D\uDCB0 $' + drop.toFixed(2) + ' savings detected</div><div style="font-size:0.88rem;color:#166534;">Paid: ' + formatCurrency(b.pricePaid) + ' → Lowest seen: ' + formatCurrency(b.lowestPriceSeen) + '</div><div style='font-size:0.75rem;color:#92400e;margin-top:3px;'>⚠️ Verify current price on Google Flights before claiming</div></div>';
+    if (drop && drop > 0) html += '<div style="background:var(--green-light);border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;margin-bottom:16px;"><div style="font-weight:700;color:var(--green);margin-bottom:4px;">\uD83D\uDCB0 $' + drop.toFixed(2) + ' savings detected</div><div style="font-size:0.88rem;color:#166534;">Paid: ' + formatCurrency(b.pricePaid) + ' → Lowest seen: ' + formatCurrency(b.lowestPriceSeen) + '</div><div style="font-size:0.75rem;color:#92400e;margin-top:3px;">⚠️ Verify current price on Google Flights before claiming</div></div>';
     html += '<div style="border-left:4px solid var(--blue);padding:16px;background:var(--blue-light);border-radius:0 10px 10px 0;margin-bottom:16px;"><div style="font-weight:700;color:var(--blue);margin-bottom:10px;">How to Claim &mdash; ' + airline + '</div>';
     if (steps.length > 0) {
       html += '<ol style="margin:0;padding-left:18px;">' + steps.map(function(s){ return '<li style="margin-bottom:8px;font-size:0.9rem;color:#1e40af;">' + s + '</li>'; }).join('') + '</ol>';

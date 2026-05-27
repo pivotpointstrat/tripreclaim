@@ -16,3 +16,11 @@
 /blog/*  /blog/:splat  200
 
 /policies/korean-air/*  /policies/korean-air/index.html  200
+
+/policies/emirates/* /policies/emirates/index.html 200
+/policies/air-france/* /policies/air-france/index.html 200
+/policies/turkish-airlines/* /policies/turkish-airlines/index.html 200
+/policies/etihad-airways/* /policies/etihad-airways/index.html 200
+/policies/qantas/* /policies/qantas/index.html 200
+/policies/hawaiian-airlines/* /policies/hawaiian-airlines/index.html 200
+/policies/westjet/* /policies/westjet/index.html 200

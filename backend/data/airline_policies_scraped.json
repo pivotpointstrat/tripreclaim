@@ -24,9 +24,9 @@
       "claimPhone": "1-800-221-1212",
       "creditExpiry": "eCredits typically valid 1 year from original ticket issue date. If issued from cancelled ticket, expiry tied to original ticket date.",
       "cancellationFees": {
-        "basicEconomy": "$99–$400 depending on route (domestic vs. international)",
-        "classicNonRefundable": "$0–$400 depending on route; $0 for US/Canada-originating itineraries since elimination of change fees",
-        "extraOrRefundable": "$0 — fully refundable to original payment",
+        "basicEconomy": "$99\u2013$400 depending on route (domestic vs. international)",
+        "classicNonRefundable": "$0\u2013$400 depending on route; $0 for US/Canada-originating itineraries since elimination of change fees",
+        "extraOrRefundable": "$0 \u2014 fully refundable to original payment",
         "sameDayConfirmed": "From $75 for Classic; free for Extra/Refundable when available"
       },
       "refundTypes": {
@@ -35,12 +35,12 @@
         "miles": "SkyMiles redeposited for award cancellations (fees may apply)"
       },
       "loopholes": [
-        "No change fees for Classic/Extra tickets originating US/Canada — rebook at lower price and keep difference as eCredit",
-        "If Delta changes your flight schedule by 30+ minutes, you qualify for a full cash refund regardless of fare type — call to invoke this",
+        "No change fees for Classic/Extra tickets originating US/Canada \u2014 rebook at lower price and keep difference as eCredit",
+        "If Delta changes your flight schedule by 30+ minutes, you qualify for a full cash refund regardless of fare type \u2014 call to invoke this",
         "Use the 24-hour risk-free window immediately if you find a lower price after booking",
         "Same-Day Confirmed ($75) can be used the day of travel to grab a lower-priced earlier/later flight on same route",
-        "Medallion status holders often get waived redeposit fees on SkyMiles awards — check status before assuming fees apply",
-        "eCredits can be applied to new bookings for any passenger if transferred — check transfer rules"
+        "Medallion status holders often get waived redeposit fees on SkyMiles awards \u2014 check status before assuming fees apply",
+        "eCredits can be applied to new bookings for any passenger if transferred \u2014 check transfer rules"
       ],
       "customerServiceUrl": "https://www.delta.com/us/en/need-help/overview"
     }
@@ -52,7 +52,7 @@
     "scrapedUrl": "https://www.southwest.com (blocked by Firecrawl)",
     "lastUpdated": "2026-05-21",
     "policies": {
-      "priceDropPolicy": "Southwest has the most consumer-friendly price drop policy among US carriers. If the price drops after booking, cancel and rebook at the lower price online — no fees. Difference issued as travel credit (Wanna Get Away) or cash (Anytime/Business Select). No change or cancellation fees on any fare.",
+      "priceDropPolicy": "Southwest has the most consumer-friendly price drop policy among US carriers. If the price drops after booking, cancel and rebook at the lower price online \u2014 no fees. Difference issued as travel credit (Wanna Get Away) or cash (Anytime/Business Select). No change or cancellation fees on any fare.",
       "twentyFourHourRule": "Full refund to original payment within 24 hours for all fare types if booked at least 7 days before departure. Wanna Get Away fares cancelled after 24 hours receive travel funds (credits), not cash.",
       "basicEconomyRules": "Southwest has no Basic Economy equivalent. Wanna Get Away (cheapest fare) has the most restrictions: travel funds are non-transferable and valid 12 months from purchase. Wanna Get Away Plus: travel funds are transferable. Both can be cancelled without fee.",
       "awardTicketPolicy": "Rapid Rewards points are immediately refunded to account upon cancellation for all fare types, with no redeposit fees. Taxes/fees ($5.60 per segment) refunded to original form of payment.",
@@ -60,7 +60,7 @@
         "Step 1: Go to southwest.com and click 'My Trips' or 'Change/Cancel'",
         "Step 2: Look up your booking by confirmation number + first/last name",
         "Step 3: Select the flight to cancel",
-        "Step 4: Cancel the existing booking — funds issued as travel credit (Wanna Get Away) or cash (Anytime/Business Select)",
+        "Step 4: Cancel the existing booking \u2014 funds issued as travel credit (Wanna Get Away) or cash (Anytime/Business Select)",
         "Step 5: Search for and book the new lower-priced flight",
         "Step 6: Apply travel funds at checkout using the confirmation number and passenger name"
       ],
@@ -68,10 +68,10 @@
       "claimPhone": "1-800-435-9792",
       "creditExpiry": "Wanna Get Away travel funds: valid 12 months from original purchase date (not flight date). Wanna Get Away Plus: transferable to another Rapid Rewards member. Anytime/Business Select: full cash refund, no expiry concern.",
       "cancellationFees": {
-        "wannaGetAway": "$0 cancellation fee — funds issued as non-transferable travel credit valid 12 months",
-        "wannaGetAwayPlus": "$0 cancellation fee — funds issued as transferable travel credit valid 12 months",
-        "anytime": "$0 cancellation fee — full refund to original payment",
-        "businessSelect": "$0 cancellation fee — full refund to original payment"
+        "wannaGetAway": "$0 cancellation fee \u2014 funds issued as non-transferable travel credit valid 12 months",
+        "wannaGetAwayPlus": "$0 cancellation fee \u2014 funds issued as transferable travel credit valid 12 months",
+        "anytime": "$0 cancellation fee \u2014 full refund to original payment",
+        "businessSelect": "$0 cancellation fee \u2014 full refund to original payment"
       },
       "refundTypes": {
         "cash": "Anytime and Business Select fares only",
@@ -79,11 +79,11 @@
         "points": "Rapid Rewards points refunded immediately with no redeposit fee"
       },
       "loopholes": [
-        "Zero change/cancel fees on all fares — always cancel and rebook if price drops even $1",
-        "Wanna Get Away Plus travel funds are transferable — can be gifted to another traveler",
+        "Zero change/cancel fees on all fares \u2014 always cancel and rebook if price drops even $1",
+        "Wanna Get Away Plus travel funds are transferable \u2014 can be gifted to another traveler",
         "Travel funds from a cancelled Wanna Get Away can be applied to a new booking for ANY Southwest passenger, not just the original traveler (as long as you hold the confirmation number)",
         "Book Anytime fare for full flexibility with cash refunds, then switch to Wanna Get Away if price drops significantly",
-        "Monitor southwest.com directly for price changes — no GDS fees or OTA markups",
+        "Monitor southwest.com directly for price changes \u2014 no GDS fees or OTA markups",
         "If Southwest cancels/significantly changes your flight, you get a full cash refund regardless of fare type"
       ],
       "customerServiceUrl": "https://www.southwest.com/contact-us/contact-us.html"
@@ -98,7 +98,7 @@
     "policies": {
       "priceDropPolicy": "JetBlue does not offer direct price-drop refunds to original payment. If fare drops, cancel and rebook: fare difference issued as JetBlue travel credit (not cash). Blue Basic fares incur a per-person cancellation fee before credit is issued. Net benefit = price drop minus cancellation fee.",
       "twentyFourHourRule": "Free cancellation within 24 hours of booking IF the booking was made 7 or more days before the scheduled departure date. The entire itinerary must be cancelled (not just one segment). Not applicable for JetBlue Vacations packages.",
-      "basicEconomyRules": "Blue Basic fare: per-person cancellation fee applies (~$100 domestic, ~$200 international) before travel credit is issued. No same-day changes. Not eligible for same-day standby at no charge. Must pay fee even within policy window (except 24-hour rule). Loophole: cancellation fee may exceed price drop savings — calculate net before claiming.",
+      "basicEconomyRules": "Blue Basic fare: per-person cancellation fee applies (~$100 domestic, ~$200 international) before travel credit is issued. No same-day changes. Not eligible for same-day standby at no charge. Must pay fee even within policy window (except 24-hour rule). Loophole: cancellation fee may exceed price drop savings \u2014 calculate net before claiming.",
       "awardTicketPolicy": "TrueBlue points refunded immediately to TrueBlue account upon cancellation. No redeposit fees stated. Taxes/fees refunded per standard timeline.",
       "claimSteps": [
         "Step 1: Go to jetblue.com/manage-trips and sign in or look up booking",
@@ -110,13 +110,13 @@
       ],
       "claimUrl": "https://www.jetblue.com/manage-trips",
       "claimPhone": "1-800-538-2583",
-      "creditExpiry": "JetBlue travel credits valid 12 months from original ticketing date. If travel credit is used and then that booking is cancelled, the credit retains the original expiration date — does not reset.",
+      "creditExpiry": "JetBlue travel credits valid 12 months from original ticketing date. If travel credit is used and then that booking is cancelled, the credit retains the original expiration date \u2014 does not reset.",
       "cancellationFees": {
-        "blueBasic": "~$100 per person (domestic), ~$200 per person (international) — deducted from credit issued",
-        "blue": "$0 cancellation fee — full amount as travel credit",
-        "bluePlus": "$0 cancellation fee — full amount as travel credit",
-        "blueExtra": "$0 cancellation fee — full amount as travel credit or cash if refundable",
-        "mint": "$0 for non-refundable — travel credit; refundable Mint → cash"
+        "blueBasic": "~$100 per person (domestic), ~$200 per person (international) \u2014 deducted from credit issued",
+        "blue": "$0 cancellation fee \u2014 full amount as travel credit",
+        "bluePlus": "$0 cancellation fee \u2014 full amount as travel credit",
+        "blueExtra": "$0 cancellation fee \u2014 full amount as travel credit or cash if refundable",
+        "mint": "$0 for non-refundable \u2014 travel credit; refundable Mint \u2192 cash"
       },
       "refundTypes": {
         "cash": "Refundable fares only (cancel any time before departure); credit card refund 7-10 business days",
@@ -125,12 +125,12 @@
         "extras": "Seats, bags, pets refunded to original payment in 7-10 business days"
       },
       "loopholes": [
-        "Always calculate net savings for Blue Basic: price_drop_savings minus cancellation_fee — skip claim if negative",
+        "Always calculate net savings for Blue Basic: price_drop_savings minus cancellation_fee \u2014 skip claim if negative",
         "If JetBlue changes your flight schedule, you can cancel and get a full cash refund to original payment regardless of fare type",
         "Book directly on jetblue.com (not OTAs) to retain full refund/change rights",
-        "JetBlue Best Fare Guarantee: if you find a lower JetBlue fare elsewhere, they may match it — check jetblue.com/customer-assurance/our-promise",
-        "Travel credit refunds for fare changes go to Travel Bank (not original payment) — this is stated policy, cannot be reversed once processed",
-        "Seats/bags/extras are always refunded to original payment, not travel credit — useful for partial recovery"
+        "JetBlue Best Fare Guarantee: if you find a lower JetBlue fare elsewhere, they may match it \u2014 check jetblue.com/customer-assurance/our-promise",
+        "Travel credit refunds for fare changes go to Travel Bank (not original payment) \u2014 this is stated policy, cannot be reversed once processed",
+        "Seats/bags/extras are always refunded to original payment, not travel credit \u2014 useful for partial recovery"
       ],
       "customerServiceUrl": "https://www.jetblue.com/help"
     }
@@ -139,7 +139,7 @@
     "airline": "Alaska Airlines",
     "code": "AS",
     "dataSource": "knowledge_base",
-    "scrapedUrl": "https://www.alaskaair.com (blocked by Firecrawl — bot protection)",
+    "scrapedUrl": "https://www.alaskaair.com (blocked by Firecrawl \u2014 bot protection)",
     "lastUpdated": "2026-05-21",
     "policies": {
       "priceDropPolicy": "Alaska Airlines eliminated change fees on most fares. If the price drops, cancel and rebook online. Non-Saver fares: remaining value issued as eCredit minus any applicable fees. Saver fares are non-changeable and non-refundable. For refundable fares, full cash refund available.",
@@ -150,7 +150,7 @@
         "Step 1: Log in to alaskaair.com and go to 'Manage Reservations'",
         "Step 2: Find your booking and select 'Change or Cancel Flight'",
         "Step 3: Choose to cancel the current booking",
-        "Step 4: Confirm cancellation — remaining value (minus fees if applicable) issued as eCredit",
+        "Step 4: Confirm cancellation \u2014 remaining value (minus fees if applicable) issued as eCredit",
         "Step 5: Search for the same route at the new lower price",
         "Step 6: At checkout, select 'Use eCredit' to apply credit toward new booking"
       ],
@@ -158,9 +158,9 @@
       "claimPhone": "1-800-252-7522",
       "creditExpiry": "eCredits valid 12 months from original ticket issue date. Cannot be extended. Non-transferable to other passengers.",
       "cancellationFees": {
-        "saverFare": "100% forfeiture after 24-hour window — no credit issued",
-        "mainCabin": "$0 cancellation fee — remaining value as eCredit valid 12 months",
-        "firstClass": "$0 cancellation fee — refundable tickets get cash, non-refundable get eCredit",
+        "saverFare": "100% forfeiture after 24-hour window \u2014 no credit issued",
+        "mainCabin": "$0 cancellation fee \u2014 remaining value as eCredit valid 12 months",
+        "firstClass": "$0 cancellation fee \u2014 refundable tickets get cash, non-refundable get eCredit",
         "awardRedeposit": "$125 for non-elite; free for MVP, MVP Gold, MVP Gold 75K"
       },
       "refundTypes": {
@@ -169,12 +169,12 @@
         "miles": "Mileage Plan miles redeposited (fee applies for non-status members)"
       },
       "loopholes": [
-        "Alaska is part of oneworld alliance — if a partner (AA, BA, etc.) changes flight significantly, Alaska may honor a full refund",
+        "Alaska is part of oneworld alliance \u2014 if a partner (AA, BA, etc.) changes flight significantly, Alaska may honor a full refund",
         "If Alaska changes your itinerary by 30+ minutes, you qualify for full cash refund on any fare including Saver",
-        "MVP status members get free award redeposit — worth considering if you hold status",
+        "MVP status members get free award redeposit \u2014 worth considering if you hold status",
         "Alaska's price match: not officially offered, but proactive re-pricing requests via chat have succeeded",
         "Book via Alaska's app for easiest online change/cancel management",
-        "Main Cabin (non-Saver) has zero change fees — freely rebook at lower price and apply eCredit difference"
+        "Main Cabin (non-Saver) has zero change fees \u2014 freely rebook at lower price and apply eCredit difference"
       ],
       "customerServiceUrl": "https://www.alaskaair.com/content/about-alaska/contact-us"
     }
@@ -189,7 +189,7 @@
       "priceDropPolicy": "United eliminated change fees for most fares originating in the US, Canada, Europe, and other regions. If the price drops, cancel the existing booking (receiving an eCredit) and rebook at the lower price. Basic Economy is the only fare that cannot be changed or refunded after the 24-hour window.",
       "twentyFourHourRule": "Full refund within 24 hours of purchase for all fare types except MileagePlus award tickets. Must cancel within 24 hours and the flight must be at least 7 days away. Process via the United app, united.com, or by calling.",
       "basicEconomyRules": "Basic Economy (N, O, Q fare classes): No changes permitted after 24-hour window. Cancellation results in full forfeiture. Cannot upgrade seat. Cannot select seats in advance (assigned at check-in). Cannot earn Premier Qualifying Points. No same-day changes.",
-      "awardTicketPolicy": "MileagePlus award cancellations: miles redeposited. Redeposit fee: $75–$100 for non-elite members; waived for Premier Silver and above. Close-in booking fee: $75 for non-elite if booking within 21 days. Taxes refunded to original payment.",
+      "awardTicketPolicy": "MileagePlus award cancellations: miles redeposited. Redeposit fee: $75\u2013$100 for non-elite members; waived for Premier Silver and above. Close-in booking fee: $75 for non-elite if booking within 21 days. Taxes refunded to original payment.",
       "claimSteps": [
         "Step 1: Go to united.com and log in; navigate to 'My Trips'",
         "Step 2: Select the booking with the price drop",
@@ -202,11 +202,11 @@
       "claimPhone": "1-800-864-8331",
       "creditExpiry": "United eCredits valid 12 months from ticket issue date (not travel date). Future Flight Credits for cancelled non-refundable tickets are non-transferable.",
       "cancellationFees": {
-        "basicEconomy": "Full forfeiture after 24-hour window — $0 recovered",
-        "economy": "$0 change/cancel fee for US/Canada/Europe-originating tickets — eCredit issued",
-        "premiumEconomy": "$0 change/cancel fee — eCredit or cash (if refundable)",
-        "business": "$0 change/cancel fee — eCredit or cash (if refundable)",
-        "awardRedeposit": "$75–$100 for non-Premier; free for Premier Silver and above"
+        "basicEconomy": "Full forfeiture after 24-hour window \u2014 $0 recovered",
+        "economy": "$0 change/cancel fee for US/Canada/Europe-originating tickets \u2014 eCredit issued",
+        "premiumEconomy": "$0 change/cancel fee \u2014 eCredit or cash (if refundable)",
+        "business": "$0 change/cancel fee \u2014 eCredit or cash (if refundable)",
+        "awardRedeposit": "$75\u2013$100 for non-Premier; free for Premier Silver and above"
       },
       "refundTypes": {
         "cash": "Refundable fare tickets only; refund request at refunds.united.com",
@@ -214,11 +214,11 @@
         "miles": "MileagePlus miles redeposited (fees may apply for non-status)"
       },
       "loopholes": [
-        "If United changes your flight by 25+ minutes, you can request a full cash refund on any fare including Basic Economy — call to invoke",
+        "If United changes your flight by 25+ minutes, you can request a full cash refund on any fare including Basic Economy \u2014 call to invoke",
         "United's 'change flight' tool lets you rebook at a lower price directly; difference issued as eCredit without needing full cancellation",
-        "Premier Silver and above: free award redeposit — time cancellations strategically if you have status",
-        "Refunds for significantly delayed/cancelled flights: DOT requires cash refund for flights cancelled by airline — do not accept eCredit without asking for cash first",
-        "United credit cards (Chase) often come with rebooking protections — check card benefits before paying change fees",
+        "Premier Silver and above: free award redeposit \u2014 time cancellations strategically if you have status",
+        "Refunds for significantly delayed/cancelled flights: DOT requires cash refund for flights cancelled by airline \u2014 do not accept eCredit without asking for cash first",
+        "United credit cards (Chase) often come with rebooking protections \u2014 check card benefits before paying change fees",
         "Book directly on united.com (not OTAs) to retain full change/cancel rights and access eCredit system"
       ],
       "customerServiceUrl": "https://www.united.com/en/us/fly/contact-us.html"
@@ -233,26 +233,26 @@
     "policies": {
       "priceDropPolicy": "American Airlines does not offer direct price-drop refunds. If the fare drops after booking, cancel and rebook at the lower price. Non-Basic fares: trip credit issued for cancelled amount, apply toward new booking. Basic Economy: no changes permitted; cancellation yields trip credit minus $99 fee.",
       "twentyFourHourRule": "Full refund within 24 hours of booking for all fare types if the flight is at least 2 days (48 hours) away. Must be booked directly through AA (aa.com, app, or phone). Cancel online or via app within 24-hour window for automatic full refund.",
-      "basicEconomyRules": "Basic Economy (B fare class): No changes after 24-hour window. Cancellations after 24 hours: trip credit issued minus $99 cancellation fee. Cannot upgrade. Cannot select seats in advance on most routes. Cannot use same-day change. Most restrictive fare — avoid for flexible travel.",
+      "basicEconomyRules": "Basic Economy (B fare class): No changes after 24-hour window. Cancellations after 24 hours: trip credit issued minus $99 cancellation fee. Cannot upgrade. Cannot select seats in advance on most routes. Cannot use same-day change. Most restrictive fare \u2014 avoid for flexible travel.",
       "awardTicketPolicy": "AAdvantage award cancellations: miles redeposited to account. Redeposit fee: $150 for non-status members; waived for AAdvantage Gold, Platinum, Platinum Pro, and Executive Platinum members. Fee charged per-person. Taxes/fees refunded to original payment within 7 business days.",
       "claimSteps": [
         "Step 1: Go to aa.com/reservations or open the American Airlines app",
         "Step 2: Log in and find your booking under 'Your Trips'",
         "Step 3: Select 'Change Trip' to rebook at new lower fare directly (price difference becomes trip credit)",
-        "Step 4: Alternatively, select 'Cancel Trip' — trip credit issued for ticket value (minus fees if Basic Economy)",
+        "Step 4: Alternatively, select 'Cancel Trip' \u2014 trip credit issued for ticket value (minus fees if Basic Economy)",
         "Step 5: Search for the same route at the new lower price",
         "Step 6: At checkout, apply trip credit by selecting 'Use Trip Credit' and entering the credit number"
       ],
       "claimUrl": "https://www.aa.com/reservation/view/find-your-reservation",
       "tripCreditsUrl": "https://www.aa.com/reservation/tripCreditSearch.do",
       "claimPhone": "1-800-433-7300",
-      "creditExpiry": "Trip Credits (formerly eVouchers): valid 12 months from issue date. AAdvantage miles redeposited after fee payment — no expiry on miles once redeposited.",
+      "creditExpiry": "Trip Credits (formerly eVouchers): valid 12 months from issue date. AAdvantage miles redeposited after fee payment \u2014 no expiry on miles once redeposited.",
       "cancellationFees": {
         "basicEconomy": "$99 per person cancellation fee after 24-hour window; remaining value as trip credit",
-        "mainCabin": "$0 cancellation fee — full trip credit issued",
-        "premiumEconomy": "$0 cancellation fee — trip credit or cash if refundable",
-        "business": "$0 cancellation fee — trip credit or cash if refundable",
-        "first": "$0 cancellation fee — trip credit or cash if refundable",
+        "mainCabin": "$0 cancellation fee \u2014 full trip credit issued",
+        "premiumEconomy": "$0 cancellation fee \u2014 trip credit or cash if refundable",
+        "business": "$0 cancellation fee \u2014 trip credit or cash if refundable",
+        "first": "$0 cancellation fee \u2014 trip credit or cash if refundable",
         "awardRedeposit": "$150 per person for non-status members; free for Gold status and above"
       },
       "refundTypes": {
@@ -261,12 +261,12 @@
         "miles": "AAdvantage miles redeposited upon award cancellation (fee applies for non-status)"
       },
       "loopholes": [
-        "If American cancels your flight or delays it by 3+ hours (domestic) or 6+ hours (international), you qualify for a full cash refund under DOT rules — always ask for cash, not trip credit",
-        "AAdvantage status members (Gold+) get free award redeposit — worth timing cancellations around status earn thresholds",
-        "Trip credits can be used online without calling — go to aa.com/reservation/tripCreditSearch.do",
+        "If American cancels your flight or delays it by 3+ hours (domestic) or 6+ hours (international), you qualify for a full cash refund under DOT rules \u2014 always ask for cash, not trip credit",
+        "AAdvantage status members (Gold+) get free award redeposit \u2014 worth timing cancellations around status earn thresholds",
+        "Trip credits can be used online without calling \u2014 go to aa.com/reservation/tripCreditSearch.do",
         "The AA app 'Change Trip' feature can sometimes rebook at lower fare same-day and issue difference as credit without full cancellation",
         "Basic Economy $99 fee: only worth claiming if price drop exceeds $99 per person; calculate net savings first",
-        "Book directly on aa.com — OTA bookings require the OTA to process changes, not AA directly"
+        "Book directly on aa.com \u2014 OTA bookings require the OTA to process changes, not AA directly"
       ],
       "customerServiceUrl": "https://www.aa.com/i18n/customer-service/contact-american/customer-relations.jsp"
     }
@@ -280,14 +280,14 @@
     "policies": {
       "priceDropPolicy": "British Airways does not offer a formal price-drop refund or price-match guarantee. If the price drops after booking, the recommended approach is to cancel and rebook at the lower fare. Hand Baggage Only (HBO) fares: cancellation fee applies. Standard/Flexible fares: cancel and rebook with potential credit or refund depending on fare rules. Avios award tickets: cancel and redeposit miles, then rebook at lower Avios rate.",
       "twentyFourHourRule": "For tickets purchased in the United States, British Airways offers a 24-hour 'risk-free' cancellation window for bookings made at least 7 days before departure. Full refund to original payment method. Cancel via Manage My Booking at ba.com or by calling BA reservations. EU/UK-originating bookings: 14-day cooling-off right applies for package holidays only; individual flights follow fare rules.",
-      "basicEconomyRules": "Hand Baggage Only (HBO) fare — BA's most restrictive economy fare: no hold baggage included, seats assigned at check-in, changes and cancellations subject to a fee (~£60-100 per person), no upgrade eligibility. After 24-hour window: cancellation yields partial Avios or travel credit minus fee. Not eligible for seat selection at booking. Avoid for flexible travel.",
-      "awardTicketPolicy": "British Airways Executive Club Avios awards: Redeposit fee approximately £35 per person for non-Silver/non-Gold members. Silver Tier: reduced or waived redeposit fees. Gold Tier: fees typically waived. Taxes and surcharges (often substantial on BA): refunded to original payment within 7 business days. Cancel at least 24 hours before departure to be eligible for redeposit.",
+      "basicEconomyRules": "Hand Baggage Only (HBO) fare \u2014 BA's most restrictive economy fare: no hold baggage included, seats assigned at check-in, changes and cancellations subject to a fee (~\u00a360-100 per person), no upgrade eligibility. After 24-hour window: cancellation yields partial Avios or travel credit minus fee. Not eligible for seat selection at booking. Avoid for flexible travel.",
+      "awardTicketPolicy": "British Airways Executive Club Avios awards: Redeposit fee approximately \u00a335 per person for non-Silver/non-Gold members. Silver Tier: reduced or waived redeposit fees. Gold Tier: fees typically waived. Taxes and surcharges (often substantial on BA): refunded to original payment within 7 business days. Cancel at least 24 hours before departure to be eligible for redeposit.",
       "claimSteps": [
         "Step 1: Go to ba.com and log in to your Executive Club account",
         "Step 2: Navigate to 'Manage My Booking' and enter booking reference + last name",
         "Step 3: Select the flight you wish to cancel",
         "Step 4: For Standard/Flexible fares: cancel for full refund to original payment or travel voucher",
-        "Step 5: For HBO fares: cancel noting the applicable fee — net credit issued",
+        "Step 5: For HBO fares: cancel noting the applicable fee \u2014 net credit issued",
         "Step 6: Search for the same route at the new lower price and rebook",
         "Step 7: For refund requests: complete the refund form at ba.com/refunds"
       ],
@@ -296,24 +296,24 @@
       "claimPhone": "1-800-247-9297",
       "creditExpiry": "BA travel vouchers: typically valid 12 months from issue date. Future Travel Vouchers (issued during COVID era): extended policies may apply. Avios miles: no expiry as long as account remains active (one Avios transaction every 36 months required).",
       "cancellationFees": {
-        "handBaggageOnly": "~£60-100 (~$75-125 USD) per person cancellation fee; remaining value as travel credit",
-        "standard": "Varies by fare rules — typically £0-50 per person; credit or refund depending on fare class",
-        "flexible": "£0 cancellation fee — full refund to original payment",
-        "aviosRedeposit": "~£35 per person for Blue/Bronze; reduced/waived for Silver/Gold Tier members"
+        "handBaggageOnly": "~\u00a360-100 (~$75-125 USD) per person cancellation fee; remaining value as travel credit",
+        "standard": "Varies by fare rules \u2014 typically \u00a30-50 per person; credit or refund depending on fare class",
+        "flexible": "\u00a30 cancellation fee \u2014 full refund to original payment",
+        "aviosRedeposit": "~\u00a335 per person for Blue/Bronze; reduced/waived for Silver/Gold Tier members"
       },
       "refundTypes": {
         "cash": "Flexible and fully refundable fares; also when BA cancels or significantly delays your flight",
         "travelVoucher": "Standard non-refundable fare cancellations; valid 12 months from issue",
-        "avios": "Award ticket cancellations — miles redeposited (fee applies for non-Silver/Gold)"
+        "avios": "Award ticket cancellations \u2014 miles redeposited (fee applies for non-Silver/Gold)"
       },
       "loopholes": [
-        "EU261 regulation: If your BA flight originates in the UK or EU and is cancelled or delayed 3+ hours, you're entitled to £220-520 compensation regardless of fare type",
-        "If BA significantly changes your itinerary (2+ hour change), you can request a full cash refund on any fare type — always ask for cash, not a voucher",
+        "EU261 regulation: If your BA flight originates in the UK or EU and is cancelled or delayed 3+ hours, you're entitled to \u00a3220-520 compensation regardless of fare type",
+        "If BA significantly changes your itinerary (2+ hour change), you can request a full cash refund on any fare type \u2014 always ask for cash, not a voucher",
         "BA 'Book with Confidence' policy (check current availability): may allow free date changes on some fare types",
-        "Avios award bookings: cancel well in advance (before departure) — no-show forfeits all Avios with no redeposit option",
-        "Check whether your ticket was booked via AMEX Platinum or high-tier travel card — many include trip protection covering price drops and cancellations",
-        "HBO fares: baggage fees are charged separately — if price drops enough, it may be worth paying the cancellation fee and rebooking with the savings",
-        "BA.com price drops at T-21 days or less sometimes trigger better revenue management fares — monitor using TripReclaim"
+        "Avios award bookings: cancel well in advance (before departure) \u2014 no-show forfeits all Avios with no redeposit option",
+        "Check whether your ticket was booked via AMEX Platinum or high-tier travel card \u2014 many include trip protection covering price drops and cancellations",
+        "HBO fares: baggage fees are charged separately \u2014 if price drops enough, it may be worth paying the cancellation fee and rebooking with the savings",
+        "BA.com price drops at T-21 days or less sometimes trigger better revenue management fares \u2014 monitor using TripReclaim"
       ],
       "customerServiceUrl": "https://www.britishairways.com/en-us/information/contact-us"
     }
@@ -327,8 +327,8 @@
     "policies": {
       "priceDropPolicy": "Lufthansa does not offer a direct price-drop refund or price match policy. If the price drops after booking, options depend on fare type: Light fare: no changes or refunds permitted after booking (except 24-hour window for US tickets). Classic fare: changes allowed for a fee; cancel and rebook at lower price. Flex fare: fully changeable and refundable at any time.",
       "twentyFourHourRule": "For tickets originating in the United States, Lufthansa honors the US DOT 24-hour cancellation rule: full refund within 24 hours of booking if departure is at least 7 days away. Process the cancellation via Manage Booking at lufthansa.com or by phone. EU-originating flights: governed by EU261 regulations (stronger passenger rights on cancellations and delays, but no formal 24h cancellation rule for individual tickets).",
-      "basicEconomyRules": "Economy Light fare — Lufthansa's most restrictive economy tier: one carry-on bag only (no checked bag), seat selection not included, no changes permitted after booking (except within 24-hour US DOT window), non-refundable. Cancellation after 24h results in full forfeiture. No upgrade eligibility. For any flexibility, book Economy Classic or higher.",
-      "awardTicketPolicy": "Miles & More award tickets: miles redeposited upon cancellation. Redeposit fee: approximately €50 per person for non-status members (Frequent Traveller, Senator, HON Circle members receive reduced or waived fees). Cancel at least 24 hours before departure. Taxes and surcharges refunded to original payment within 7 business days.",
+      "basicEconomyRules": "Economy Light fare \u2014 Lufthansa's most restrictive economy tier: one carry-on bag only (no checked bag), seat selection not included, no changes permitted after booking (except within 24-hour US DOT window), non-refundable. Cancellation after 24h results in full forfeiture. No upgrade eligibility. For any flexibility, book Economy Classic or higher.",
+      "awardTicketPolicy": "Miles & More award tickets: miles redeposited upon cancellation. Redeposit fee: approximately \u20ac50 per person for non-status members (Frequent Traveller, Senator, HON Circle members receive reduced or waived fees). Cancel at least 24 hours before departure. Taxes and surcharges refunded to original payment within 7 business days.",
       "claimSteps": [
         "Step 1: Log in to lufthansa.com and go to 'My Bookings' or use Manage Booking",
         "Step 2: Enter booking code and last name to access your reservation",
@@ -341,27 +341,27 @@
       "claimUrl": "https://www.lufthansa.com/us/en/manage-booking",
       "refundFormUrl": "https://www.lufthansa.com/us/en/refund",
       "claimPhone": "1-800-645-3880",
-      "creditExpiry": "Lufthansa travel credits: typically valid 12 months from issue date. Miles & More miles: valid while account remains active (minimum activity required — check Miles & More terms for current validity period).",
+      "creditExpiry": "Lufthansa travel credits: typically valid 12 months from issue date. Miles & More miles: valid while account remains active (minimum activity required \u2014 check Miles & More terms for current validity period).",
       "cancellationFees": {
-        "economyLight": "100% forfeiture after 24-hour window for US tickets — no refund or credit",
-        "economyClassic": "Change fee approximately €50-200 depending on route; remaining value as credit toward new fare",
-        "economyFlex": "€0 cancellation fee — full refund to original payment",
-        "businessLight": "Varies by fare sub-class — typically €100-300 change fee",
-        "businessFlex": "€0 cancellation fee — full refund to original payment",
-        "milesRedeposit": "~€50 per person for non-status; reduced/waived for Frequent Traveller status and above"
+        "economyLight": "100% forfeiture after 24-hour window for US tickets \u2014 no refund or credit",
+        "economyClassic": "Change fee approximately \u20ac50-200 depending on route; remaining value as credit toward new fare",
+        "economyFlex": "\u20ac0 cancellation fee \u2014 full refund to original payment",
+        "businessLight": "Varies by fare sub-class \u2014 typically \u20ac100-300 change fee",
+        "businessFlex": "\u20ac0 cancellation fee \u2014 full refund to original payment",
+        "milesRedeposit": "~\u20ac50 per person for non-status; reduced/waived for Frequent Traveller status and above"
       },
       "refundTypes": {
         "cash": "Economy Flex and Business Flex fares; also mandated by EU261 when Lufthansa cancels or significantly delays",
         "travelCredit": "Classic fare cancellations (after deducting change fee); valid 12 months",
-        "miles": "Miles & More award cancellations — miles redeposited (fee applies for non-status)"
+        "miles": "Miles & More award cancellations \u2014 miles redeposited (fee applies for non-status)"
       },
       "loopholes": [
-        "EU261 Regulation: If your flight originates in Germany or any EU country and is cancelled or delayed 3+ hours, you're entitled to €250-600 compensation regardless of fare type — this is a legal right, not a policy",
+        "EU261 Regulation: If your flight originates in Germany or any EU country and is cancelled or delayed 3+ hours, you're entitled to \u20ac250-600 compensation regardless of fare type \u2014 this is a legal right, not a policy",
         "If Lufthansa cancels your flight or changes it by more than 5 hours, you can request a full cash refund on any fare including Economy Light",
-        "Lufthansa Group codeshares: your ticket may be operated by SWISS, Austrian, or Brussels Airlines — EU261 rights still apply for EU-origin flights",
-        "Economy Classic change fee is often worth paying if the price drop exceeds the fee — calculate net savings first",
-        "Lufthansa HON Circle, Senator, and Frequent Traveller members get significant fee waivers — check your status before assuming full fees apply",
-        "Book directly at lufthansa.com — OTA bookings complicate change/cancel requests significantly"
+        "Lufthansa Group codeshares: your ticket may be operated by SWISS, Austrian, or Brussels Airlines \u2014 EU261 rights still apply for EU-origin flights",
+        "Economy Classic change fee is often worth paying if the price drop exceeds the fee \u2014 calculate net savings first",
+        "Lufthansa HON Circle, Senator, and Frequent Traveller members get significant fee waivers \u2014 check your status before assuming full fees apply",
+        "Book directly at lufthansa.com \u2014 OTA bookings complicate change/cancel requests significantly"
       ],
       "customerServiceUrl": "https://www.lufthansa.com/us/en/contact"
     }
@@ -375,7 +375,7 @@
     "policies": {
       "priceDropPolicy": "Qatar Airways does not offer a formal price-drop refund or price-match guarantee. Options after a price drop depend on fare class: Economy Lite: non-refundable, no changes; full forfeiture except within 24-hour US DOT window. Economy Classic: changes permitted with a fee. Economy Flex: fully changeable and refundable. Business: typically refundable. For non-refundable fares, cancellation plus rebooking at the lower price is the primary strategy.",
       "twentyFourHourRule": "For tickets originating in the United States, Qatar Airways complies with US DOT 24-hour cancellation rules: full refund within 24 hours of purchase if the departure date is at least 7 days away. Cancel online via Manage Booking or by calling Qatar Airways US reservations. EU-originating Qatar flights: EU261 applies for flights operating on the EU leg.",
-      "basicEconomyRules": "Economy Lite — Qatar's most restrictive economy fare: one carry-on bag (no checked baggage unless purchased separately), seat selection not included, no changes or date modifications after booking, non-refundable after the 24-hour window. Cancellation results in full forfeiture of ticket value. Not eligible for complimentary upgrades. For any flexibility, book Economy Classic or higher.",
+      "basicEconomyRules": "Economy Lite \u2014 Qatar's most restrictive economy fare: one carry-on bag (no checked baggage unless purchased separately), seat selection not included, no changes or date modifications after booking, non-refundable after the 24-hour window. Cancellation results in full forfeiture of ticket value. Not eligible for complimentary upgrades. For any flexibility, book Economy Classic or higher.",
       "awardTicketPolicy": "Privilege Club Avios (Qatar Airways loyalty program merged with British Airways Avios in 2021): award tickets cancelled per Privilege Club rules. Avios redeposited to account; cancellation fee applies for non-Privilege Club Silver/Gold members (approximately QAR 150 per person). Cancel at least 24 hours before departure. Taxes and fees refunded to original payment.",
       "claimSteps": [
         "Step 1: Go to qatarairways.com and log in to your Privilege Club account",
@@ -391,24 +391,24 @@
       "claimPhone": "1-877-777-2827",
       "creditExpiry": "Qatar Airways travel credit (where issued): typically valid 12 months from issue date. Privilege Club Avios: no expiry as long as account shows activity within 36 months (one Avios earn or redeem transaction required).",
       "cancellationFees": {
-        "economyLite": "100% forfeiture after 24-hour window — no refund or credit",
+        "economyLite": "100% forfeiture after 24-hour window \u2014 no refund or credit",
         "economyClassic": "Change fee approximately $100-250 USD depending on route and timing; remaining value credited",
-        "economyFlex": "$0 cancellation fee — full refund to original payment",
-        "business": "Varies by sub-class — non-refundable Business Light exists; fully refundable Business Flex",
+        "economyFlex": "$0 cancellation fee \u2014 full refund to original payment",
+        "business": "Varies by sub-class \u2014 non-refundable Business Light exists; fully refundable Business Flex",
         "aviosRedeposit": "~QAR 150 (~$40 USD) per person for non-Silver/Gold Privilege Club members"
       },
       "refundTypes": {
         "cash": "Economy Flex and refundable Business fares; EU261-mandated refunds for cancelled flights",
         "travelCredit": "Economy Classic cancellations (after change fee deduction); valid 12 months",
-        "avios": "Privilege Club award cancellations — Avios redeposited (fee applies for non-elite)"
+        "avios": "Privilege Club award cancellations \u2014 Avios redeposited (fee applies for non-elite)"
       },
       "loopholes": [
-        "EU261 applies if your Qatar itinerary includes a leg originating in the EU (e.g., connecting through Frankfurt, Paris, or Amsterdam) — entitled to €250-600 compensation for delays/cancellations of 3+ hours",
-        "If Qatar cancels or significantly changes your flight (5+ hours), you're entitled to a full cash refund on any fare type — do not accept credits without requesting cash first",
-        "Qatar Airways has a 'cooling-off' period for US-origin bookings — use this aggressively if you spot a lower fare within 24 hours",
-        "Qatar's award chart is distance-based — cancelling and rebooking at a lower Avios rate can yield significant savings on peak routes",
-        "Privilege Club Silver/Gold members get enhanced change/cancel rights and reduced redeposit fees — worth checking status thresholds before booking non-refundable fares",
-        "Qatar regularly offers upgrade bids and fare promotions — monitor email marketing after booking for discounted upgrades"
+        "EU261 applies if your Qatar itinerary includes a leg originating in the EU (e.g., connecting through Frankfurt, Paris, or Amsterdam) \u2014 entitled to \u20ac250-600 compensation for delays/cancellations of 3+ hours",
+        "If Qatar cancels or significantly changes your flight (5+ hours), you're entitled to a full cash refund on any fare type \u2014 do not accept credits without requesting cash first",
+        "Qatar Airways has a 'cooling-off' period for US-origin bookings \u2014 use this aggressively if you spot a lower fare within 24 hours",
+        "Qatar's award chart is distance-based \u2014 cancelling and rebooking at a lower Avios rate can yield significant savings on peak routes",
+        "Privilege Club Silver/Gold members get enhanced change/cancel rights and reduced redeposit fees \u2014 worth checking status thresholds before booking non-refundable fares",
+        "Qatar regularly offers upgrade bids and fare promotions \u2014 monitor email marketing after booking for discounted upgrades"
       ],
       "customerServiceUrl": "https://www.qatarairways.com/en-us/help.html"
     }
@@ -422,7 +422,7 @@
     "policies": {
       "priceDropPolicy": "Singapore Airlines does not offer a formal price-drop refund or price-match guarantee. Strategy depends on fare class: Economy Lite: non-refundable, non-changeable after booking; US 24-hour window is the only exception. Economy Standard: changes with a fee; cancel and rebook at lower fare. Economy Flexi: fully changeable and refundable. Business Class Standard/Flexi: similar tiered flexibility.",
       "twentyFourHourRule": "For tickets originating in the United States (SQ operates nonstop to SFO, LAX, JFK, and HNL), Singapore Airlines complies with the US DOT 24-hour cancellation rule: full refund to original payment if cancelled within 24 hours of booking, provided departure is at least 7 days away. Process via Manage Booking at singaporeair.com or by phone.",
-      "basicEconomyRules": "Economy Lite — Singapore Airlines' most restrictive fare: carry-on bag only (no checked baggage without surcharge), seat selection not included at booking, no changes permitted after purchase (outside 24h US DOT window), fully non-refundable. Full forfeiture upon cancellation. No upgrade eligibility. Book Economy Standard or Flexi for any required flexibility.",
+      "basicEconomyRules": "Economy Lite \u2014 Singapore Airlines' most restrictive fare: carry-on bag only (no checked baggage without surcharge), seat selection not included at booking, no changes permitted after purchase (outside 24h US DOT window), fully non-refundable. Full forfeiture upon cancellation. No upgrade eligibility. Book Economy Standard or Flexi for any required flexibility.",
       "awardTicketPolicy": "KrisFlyer award tickets: miles refunded to KrisFlyer account upon cancellation. Redeposit fee: approximately USD $37.50 per person for non-KrisFlyer Elite/Elite Gold members. KrisFlyer Elite Silver and Elite Gold: waived redeposit fees. Taxes and fuel surcharges refunded to original payment within 14 business days.",
       "claimSteps": [
         "Step 1: Log in to singaporeair.com using your KrisFlyer account or booking reference",
@@ -438,25 +438,25 @@
       "claimPhone": "1-800-742-3333",
       "creditExpiry": "Singapore Airlines travel credits: typically valid 12 months from issue date. KrisFlyer miles: valid as long as any earning or redemption activity occurs within 36 months. Inactive accounts may have miles expired.",
       "cancellationFees": {
-        "economyLite": "100% forfeiture after 24-hour window — no refund or credit issued",
+        "economyLite": "100% forfeiture after 24-hour window \u2014 no refund or credit issued",
         "economyStandard": "Change fee approximately $150-300 USD depending on route and timing; remaining value as travel credit",
-        "economyFlexi": "$0 cancellation fee — full refund to original payment",
-        "businessStandard": "Change fee applicable — varies by route; remaining value credited",
-        "businessFlexi": "$0 cancellation fee — full refund to original payment",
+        "economyFlexi": "$0 cancellation fee \u2014 full refund to original payment",
+        "businessStandard": "Change fee applicable \u2014 varies by route; remaining value credited",
+        "businessFlexi": "$0 cancellation fee \u2014 full refund to original payment",
         "krisFlyer": "~$37.50 USD per person for non-Elite; waived for Elite Silver and Elite Gold"
       },
       "refundTypes": {
         "cash": "Economy Flexi and Business Flexi fares; also when SQ cancels or significantly changes your flight",
         "travelCredit": "Economy Standard cancellations (after change fee deduction); valid 12 months",
-        "miles": "KrisFlyer award ticket cancellations — miles redeposited (fee applies for non-elite members)"
+        "miles": "KrisFlyer award ticket cancellations \u2014 miles redeposited (fee applies for non-elite members)"
       },
       "loopholes": [
-        "Singapore Airlines has a strong reputation for customer service — polite calls to reservations have sometimes resulted in fee waivers or goodwill credits, particularly for long-term KrisFlyer members",
+        "Singapore Airlines has a strong reputation for customer service \u2014 polite calls to reservations have sometimes resulted in fee waivers or goodwill credits, particularly for long-term KrisFlyer members",
         "If SQ significantly alters your itinerary (schedule change of 2+ hours), you can request a full cash refund on any fare type including Economy Lite",
-        "KrisFlyer Solitaire PPS Club and PPS Club members get enhanced waiver rights — check status before assuming full change fees apply",
+        "KrisFlyer Solitaire PPS Club and PPS Club members get enhanced waiver rights \u2014 check status before assuming full change fees apply",
         "Singapore Airlines' partnership with Star Alliance means significant schedule changes by a codeshare partner may entitle you to SQ refund rights",
-        "Book via singaporeair.com directly — OTA bookings significantly complicate change/cancel requests and may not qualify for direct airline protections",
-        "Economy Standard change fees can be partially offset if the price drop savings exceed the fee — always calculate net savings before deciding"
+        "Book via singaporeair.com directly \u2014 OTA bookings significantly complicate change/cancel requests and may not qualify for direct airline protections",
+        "Economy Standard change fees can be partially offset if the price drop savings exceed the fee \u2014 always calculate net savings before deciding"
       ],
       "customerServiceUrl": "https://www.singaporeair.com/en_UK/us/help-support/"
     }
@@ -468,9 +468,9 @@
     "scrapedUrl": "https://www.cathaypacific.com/cx/en_US/manage-booking.html",
     "lastUpdated": "2026-05-27",
     "policies": {
-      "priceDropPolicy": "Cathay Pacific (rebranded as Cathay in 2023, still operating as Cathay Pacific) does not offer a formal price-drop refund or price-match guarantee. Strategy depends on fare class: Economy Light: non-refundable, non-changeable — full forfeiture except US 24-hour window. Economy Standard: changes with fee. Economy Flex: fully changeable and refundable. Premium Economy and Business: tiered flexibility by sub-class.",
+      "priceDropPolicy": "Cathay Pacific (rebranded as Cathay in 2023, still operating as Cathay Pacific) does not offer a formal price-drop refund or price-match guarantee. Strategy depends on fare class: Economy Light: non-refundable, non-changeable \u2014 full forfeiture except US 24-hour window. Economy Standard: changes with fee. Economy Flex: fully changeable and refundable. Premium Economy and Business: tiered flexibility by sub-class.",
       "twentyFourHourRule": "For US-originating tickets, Cathay Pacific complies with the US DOT 24-hour cancellation rule: full refund within 24 hours of booking if departure is at least 7 days away. Cathay Pacific operates nonstop to JFK and LAX from Hong Kong, with connections through Vancouver (YVR) and Toronto (YYZ). Process cancellation via Manage Booking at cathaypacific.com.",
-      "basicEconomyRules": "Economy Light — Cathay Pacific's most restrictive economy fare: carry-on bag only (no checked baggage), seat assignment at check-in (not selectable at booking), no changes or cancellations after 24-hour US DOT window, fully non-refundable. Full ticket value forfeited upon cancellation. No upgrade eligibility. Book Economy Standard or Flex for any required flexibility.",
+      "basicEconomyRules": "Economy Light \u2014 Cathay Pacific's most restrictive economy fare: carry-on bag only (no checked baggage), seat assignment at check-in (not selectable at booking), no changes or cancellations after 24-hour US DOT window, fully non-refundable. Full ticket value forfeited upon cancellation. No upgrade eligibility. Book Economy Standard or Flex for any required flexibility.",
       "awardTicketPolicy": "Asia Miles (now Cathay Miles) award tickets: miles refunded to Cathay membership account upon cancellation. Redeposit fee: approximately USD $37 per person for standard members; waived or reduced for Marco Polo Club and Cathay membership tier holders. Taxes and fees refunded to original payment within 7-14 business days.",
       "claimSteps": [
         "Step 1: Go to cathaypacific.com and log in or use Manage Booking with booking reference + last name",
@@ -486,9 +486,9 @@
       "claimPhone": "1-800-233-2742",
       "creditExpiry": "Cathay Pacific travel credits: valid 12 months from issue date. Cathay Miles (Asia Miles): valid 18 months from last account activity (earn or redeem).",
       "cancellationFees": {
-        "economyLight": "100% forfeiture after 24-hour window — no refund or credit",
+        "economyLight": "100% forfeiture after 24-hour window \u2014 no refund or credit",
         "economyStandard": "Change fee approximately $150-300 USD depending on route; remaining value as travel credit",
-        "economyFlex": "$0 cancellation fee — full refund to original payment",
+        "economyFlex": "$0 cancellation fee \u2014 full refund to original payment",
         "premiumEconomy": "Standard sub-class: change fee applies; Flex: $0, full refund",
         "business": "Standard sub-class: change fee applies; Flex: $0, fully refundable",
         "milesRedeposit": "~$37 USD per person for standard members; waived for Marco Polo Diamond/Diamond Plus"
@@ -496,15 +496,15 @@
       "refundTypes": {
         "cash": "Economy Flex and Business Flex fares; mandated by DOT/airline when Cathay cancels your flight",
         "travelCredit": "Economy Standard cancellations (after change fee); valid 12 months",
-        "miles": "Cathay Miles award cancellations — miles redeposited (fee applies for non-elite)"
+        "miles": "Cathay Miles award cancellations \u2014 miles redeposited (fee applies for non-elite)"
       },
       "loopholes": [
-        "If Cathay Pacific cancels your flight or significantly changes your schedule (3+ hours), you are entitled to a full cash refund on any fare class — do not accept credits without asking for cash",
-        "Cathay Pacific / Cathay app sometimes shows lower fares within 24h of booking — always check before the DOT window closes",
-        "Marco Polo Club Diamond and Diamond Plus members get enhanced change/cancel rights and waived redeposit fees — check status before booking Economy Light",
-        "Cathay is part of oneworld alliance — schedule changes by AA, JAL, or other partners on connecting itineraries may trigger Cathay refund rights",
-        "Asia Miles / Cathay Miles: the 18-month activity requirement is strict — set a reminder if you're holding miles and not planning to fly soon",
-        "Book directly at cathaypacific.com to retain full change/cancel rights — OTA bookings may not qualify for direct airline processing"
+        "If Cathay Pacific cancels your flight or significantly changes your schedule (3+ hours), you are entitled to a full cash refund on any fare class \u2014 do not accept credits without asking for cash",
+        "Cathay Pacific / Cathay app sometimes shows lower fares within 24h of booking \u2014 always check before the DOT window closes",
+        "Marco Polo Club Diamond and Diamond Plus members get enhanced change/cancel rights and waived redeposit fees \u2014 check status before booking Economy Light",
+        "Cathay is part of oneworld alliance \u2014 schedule changes by AA, JAL, or other partners on connecting itineraries may trigger Cathay refund rights",
+        "Asia Miles / Cathay Miles: the 18-month activity requirement is strict \u2014 set a reminder if you're holding miles and not planning to fly soon",
+        "Book directly at cathaypacific.com to retain full change/cancel rights \u2014 OTA bookings may not qualify for direct airline processing"
       ],
       "customerServiceUrl": "https://www.cathaypacific.com/cx/en_US/help-and-support.html"
     }
@@ -516,15 +516,15 @@
     "scrapedUrl": "https://www.aircanada.com/us/en/aco/home/book/travel-policies/cancellation-policy.html",
     "lastUpdated": "2026-05-27",
     "policies": {
-      "priceDropPolicy": "Air Canada does not offer a formal price-drop refund or price-match guarantee. Strategy by fare class: Basic: no changes or cancellations after 24-hour window — full forfeiture. Standard: changes with a fee. Flex: changes free, refund as travel credit. Comfort/Latitude: more flexible. Business/Signature: fully refundable. Cancel and rebook is the primary strategy for non-refundable fares.",
+      "priceDropPolicy": "Air Canada does not offer a formal price-drop refund or price-match guarantee. Strategy by fare class: Basic: no changes or cancellations after 24-hour window \u2014 full forfeiture. Standard: changes with a fee. Flex: changes free, refund as travel credit. Comfort/Latitude: more flexible. Business/Signature: fully refundable. Cancel and rebook is the primary strategy for non-refundable fares.",
       "twentyFourHourRule": "Air Canada complies with the Canadian Air Passenger Protection Regulations (APPR) and US DOT 24-hour rule for US-originating tickets. Full refund within 24 hours of booking for most fare types if departure is at least 7 days away (US rule). In Canada: APPR provides broad passenger protections including mandatory refunds for airline-caused cancellations. Cancel via aircanada.com or by calling Air Canada reservations.",
-      "basicEconomyRules": "Basic fare — Air Canada's most restrictive fare: carry-on bag included but no checked baggage, seat assignment at check-in, non-changeable and non-refundable after 24-hour window, no upgrade eligibility, no Aeroplan miles earn on most Basic tickets, cannot select seat in advance. Full forfeiture upon cancellation after 24-hour period. Book Standard or higher for any flexibility.",
+      "basicEconomyRules": "Basic fare \u2014 Air Canada's most restrictive fare: carry-on bag included but no checked baggage, seat assignment at check-in, non-changeable and non-refundable after 24-hour window, no upgrade eligibility, no Aeroplan miles earn on most Basic tickets, cannot select seat in advance. Full forfeiture upon cancellation after 24-hour period. Book Standard or higher for any flexibility.",
       "awardTicketPolicy": "Aeroplan award tickets: points refunded to Aeroplan account upon cancellation. Cancellation fee: $150 CAD (~$110 USD) for non-Elite status members; fee waived for Aeroplan 35K, 50K, 75K, and Super Elite members. Cancel at least 24 hours before departure. Taxes and fees refunded to original payment within 7-14 business days.",
       "claimSteps": [
         "Step 1: Log in to aircanada.com and navigate to 'Manage My Bookings'",
         "Step 2: Select the booking with the price drop",
-        "Step 3: Review your fare type — Basic, Standard, Flex, Comfort, Latitude, Business, or Signature",
-        "Step 4: For Flex or higher: select 'Cancel Flight' — travel credit or cash refund issued depending on fare",
+        "Step 3: Review your fare type \u2014 Basic, Standard, Flex, Comfort, Latitude, Business, or Signature",
+        "Step 4: For Flex or higher: select 'Cancel Flight' \u2014 travel credit or cash refund issued depending on fare",
         "Step 5: For Standard: pay applicable change fee to rebook at the lower price",
         "Step 6: Search for the same route at the new lower fare",
         "Step 7: Apply travel credit or Aeroplan points to new booking at checkout"
@@ -532,28 +532,28 @@
       "claimUrl": "https://www.aircanada.com/us/en/aco/home/manage-and-travel/manage-bookings.html",
       "refundFormUrl": "https://www.aircanada.com/us/en/aco/home/manage-and-travel/after-your-trip/refund-request.html",
       "claimPhone": "1-888-247-2262",
-      "creditExpiry": "Air Canada travel credits: typically valid 24 months from issue date (more generous than US carriers). Aeroplan points: valid as long as account shows activity within 12 months (earn or redeem). Inactive accounts expire points — set a recurring small earn to keep account active.",
+      "creditExpiry": "Air Canada travel credits: typically valid 24 months from issue date (more generous than US carriers). Aeroplan points: valid as long as account shows activity within 12 months (earn or redeem). Inactive accounts expire points \u2014 set a recurring small earn to keep account active.",
       "cancellationFees": {
-        "basic": "100% forfeiture after 24-hour window — no credit or refund",
+        "basic": "100% forfeiture after 24-hour window \u2014 no credit or refund",
         "standard": "Change fee CAD $100-300 depending on route; remaining value as travel credit",
-        "flex": "$0 change fee — remaining value as non-refundable travel credit; valid 24 months",
-        "comfort": "$0 change fee — travel credit or partial cash refund depending on original payment",
-        "latitude": "$0 change fee — full refund to original payment",
-        "business": "$0 cancellation fee — full refund to original payment (Latitude Business and above)",
+        "flex": "$0 change fee \u2014 remaining value as non-refundable travel credit; valid 24 months",
+        "comfort": "$0 change fee \u2014 travel credit or partial cash refund depending on original payment",
+        "latitude": "$0 change fee \u2014 full refund to original payment",
+        "business": "$0 cancellation fee \u2014 full refund to original payment (Latitude Business and above)",
         "aeroplanCancel": "CAD $150 (~$110 USD) per person for non-Elite; waived for 35K status and above"
       },
       "refundTypes": {
         "cash": "Latitude, Business, and Signature fares; mandated by APPR when Air Canada cancels your flight",
         "travelCredit": "Flex and Comfort cancellations; valid 24 months from issue (generous vs. US carriers)",
-        "aeroplan": "Aeroplan award cancellations — points redeposited (fee applies for non-Elite)"
+        "aeroplan": "Aeroplan award cancellations \u2014 points redeposited (fee applies for non-Elite)"
       },
       "loopholes": [
-        "Canadian APPR: If Air Canada cancels your flight or causes a delay of 3+ hours for reasons within airline control, you're entitled to cash compensation ($125-$1,000 CAD) AND a refund — stronger than US DOT rules",
-        "Air Canada's travel credits are valid 24 months — significantly more time than US carriers' 12-month window; no rush to rebook immediately",
-        "Flex fare: zero change fees — always rebook at a lower fare if the price drops, even if only marginally",
-        "Aeroplan Elite members (35K+) get completely free award cancellations — no redeposit fee, making Aeroplan very flexible for status holders",
-        "Air Canada Credit Card (TD Aeroplan Visa, AMEX Aeroplan): may include trip protection or change fee waivers — check card benefits before paying fees",
-        "Air Canada regularly runs seat sales (Latitude and up) — if you booked Standard and a Latitude sale appears at a similar price, upgrade may be worth it for full refund flexibility"
+        "Canadian APPR: If Air Canada cancels your flight or causes a delay of 3+ hours for reasons within airline control, you're entitled to cash compensation ($125-$1,000 CAD) AND a refund \u2014 stronger than US DOT rules",
+        "Air Canada's travel credits are valid 24 months \u2014 significantly more time than US carriers' 12-month window; no rush to rebook immediately",
+        "Flex fare: zero change fees \u2014 always rebook at a lower fare if the price drops, even if only marginally",
+        "Aeroplan Elite members (35K+) get completely free award cancellations \u2014 no redeposit fee, making Aeroplan very flexible for status holders",
+        "Air Canada Credit Card (TD Aeroplan Visa, AMEX Aeroplan): may include trip protection or change fee waivers \u2014 check card benefits before paying fees",
+        "Air Canada regularly runs seat sales (Latitude and up) \u2014 if you booked Standard and a Latitude sale appears at a similar price, upgrade may be worth it for full refund flexibility"
       ],
       "customerServiceUrl": "https://www.aircanada.com/us/en/aco/home/support.html"
     }
@@ -565,7 +565,7 @@
     "scrapedUrl": "https://www.koreanair.com/us/en/support",
     "lastUpdated": "2026-05-27",
     "policies": {
-      "priceDropPolicy": "Korean Air does not offer a formal price-drop refund or price-match guarantee. Options after a price drop depend on fare class: Saver/Promo fares: non-refundable, non-changeable after booking — full forfeiture except within 24-hour US DOT window. Flexible/Standard fares: changes permitted with a fee. Fully Flexible/Business/First: changeable and refundable. For non-refundable fares, cancellation and rebooking at the lower price is the primary strategy.",
+      "priceDropPolicy": "Korean Air does not offer a formal price-drop refund or price-match guarantee. Options after a price drop depend on fare class: Saver/Promo fares: non-refundable, non-changeable after booking \u2014 full forfeiture except within 24-hour US DOT window. Flexible/Standard fares: changes permitted with a fee. Fully Flexible/Business/First: changeable and refundable. For non-refundable fares, cancellation and rebooking at the lower price is the primary strategy.",
       "twentyFourHourRule": "For tickets originating in the United States, Korean Air complies with the US DOT 24-hour cancellation rule: full refund within 24 hours of booking if the departure date is at least 7 days away. Korean Air operates nonstop from JFK, LAX, and SEA to Incheon (ICN) and onward. Cancel via Manage My Reservation at koreanair.com or by phone at 1-800-438-5000.",
       "basicEconomyRules": "Korean Air Saver/Promo economy fares (lowest fare class): non-refundable and non-changeable after the 24-hour US DOT window. Cancellation results in full forfeiture of ticket value. No seat selection. No upgrade eligibility. For flexibility, book Economy Standard or higher fare classes. Check fare conditions carefully at time of booking as Korean Air has multiple economy sub-classes with different rules.",
       "awardTicketPolicy": "SKYPASS award tickets: miles refunded to SKYPASS account upon cancellation. Cancellation fee applies for non-elite members (approximately $50 USD per person). SKYPASS Morning Calm members and above receive reduced or waived cancellation fees. Cancel at least 24 hours before departure. Taxes and fees refunded to original payment method within 7-14 business days.",
@@ -582,27 +582,370 @@
       "refundFormUrl": "https://www.koreanair.com/us/en/support",
       "customerServiceUrl": "https://www.koreanair.com/us/en/support",
       "claimPhone": "1-800-438-5000",
-      "creditExpiry": "Korean Air travel credits and vouchers: typically valid 12 months from original ticket issue date. SKYPASS miles: valid as long as account shows any earning or redemption activity within 10 years. Inactive accounts may have miles expire — contact SKYPASS customer service for extensions.",
+      "creditExpiry": "Korean Air travel credits and vouchers: typically valid 12 months from original ticket issue date. SKYPASS miles: valid as long as account shows any earning or redemption activity within 10 years. Inactive accounts may have miles expire \u2014 contact SKYPASS customer service for extensions.",
       "cancellationFees": {
-        "saverPromo": "100% forfeiture after 24-hour window — no refund or credit issued",
+        "saverPromo": "100% forfeiture after 24-hour window \u2014 no refund or credit issued",
         "economyStandard": "Change fee approximately $100-200 USD depending on route; remaining value as travel credit",
-        "economyFlexible": "$0 change fee or reduced fee — full or partial refund depending on sub-class",
-        "prestige": "Varies by sub-class — Prestige Saver: fees apply; Prestige Flexible: reduced or no fee",
-        "first": "$0 cancellation fee for First Class Flexible — full refund to original payment",
+        "economyFlexible": "$0 change fee or reduced fee \u2014 full or partial refund depending on sub-class",
+        "prestige": "Varies by sub-class \u2014 Prestige Saver: fees apply; Prestige Flexible: reduced or no fee",
+        "first": "$0 cancellation fee for First Class Flexible \u2014 full refund to original payment",
         "skypassRedeposit": "~$50 USD per person for non-elite members; waived for Morning Calm and above"
       },
       "refundTypes": {
         "cash": "Flexible and fully refundable fare classes; also when Korean Air cancels or significantly changes your flight",
         "travelCredit": "Standard non-refundable fare cancellations; valid 12 months from issue",
-        "miles": "SKYPASS award cancellations — miles redeposited to account (fee applies for non-elite members)"
+        "miles": "SKYPASS award cancellations \u2014 miles redeposited to account (fee applies for non-elite members)"
       },
       "loopholes": [
-        "If Korean Air cancels your flight or changes your schedule by 2+ hours, you are entitled to a full cash refund on any fare class — always ask for cash, not a credit",
-        "Korean Air is a member of SkyTeam alliance — schedule changes by Delta or other SkyTeam partners on connecting itineraries may trigger Korean Air refund rights",
-        "The US DOT 24-hour rule applies for all US-originating Korean Air tickets — use this window aggressively if you spot a lower fare after booking",
-        "Korean Air occasionally runs flash sales on ICN routes — monitoring IAD/JFK/LAX to ICN can yield $100-400 savings on popular dates",
-        "SKYPASS Morning Calm members get free or reduced award redeposit fees — worth checking status before canceling an award ticket",
-        "Book directly at koreanair.com — OTA bookings complicate change/cancel requests significantly and may not qualify for direct airline refund processing"
+        "If Korean Air cancels your flight or changes your schedule by 2+ hours, you are entitled to a full cash refund on any fare class \u2014 always ask for cash, not a credit",
+        "Korean Air is a member of SkyTeam alliance \u2014 schedule changes by Delta or other SkyTeam partners on connecting itineraries may trigger Korean Air refund rights",
+        "The US DOT 24-hour rule applies for all US-originating Korean Air tickets \u2014 use this window aggressively if you spot a lower fare after booking",
+        "Korean Air occasionally runs flash sales on ICN routes \u2014 monitoring IAD/JFK/LAX to ICN can yield $100-400 savings on popular dates",
+        "SKYPASS Morning Calm members get free or reduced award redeposit fees \u2014 worth checking status before canceling an award ticket",
+        "Book directly at koreanair.com \u2014 OTA bookings complicate change/cancel requests significantly and may not qualify for direct airline refund processing"
+      ]
+    }
+  },
+  {
+    "airline": "Emirates",
+    "code": "EK",
+    "dataSource": "knowledge_base",
+    "scrapedUrl": "https://www.emirates.com/us/english/help/travel-updates/",
+    "lastUpdated": "2026-05-27",
+    "policies": {
+      "priceDropPolicy": "Emirates does not offer a formal price-match or price-drop adjustment guarantee. After booking, if the fare drops: Saver/Special fares are non-refundable and non-changeable after booking except within the 24-hour US DOT window. Flex and Flex Plus fares allow unlimited free changes. For non-refundable fares outside the 24-hour window, cancellation with forfeiture of ticket value followed by rebooking at the lower fare is the only option. Business and First Class Flex tickets offer the best flexibility for price-drop recovery.",
+      "twentyFourHourRule": "For tickets originating in the United States, Emirates complies with the US DOT 24-hour cancellation rule: full refund within 24 hours of booking provided the departure date is at least 7 days away. Cancel via Manage My Booking at emirates.com or by calling 1-800-777-3999. Ticket must have been purchased directly through Emirates.",
+      "basicEconomyRules": "Emirates Special fares (lowest economy class): non-refundable, non-changeable after 24-hour window. Full forfeiture on cancellation. No seat selection included. No upgrade with miles. Economy Saver fares: change permitted with fee (typically $200+). Economy Flex: unlimited free changes, refundable with fee. Economy Flex Plus: fully flexible, fully refundable. Always check fare rules at booking \u2014 Emirates labels fare conditions clearly in the booking flow.",
+      "awardTicketPolicy": "Emirates Skywards award tickets: miles redeposited upon cancellation. Cancellation fee applies: $50\u2013$75 USD per person for non-elite members. Blue/Silver members pay full fee; Gold members receive 25% discount; Platinum members receive fee waiver. Cancel at least 72 hours before departure for miles reinstatement. Taxes and fees refunded to original payment within 7\u201321 business days.",
+      "claimSteps": [
+        "Step 1: Log in to emirates.com and navigate to My Bookings",
+        "Step 2: Enter your booking reference and last name to access your reservation",
+        "Step 3: Check your fare type \u2014 Saver, Flex, or Flex Plus determines your options",
+        "Step 4: For Flex/Flex Plus fares: click Change Flight to rebook at the lower fare at no extra change fee",
+        "Step 5: For Saver fares within the 24-hour US DOT window: cancel for full refund, then rebook at the lower price",
+        "Step 6: For refund requests on eligible tickets: complete the refund request form at emirates.com/us/english/help/refunds/",
+        "Step 7: Call Emirates US reservations at 1-800-777-3999 for complex fare change requests",
+        "Step 8: Refunds processed within 7\u201321 business days to original payment method"
+      ],
+      "claimUrl": "https://www.emirates.com/us/english/manage-booking/",
+      "refundFormUrl": "https://www.emirates.com/us/english/help/refunds/",
+      "customerServiceUrl": "https://www.emirates.com/us/english/help/",
+      "claimPhone": "1-800-777-3999",
+      "creditExpiry": "Emirates travel vouchers and credits: valid 12 months from issue date. Emirates Flight Vouchers issued for cancellations: valid 24 months. Skywards miles: valid as long as account has earning or redemption activity within 36 months. Inactive Skywards accounts forfeit miles \u2014 log in or make a small purchase to keep miles alive.",
+      "cancellationFees": {
+        "specialSaver": "100% forfeiture after 24-hour window \u2014 no refund or credit issued",
+        "economySaver": "$200\u2013$400 change fee depending on route; remaining value as travel credit",
+        "economyFlex": "$0 change fee; cancellation fee ~$150; remainder as travel credit or refund",
+        "economyFlexPlus": "$0 change or cancellation fee \u2014 full refund to original payment",
+        "businessFlex": "$0 change fee; cancellation fee may apply on lower business subclasses",
+        "firstClassFlex": "$0 cancellation fee for First Flex \u2014 full refund",
+        "skywardsRedeposit": "$50\u2013$75 USD per person; Gold members 25% off; Platinum members waived"
+      },
+      "refundTypes": {
+        "cash": "Flex Plus fares, First/Business Flex; also when Emirates cancels or significantly changes your flight",
+        "travelCredit": "Saver/Flex fare cancellations \u2014 Flight Voucher valid 24 months",
+        "miles": "Skywards award cancellations \u2014 miles redeposited (fee applies)"
+      },
+      "loopholes": [
+        "If Emirates cancels your flight or changes departure/arrival by 3+ hours, you are entitled to a full cash refund on any fare class \u2014 always request cash, not a voucher",
+        "Emirates Flex Plus is worth the upcharge on long-haul flights over $800 \u2014 the unlimited change/cancel flexibility pays for itself on a single price drop",
+        "US DOT 24-hour rule applies to all US-originating Emirates tickets \u2014 Emirates routes EWR/JFK/LAX/ORD/DFW/IAH/BOS to DXB are popular and prices fluctuate significantly",
+        "Emirates Flash Sales to DXB happen several times per year \u2014 monitoring EWR/JFK to DXB in Jan/Feb and Aug/Sep can yield $200\u2013500 savings",
+        "Skywards Gold and Platinum members get reduced or waived award redeposit fees \u2014 check status before canceling an award ticket",
+        "Book directly at emirates.com \u2014 third-party OTA bookings complicate refund requests and may be subject to the OTA's own cancellation policies rather than Emirates's"
+      ]
+    }
+  },
+  {
+    "airline": "Air France",
+    "code": "AF",
+    "dataSource": "knowledge_base",
+    "scrapedUrl": "https://wwws.airfrance.us/information/conditions/tickets",
+    "lastUpdated": "2026-05-27",
+    "policies": {
+      "priceDropPolicy": "Air France does not offer a price-match or price-drop adjustment guarantee. Options depend on fare class: Light/Standard economy fares: non-refundable, non-changeable (Light) or changeable with fee (Standard). Flex fares: free changes, refundable with fee. Full Flex: fully refundable. EU261/2004 Regulation: for flights originating in EU or operated by Air France to EU destinations, passengers have significant rights on cancellations and delays \u2014 not directly applicable to price drops but relevant to schedule changes.",
+      "twentyFourHourRule": "For tickets purchased in the United States originating in the US, Air France complies with the US DOT 24-hour cancellation rule. Full refund within 24 hours provided the departure date is at least 7 days away. Cancel via My Bookings at airfrance.us or call 1-800-237-2747. Note: tickets purchased through OTAs are subject to the OTA's cancellation policy.",
+      "basicEconomyRules": "Air France Light fares (lowest economy): non-refundable, non-changeable after purchase \u2014 no flexibility whatsoever. Standard fares: changeable with fee (typically \u20ac150\u2013200); non-refundable. Flex fares: free date changes, refundable with \u20ac150 fee. Full Flex: free changes and free cancellation with full cash refund. Business Light vs Business Flex: significant difference \u2014 always check at booking.",
+      "awardTicketPolicy": "Flying Blue award tickets (Air France/KLM joint program): miles redeposited upon cancellation. Redeposit fee: approximately \u20ac45 per person for Classic members. Silver/Gold/Platinum Elite members receive reduced or waived fees. Cancel online at airfrance.com or call Flying Blue. Miles expire after 24 months of account inactivity \u2014 any earning or redemption resets the clock.",
+      "claimSteps": [
+        "Step 1: Log in to airfrance.us and navigate to My Bookings",
+        "Step 2: Enter booking reference and last name or log in with Flying Blue account",
+        "Step 3: Review fare conditions \u2014 Light, Standard, Flex, or Full Flex determines your options",
+        "Step 4: For Flex/Full Flex fares: click Modify My Flight and rebook at the lower fare",
+        "Step 5: For Standard fares: calculate whether change fee + new fare is less than the original price",
+        "Step 6: For cancellations within 24-hour US DOT window: cancel for full refund, then rebook",
+        "Step 7: For EU261 rights on eligible EU-origin or Air France-operated EU flights: file claim at airfrance.com/en/common/guidedereclamation/",
+        "Step 8: Call Air France US at 1-800-237-2747 for complex requests \u2014 have booking reference ready"
+      ],
+      "claimUrl": "https://wwws.airfrance.us/reservation/my-trips",
+      "refundFormUrl": "https://wwws.airfrance.us/information/conditions/refund",
+      "customerServiceUrl": "https://wwws.airfrance.us/information/help-center",
+      "claimPhone": "1-800-237-2747",
+      "creditExpiry": "Air France travel credits: valid 12 months from issue date. eVouchers: typically 12 months. Flying Blue miles: valid as long as account shows earning or redemption activity within 24 months. Inactive accounts will have miles expire \u2014 keep account active with small purchases.",
+      "cancellationFees": {
+        "light": "100% forfeiture \u2014 no refund, no credit, no changes permitted",
+        "standard": "~\u20ac150\u2013200 change fee; non-refundable; remaining value as eVoucher",
+        "flex": "Free date changes; ~\u20ac150 cancellation fee; remainder as cash refund",
+        "fullFlex": "$0 change and cancellation fee \u2014 full cash refund",
+        "businessLight": "Non-refundable; change fee applies",
+        "businessFlex": "Free changes; cancellation fee may apply on lower sub-classes",
+        "flyingBlueRedeposit": "~\u20ac45 per person; Elite members reduced or waived"
+      },
+      "refundTypes": {
+        "cash": "Full Flex and Business Flex fares; when Air France cancels or significantly changes flight; EU261 compensation",
+        "travelCredit": "Standard fare cancellations \u2014 eVoucher valid 12 months",
+        "miles": "Flying Blue award cancellations \u2014 miles redeposited with fee"
+      },
+      "loopholes": [
+        "EU261/2004 Regulation: if your Air France flight from a EU airport is canceled or delayed 3+ hours, you are entitled to \u20ac250\u2013600 cash compensation per person \u2014 this is a legal right, not a goodwill gesture",
+        "Air France schedule change of 2+ hours on any ticket class entitles you to a full cash refund \u2014 always request cash, not an eVoucher",
+        "Air France and KLM share the Flying Blue program \u2014 miles earned on either airline count toward status and can be redeemed on both, effectively doubling your monitoring opportunity on transatlantic routes",
+        "Paris CDG routes from US East Coast (JFK, BOS, EWR, IAD) drop significantly in Jan/Feb and Oct/Nov \u2014 peak monitoring windows for $150\u2013400 savings",
+        "Air France Full Flex upgrade cost at booking is often recovered on a single price drop or schedule change \u2014 worth calculating for bookings over $700",
+        "Book directly at airfrance.us \u2014 OTA bookings can prevent access to direct airline refund processing and EU261 claims"
+      ]
+    }
+  },
+  {
+    "airline": "Turkish Airlines",
+    "code": "TK",
+    "dataSource": "knowledge_base",
+    "scrapedUrl": "https://www.turkishairlines.com/en-us/flights/manage-booking/",
+    "lastUpdated": "2026-05-27",
+    "policies": {
+      "priceDropPolicy": "Turkish Airlines does not offer price-drop adjustments or price-match guarantees. After booking, options depend on fare class: Promotional/Discounted economy: non-refundable, non-changeable. Economy Restricted: changeable with fee. Economy Flexible: free changes, partial refund. Business Class Flexible: fully refundable. EU261 rights apply to TK flights from EU airports and to EU destinations operated by Turkish Airlines \u2014 relevant for schedule changes that may trigger refund rights.",
+      "twentyFourHourRule": "For tickets originating in the United States, Turkish Airlines complies with US DOT 24-hour cancellation rule: full refund within 24 hours provided departure is at least 7 days away. Cancel via Manage My Booking at turkishairlines.com or by calling 1-800-874-8875. Note: Turkish Airlines hubs through Istanbul IST \u2014 US to IST routing is extremely popular and prices fluctuate regularly.",
+      "basicEconomyRules": "Turkish Airlines Promotional fares (lowest economy): strictly non-refundable and non-changeable after the 24-hour window \u2014 full forfeiture on cancellation. Economy Restricted: changeable with fee (typically $100\u2013200 depending on route); non-refundable. Economy Flexible: free date and route changes; cancellation with partial refund minus fee. Business Flex: fully flexible, fully refundable. Miles&Smiles award tickets have separate rules.",
+      "awardTicketPolicy": "Turkish Airlines Miles&Smiles award tickets: miles redeposited upon cancellation. Cancellation fee: approximately $50\u2013100 USD per person. Classic Elite and Elite Plus members receive reduced fees. Cancel at least 24 hours before departure. Expired miles can sometimes be reinstated for a fee \u2014 contact Miles&Smiles customer service.",
+      "claimSteps": [
+        "Step 1: Log in to turkishairlines.com and go to Manage Booking",
+        "Step 2: Enter your PNR (booking code) and last name",
+        "Step 3: Check your fare class \u2014 Promotional, Restricted, or Flexible determines your options",
+        "Step 4: For Flexible fares: use the Change Flight option to rebook at the lower available fare",
+        "Step 5: For Restricted fares: calculate if change fee + lower fare price represents net savings vs original ticket",
+        "Step 6: For tickets within 24-hour US DOT window: cancel for full refund, then rebook at the lower price",
+        "Step 7: For refund requests: submit at turkishairlines.com/en-us/any-questions/refund-form/",
+        "Step 8: Call Turkish Airlines US at 1-800-874-8875 for assistance"
+      ],
+      "claimUrl": "https://www.turkishairlines.com/en-us/flights/manage-booking/",
+      "refundFormUrl": "https://www.turkishairlines.com/en-us/any-questions/refund-form/",
+      "customerServiceUrl": "https://www.turkishairlines.com/en-us/any-questions/",
+      "claimPhone": "1-800-874-8875",
+      "creditExpiry": "Turkish Airlines travel credits and vouchers: typically valid 12 months from issue. Miles&Smiles miles: valid for 3 years from the date earned. Inactive accounts may have miles expire. Elite status members have extended mile validity. Contact Miles&Smiles for miles reinstatement if recently expired.",
+      "cancellationFees": {
+        "promotional": "100% forfeiture \u2014 no refund, no credit, no changes after 24-hour window",
+        "economyRestricted": "$100\u2013200 change fee depending on route; non-refundable; travel credit issued",
+        "economyFlexible": "$0 change fee; cancellation fee ~$75\u2013150; remainder as refund",
+        "businessFlex": "$0 change fee; business class full flex fully refundable",
+        "milesSmilesCancelFee": "~$50\u2013100 per person; Elite members reduced fees"
+      },
+      "refundTypes": {
+        "cash": "Economy Flexible and Business Flex; when Turkish Airlines cancels or significantly delays your flight",
+        "travelCredit": "Restricted fare cancellations \u2014 voucher valid 12 months",
+        "miles": "Miles&Smiles award cancellations \u2014 miles redeposited with fee"
+      },
+      "loopholes": [
+        "EU261 rights apply on Turkish Airlines flights departing from EU airports or arriving in EU on TK metal \u2014 \u20ac250\u2013600 per person for 3+ hour delays or cancellations",
+        "Istanbul IST is Turkish Airlines hub \u2014 connections through IST to Asia, Africa, and Middle East are often the cheapest routing and prices drop frequently",
+        "Turkish Airlines schedule changes of 3+ hours entitle you to a full refund on any fare class \u2014 monitor your booking for schedule updates in the weeks before departure",
+        "US DOT 24-hour window applies for all US-originating TK tickets \u2014 JFK/IAD/ORD/LAX/SFO to IST routes see frequent flash sales",
+        "Miles&Smiles miles can be earned by flying any Star Alliance partner \u2014 useful for building status toward elite benefits including reduced cancel fees",
+        "Book directly at turkishairlines.com for simplest access to change/cancel \u2014 OTA bookings add complexity to refund processing"
+      ]
+    }
+  },
+  {
+    "airline": "Etihad Airways",
+    "code": "EY",
+    "dataSource": "knowledge_base",
+    "scrapedUrl": "https://www.etihad.com/en-us/help/contact-us",
+    "lastUpdated": "2026-05-27",
+    "policies": {
+      "priceDropPolicy": "Etihad Airways does not offer price-drop adjustments or price-match guarantees. Options after a price drop depend on fare class: Value fares: strictly non-refundable and non-changeable. Flex fares: changeable for free, refundable with fee. Full Flex and Business/First Class: fully flexible and refundable. Etihad Guest miles bookings have separate redeposit rules. The 24-hour US DOT cancellation rule provides the best recovery window for US-originating tickets.",
+      "twentyFourHourRule": "For tickets originating in the United States, Etihad complies with the US DOT 24-hour cancellation rule: full refund within 24 hours of booking provided departure is at least 7 days away. Cancel via Manage My Booking at etihad.com or call 1-877-690-0767. This applies to tickets purchased directly from Etihad.",
+      "basicEconomyRules": "Etihad Value Economy (lowest fare): non-refundable, non-changeable after booking \u2014 full forfeiture outside 24-hour window. Economy Smart: changeable once for free, non-refundable. Economy Flex: unlimited free changes, refundable with fee. Economy Full Flex: free changes and cancellation, full refund. Business Studio and The Residence on A380 follow similar flex tiers. Review fare conditions at booking \u2014 Etihad displays fare rules clearly before payment.",
+      "awardTicketPolicy": "Etihad Guest award tickets: Etihad Guest Miles redeposited upon cancellation. Cancellation fee: approximately $50 per person. Gold/Platinum members may receive fee waivers. Cancel at least 24 hours before departure for miles reinstatement. Etihad Guest Miles expire after 18 months of account inactivity \u2014 any earning or redemption resets expiry.",
+      "claimSteps": [
+        "Step 1: Log in to etihad.com and navigate to Manage Booking",
+        "Step 2: Enter your booking reference and last name",
+        "Step 3: Review your fare type \u2014 Value, Smart, Flex, or Full Flex",
+        "Step 4: For Flex/Full Flex fares: select Change Flight and rebook at the lower available fare",
+        "Step 5: For Smart fares: use the one free change to rebook at the lower price if applicable",
+        "Step 6: For tickets within the 24-hour US DOT window: cancel for full refund, then rebook",
+        "Step 7: For refund requests: submit at etihad.com/en-us/help/refund-request",
+        "Step 8: Call Etihad US at 1-877-690-0767 for complex requests"
+      ],
+      "claimUrl": "https://www.etihad.com/en-us/manage/",
+      "refundFormUrl": "https://www.etihad.com/en-us/help/refund-request",
+      "customerServiceUrl": "https://www.etihad.com/en-us/help/contact-us",
+      "claimPhone": "1-877-690-0767",
+      "creditExpiry": "Etihad travel credits: valid 12 months from issue. Etihad Guest Miles: expire after 18 months of inactivity \u2014 any earning or redemption resets the clock. Etihad Stopover program can help earn miles to keep account active during a connection in Abu Dhabi.",
+      "cancellationFees": {
+        "valueEconomy": "100% forfeiture after 24-hour window \u2014 no refund or credit",
+        "smartEconomy": "One free change; after that $100\u2013200 fee; non-refundable",
+        "flexEconomy": "Free changes; cancellation fee ~$150; remainder as cash refund",
+        "fullFlex": "$0 change and cancellation fee \u2014 full cash refund",
+        "businessFlex": "Free changes; partially refundable depending on sub-class",
+        "etihadGuestRedeposit": "~$50 per person; Gold/Platinum members may receive waiver"
+      },
+      "refundTypes": {
+        "cash": "Full Flex and Business/First Full Flex; Etihad-initiated cancellations or significant schedule changes",
+        "travelCredit": "Value and Smart fare cancellations \u2014 credit valid 12 months",
+        "miles": "Etihad Guest award cancellations \u2014 miles redeposited with fee"
+      },
+      "loopholes": [
+        "If Etihad cancels your flight or changes schedule by 3+ hours, you are entitled to a full cash refund on any fare \u2014 always insist on cash over a credit voucher",
+        "Abu Dhabi AUH hub connections are often cheaper than direct routing \u2014 Etihad frequently discounts AUH connections to Asia, India, and Australia",
+        "Etihad Smart Economy includes one free date change \u2014 use this strategically if you see a price drop on the same fare class",
+        "US DOT 24-hour rule applies for all US-originating Etihad tickets \u2014 JFK/ORD/LAX/IAD to AUH routes are popular monitoring targets",
+        "Etihad Guest Miles partnership with American AAdvantage ended \u2014 earn miles directly with Etihad Guest or via partners like Virgin Australia and Air Serbia",
+        "Etihad Stopover packages in Abu Dhabi: booking a stopover can sometimes unlock a cheaper final-destination fare \u2014 compare direct vs stopover pricing"
+      ]
+    }
+  },
+  {
+    "airline": "Qantas",
+    "code": "QF",
+    "dataSource": "knowledge_base",
+    "scrapedUrl": "https://www.qantas.com/us/en/support.html",
+    "lastUpdated": "2026-05-27",
+    "policies": {
+      "priceDropPolicy": "Qantas does not offer price-drop adjustments or price-match guarantees. After booking, options depend on fare class: Red e-Deal fares: non-refundable and non-changeable (most restrictive). Sale fares: limited changes with fee. Flex and Flexi fares: free changes, partially refundable. Any Time fares: fully flexible, fully refundable. The 24-hour US DOT rule applies for US-originating tickets. For Australian Consumer Law (ACL) protections, Australian-origin bookings may have additional rights.",
+      "twentyFourHourRule": "For tickets originating in the United States, Qantas complies with the US DOT 24-hour cancellation rule: full refund within 24 hours of booking provided departure is at least 7 days away. Cancel via Manage Booking at qantas.com or call 1-800-227-4500. Applies to tickets purchased directly through Qantas \u2014 OTA purchases are subject to OTA policies.",
+      "basicEconomyRules": "Qantas Red e-Deal and Sale fares (lowest economy): non-refundable, non-changeable after the 24-hour window \u2014 full forfeiture on cancellation. Economy Flex: date changes permitted with fee; non-refundable. Economy Flexi: free date changes, credit on cancellation. Any Time: fully flexible changes and cancellation with full refund. Business Sale: changeable with fee, non-refundable. Business Flexi: free changes, refundable.",
+      "awardTicketPolicy": "Qantas Frequent Flyer Classic award tickets: points redeposited upon cancellation. Cancellation fee: approximately AUD $50 (approx USD $32) per person. Bronze/Silver/Gold/Platinum members may receive reduced fees. Cancel at least 24 hours before departure. Qantas Points expire after 18 months of account inactivity \u2014 earn or redeem points to keep account active.",
+      "claimSteps": [
+        "Step 1: Log in to qantas.com and navigate to Manage Booking",
+        "Step 2: Enter booking reference and last name or log in with Frequent Flyer account",
+        "Step 3: Review fare class \u2014 Red e-Deal, Sale, Flex, Flexi, or Any Time",
+        "Step 4: For Flexi/Any Time fares: select Change Flight to rebook at the lower available fare",
+        "Step 5: For Economy Flex fares: assess change fee vs savings \u2014 may still be worthwhile",
+        "Step 6: For tickets within 24-hour US DOT window: cancel for full refund, then rebook at lower price",
+        "Step 7: For refund requests on eligible tickets: submit at qantas.com/feedback-and-complaints",
+        "Step 8: Call Qantas US at 1-800-227-4500 for assistance"
+      ],
+      "claimUrl": "https://www.qantas.com/us/en/manage-booking.html",
+      "refundFormUrl": "https://www.qantas.com/us/en/support/feedback-and-complaints.html",
+      "customerServiceUrl": "https://www.qantas.com/us/en/support.html",
+      "claimPhone": "1-800-227-4500",
+      "creditExpiry": "Qantas travel credits: valid 12 months from issue date. Credit vouchers issued for COVID-related cancellations: extended to 36 months in some cases. Qantas Points: expire after 18 months of inactivity \u2014 any earning, redeeming, or Points Club membership resets expiry.",
+      "cancellationFees": {
+        "redEDeal": "100% forfeiture \u2014 no refund, no credit, no changes permitted",
+        "saleFare": "Change fee AUD $75\u2013200+ depending on route; non-refundable; travel credit issued",
+        "economyFlex": "Change fee applies; non-refundable; travel credit for remainder",
+        "economyFlexi": "Free date changes; cancellation gives credit minus small fee",
+        "anyTime": "$0 change and cancellation fee \u2014 full cash refund",
+        "businessFlexi": "Free changes; refundable with small processing fee",
+        "frequentFlyerRedeposit": "~AUD $50 (~USD $32) per person; status members may receive reduced fee"
+      },
+      "refundTypes": {
+        "cash": "Any Time and Business Flexi fares; Qantas-initiated cancellations; Australian Consumer Law protections for Australian-origin bookings",
+        "travelCredit": "Flexi and Flex fare cancellations \u2014 credit valid 12 months",
+        "miles": "Qantas Frequent Flyer award cancellations \u2014 points redeposited with fee"
+      },
+      "loopholes": [
+        "If Qantas cancels your flight or changes schedule by 3+ hours, you are entitled to a full cash refund on any fare class \u2014 request cash explicitly",
+        "Australian Consumer Law (ACL) provides stronger consumer protections than US DOT for Australian-origin bookings \u2014 for Australia-booked tickets, ACL rights may exceed standard fare conditions",
+        "Qantas operates the LAX\u2013SYD, LAX\u2013MEL, JFK\u2013SYD, and DFW\u2013SYD routes \u2014 these long-haul fares fluctuate significantly and monitoring can yield $200\u2013600 savings on $1,500+ tickets",
+        "Qantas and American Airlines have a Joint Business Agreement on transpacific routes \u2014 AA Advantage miles can sometimes be used on QF flights, offering more flexibility for award bookings",
+        "US DOT 24-hour rule applies for all US-originating Qantas tickets \u2014 useful for the full refund window even on Red e-Deal fares",
+        "Qantas Points never expire as long as you earn or redeem at least once every 18 months \u2014 a small gift card purchase through Qantas Shopping keeps points alive"
+      ]
+    }
+  },
+  {
+    "airline": "Hawaiian Airlines",
+    "code": "HA",
+    "dataSource": "knowledge_base",
+    "scrapedUrl": "https://www.hawaiianairlines.com/customer-support",
+    "lastUpdated": "2026-05-27",
+    "policies": {
+      "priceDropPolicy": "Hawaiian Airlines does not offer a formal price-drop adjustment or price-match guarantee. Note: Hawaiian Airlines was acquired by Alaska Airlines (closed January 2025) \u2014 the two airlines continue to operate separately for now with separate policies, though integration is ongoing. Main Street Fares (basic economy): non-refundable, non-changeable. Main Cabin: changeable with fee. Flexible Fares: free changes, partially refundable. First Class: fully refundable. Monitor the HA/AS merger progress as policies may change.",
+      "twentyFourHourRule": "Hawaiian Airlines complies with the US DOT 24-hour cancellation rule: full refund within 24 hours of booking provided departure is at least 7 days away. Cancel via Manage Trip at hawaiianairlines.com or call 1-800-367-5320. Post-merger with Alaska Airlines, check for potential integration of cancellation policies under the Alaska brand.",
+      "basicEconomyRules": "Hawaiian Airlines Main Street Fare (basic economy): non-refundable, non-changeable after 24-hour window \u2014 full forfeiture on cancellation. No seat selection, boarding last, no same-day changes. Main Cabin (standard economy): changeable with fee (currently $0 for most routes post-merger announcement). Flexible: free changes, partially refundable. First Class: fully refundable. Note: Hawaiian-Alaska merger may simplify or change these policies \u2014 check current terms at booking.",
+      "awardTicketPolicy": "HawaiianMiles award tickets: miles redeposited upon cancellation. Cancellation fee: approximately $25\u201350 per person. Pualani Gold/Platinum members receive reduced or waived fees. As of January 2025 merger close, HawaiianMiles integration with Alaska Mileage Plan is ongoing \u2014 check current transfer and redemption options. Miles expire after 18 months of inactivity.",
+      "claimSteps": [
+        "Step 1: Log in to hawaiianairlines.com and navigate to Manage Trip",
+        "Step 2: Enter your booking confirmation number and last name",
+        "Step 3: Review your fare type \u2014 Main Street, Main Cabin, Flexible, or First Class",
+        "Step 4: For Flexible/First Class fares: select Change Flight to rebook at the lower available fare",
+        "Step 5: For Main Cabin fares: check if change fee has been waived under current policy \u2014 post-merger many fees eliminated",
+        "Step 6: For tickets within 24-hour US DOT window: cancel for full refund, rebook at lower price",
+        "Step 7: For refund requests: submit at hawaiianairlines.com/customer-support/refunds",
+        "Step 8: Call Hawaiian Airlines at 1-800-367-5320 for assistance"
+      ],
+      "claimUrl": "https://www.hawaiianairlines.com/manage-trip",
+      "refundFormUrl": "https://www.hawaiianairlines.com/customer-support/refunds",
+      "customerServiceUrl": "https://www.hawaiianairlines.com/customer-support",
+      "claimPhone": "1-800-367-5320",
+      "creditExpiry": "Hawaiian Airlines travel credits: valid 12 months from issue date. HawaiianMiles: expire after 18 months of account inactivity. Post-merger with Alaska Airlines: monitor for potential HawaiianMiles-to-Mileage Plan conversion options \u2014 Alaska has confirmed both programs will eventually merge.",
+      "cancellationFees": {
+        "mainStreet": "100% forfeiture after 24-hour window \u2014 no refund, no credit, no changes",
+        "mainCabin": "Change fees waived on most routes (post-merger policy); non-refundable; credit issued",
+        "flexible": "$0 change fee; cancellation gives partial refund or credit",
+        "firstClass": "$0 cancellation fee \u2014 full cash refund",
+        "hawaiianMilesRedeposit": "~$25\u201350 per person; Pualani status members reduced/waived"
+      },
+      "refundTypes": {
+        "cash": "Flexible and First Class fares; Hawaiian-initiated cancellations; significant schedule changes",
+        "travelCredit": "Main Cabin cancellations \u2014 credit valid 12 months",
+        "miles": "HawaiianMiles award cancellations \u2014 miles redeposited with fee"
+      },
+      "loopholes": [
+        "Hawaiian-Alaska merger (closed Jan 2025) means change/cancel fees have been eliminated on most Main Cabin fares \u2014 double-check current policy as this changes the math on price-drop recovery significantly",
+        "If Hawaiian Airlines cancels or significantly changes your flight schedule, you are entitled to a full cash refund on any fare class",
+        "Interisland Hawaii routes (HNL to Maui, Kauai, Big Island) price fluctuate frequently \u2014 monitoring these short-haul routes can yield $20\u201360 savings that add up over multiple travelers",
+        "US DOT 24-hour rule applies for all US-originating Hawaiian tickets \u2014 the 24-hour window is particularly valuable on Main Street fares that have zero flexibility afterward",
+        "HawaiianMiles may be converting to Alaska Mileage Plan \u2014 any pending miles balance may transfer; monitor official HA/AS communications for conversion announcements",
+        "Alaska Airlines codeshares on some Hawaiian routes post-merger \u2014 booking via Alaska may provide access to Alaska's refund and change policies which are generally more generous"
+      ]
+    }
+  },
+  {
+    "airline": "WestJet",
+    "code": "WS",
+    "dataSource": "knowledge_base",
+    "scrapedUrl": "https://www.westjet.com/en-ca/help/",
+    "lastUpdated": "2026-05-27",
+    "policies": {
+      "priceDropPolicy": "WestJet does not offer a price-drop adjustment or price-match guarantee. After booking, options depend on fare bundle: Econo: non-refundable, changeable with fee. EconoFlex: free changes, partially refundable. Premium: changeable, partially refundable. Business: free changes, fully refundable. Canadian Air Passenger Protection Regulations (APPR) provide strong rights for flight disruptions \u2014 stronger than US DOT for Canadian-origin flights. The 24-hour rule applies for US-originating WestJet bookings.",
+      "twentyFourHourRule": "For tickets originating in the United States, WestJet complies with the US DOT 24-hour cancellation rule. For Canadian-origin tickets, Canadian APPR provides similar protections plus stronger disruption rights. Cancel via Manage Trips at westjet.com or call 1-888-937-8538. Note: WestJet and Air Canada are Canada's two major carriers \u2014 monitoring both on Canada-US routes can yield best-price tracking.",
+      "basicEconomyRules": "WestJet Econo bundle: non-refundable; changeable with fee (typically CAD $100\u2013$200 depending on route); no WestJet Rewards points earned in some cases. EconoFlex: free changes (including same-day); cancellation gives WestJet Travel Bank credit. Premium: changeable for free, partially refundable with fee. Business: fully flexible and refundable. Fare differences on changes must be paid \u2014 no downgrade refund.",
+      "awardTicketPolicy": "WestJet Rewards (WestJet Dollars) redemptions: WestJet Dollars redeposited upon cancellation at no fee for EconoFlex, Premium, and Business bundles. Econo bundle cancellation: WestJet Dollars may be forfeited depending on fare rules. WestJet Dollars never expire as long as account remains active with at least one flight per 24 months. WestJet Rewards status members (Silver/Gold) receive additional change/cancel flexibility.",
+      "claimSteps": [
+        "Step 1: Log in to westjet.com and navigate to Manage Trips",
+        "Step 2: Enter booking reference and last name or sign in with WestJet Rewards account",
+        "Step 3: Review your fare bundle \u2014 Econo, EconoFlex, Premium, or Business",
+        "Step 4: For EconoFlex/Premium/Business fares: select Change Flight and rebook at the lower available fare",
+        "Step 5: For Econo fares: calculate change fee + fare difference vs original ticket price",
+        "Step 6: For tickets within 24-hour US DOT window (US-origin): cancel for full refund, rebook",
+        "Step 7: For Canadian APPR claims (Canada-origin): file disruption claim at westjet.com/en-ca/help/",
+        "Step 8: Call WestJet at 1-888-937-8538 for assistance"
+      ],
+      "claimUrl": "https://www.westjet.com/en-ca/trips/manage",
+      "refundFormUrl": "https://www.westjet.com/en-ca/help/refund-request",
+      "customerServiceUrl": "https://www.westjet.com/en-ca/help/",
+      "claimPhone": "1-888-937-8538",
+      "creditExpiry": "WestJet Travel Bank credits: valid 24 months from issue date \u2014 more generous than most airlines. WestJet Dollars: never expire as long as one qualifying flight taken per 24 months. Note: WestJet Travel Bank vs WestJet Dollars are different \u2014 Travel Bank credits are time-limited, WestJet Dollars are not.",
+      "cancellationFees": {
+        "econo": "Change fee ~CAD $100\u2013200 per person; non-refundable; fare difference must be paid",
+        "econoFlex": "$0 change fee (including same-day); cancellation gives Travel Bank credit valid 24 months",
+        "premium": "Free changes; cancellation fee ~CAD $100; remainder as Travel Bank credit",
+        "business": "$0 change and cancellation fee \u2014 full cash refund or WestJet Dollars",
+        "westjetDollarsRedeposit": "$0 for EconoFlex and above; Econo may forfeit based on fare rules"
+      },
+      "refundTypes": {
+        "cash": "Business bundle; WestJet-initiated cancellations; significant schedule changes; APPR claims",
+        "travelCredit": "EconoFlex and Premium cancellations \u2014 Travel Bank credit valid 24 months",
+        "miles": "WestJet Dollars redeposited at no fee for EconoFlex and above"
+      },
+      "loopholes": [
+        "Canadian APPR (Air Passenger Protection Regulations) for Canada-origin WestJet flights: stronger than US DOT \u2014 compensation of CAD $125\u2013$1,000 for significant delays, plus full refund rights on large schedule changes",
+        "WestJet Travel Bank credits are valid 24 months \u2014 double the typical 12-month credit window at most US airlines, reducing urgency pressure when rebooking",
+        "WestJet Dollars never expire (as long as one flight every 24 months) \u2014 unlike airline miles, they don't erode over time",
+        "If WestJet significantly changes your schedule (typically 3+ hours), you are entitled to a full cash refund regardless of fare class under APPR",
+        "US DOT 24-hour rule applies for all US-originating WestJet tickets \u2014 WestJet operates YYZ/YVR/YYC routes from multiple US cities",
+        "WestJet EconoFlex bundle is often only $20\u201340 more than Econo \u2014 the zero-change-fee benefit can easily pay for itself on a single schedule adjustment or price-drop rebook"
       ]
     }
   }
