@@ -2421,27 +2421,23 @@ async function renderWalletTab() {
     const airlineOptions = `<optgroup label="Major US Carriers">${popularOpts}</optgroup><optgroup label="International">${otherOpts}</optgroup>`;
 
     const trustBar = `
-    <div class="wallet-trust-bar">
-      <div class="trust-card">
-        <div class="trust-icon">✈️</div>
-        <h4>Airlines Won't Tell You</h4>
-        <p>Airlines keep your credits quiet. They profit when you forget. TripReclaim tracks every credit so nothing expires unnoticed.</p>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 16px">
+        <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.09em;color:#1d4ed8;margin-bottom:8px">Airlines Won't Tell You</div>
+        <p style="font-size:0.82rem;color:#475569;line-height:1.55;margin:0">Airlines keep your credits quiet. They profit when you forget. TripReclaim tracks every credit so nothing expires unnoticed.</p>
       </div>
-      <div class="trust-card">
-        <div class="trust-icon">📋</div>
-        <h4>All Airlines, One Place</h4>
-        <p>Delta, American, United, Emirates, Qantas — every credit from every carrier in a single wallet, sorted by urgency.</p>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 16px">
+        <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.09em;color:#1d4ed8;margin-bottom:8px">All Airlines, One Place</div>
+        <p style="font-size:0.82rem;color:#475569;line-height:1.55;margin:0">Delta, American, United, Emirates, Qantas — every credit from every carrier in a single wallet, sorted by urgency.</p>
       </div>
-      <div class="trust-card">
-        <div class="trust-icon">🔔</div>
-        <h4>Automatic Reminders</h4>
-        <p>You'll get email alerts at 90, 30, and 7 days before each credit expires. Never lose a credit to a missed deadline again.</p>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 16px">
+        <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.09em;color:#1d4ed8;margin-bottom:8px">Automatic Reminders</div>
+        <p style="font-size:0.82rem;color:#475569;line-height:1.55;margin:0">You'll get email alerts at 90, 30, and 7 days before each credit expires. Never lose a credit to a missed deadline again.</p>
       </div>
-    </div>`;
-
-    const securityNote = `
-    <div class="security-note">
-      <strong>Your data stays private.</strong> This is a personal tracker — you enter your own credits. TripReclaim never accesses your airline accounts, passwords, or loyalty numbers.
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 16px">
+        <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.09em;color:#1d4ed8;margin-bottom:8px">Your Data Stays Private</div>
+        <p style="font-size:0.82rem;color:#475569;line-height:1.55;margin:0">This is a personal tracker — you enter your own credits. TripReclaim never accesses your airline accounts, passwords, or loyalty numbers.</p>
+      </div>
     </div>`;
 
     const addForm = `
@@ -2481,7 +2477,6 @@ async function renderWalletTab() {
     el.innerHTML = `
       <div style="max-width:720px;margin:0 auto;padding:24px 0">
         ${trustBar}
-        ${securityNote}
         <div id="wallet-total-area">
           <div style="background:#0f172a;color:#fff;border-radius:12px;padding:24px 28px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
             <div>
