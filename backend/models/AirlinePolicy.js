@@ -34,7 +34,7 @@ const airlinePolicySchema = new mongoose.Schema({
     // Cancellation fee schedule (keyed by fare type)
     cancellationFees: {
       type: Map,
-      of: Number,
+      of: String,
       default: {},
     },
 
