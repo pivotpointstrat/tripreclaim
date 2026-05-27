@@ -2420,8 +2420,7 @@ async function renderWalletTab() {
 
   let credits = [], totalActive = 0;
   try {
-    const res = await apiFetch('/api/credits');
-    const data = await res.json();
+    const data = await apiFetch('/api/credits');
     credits = data.credits || [];
     totalActive = data.totalActive || 0;
   } catch(e) {
