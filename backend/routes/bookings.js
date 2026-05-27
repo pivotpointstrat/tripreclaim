@@ -259,6 +259,39 @@ router.patch('/:id/claim-credit', requireAuth, async (req, res) => {
 
 /**
  * GET /bookings/:id/claim-email
+/**
+ * PUT /bookings/:id/claim-status
+ * Update the claim tracking status and optional notes after user submits to airline.
+ * Body: { status: 'submitted'|'in_progress'|'approved'|'denied'|'expired', notes: string }
+ */
+router.put('/:id/claim-status', requireAuth, async (req, res) => {
+  try {
+    const { status, notes } = req.body;
+    const validStatuses = ['not_submitted', 'submitted', 'in_progress', 'approved', 'denied', 'expired'];
+    if (!status || !validStatuses.includes(status)) {
+      return res.status(400).json({ error: `status must be one of: ${validStatuses.join(', ')}` });
+    }
+    const update = {
+      claimStatus: status,
+      claimUpdatedAt: new Date(),
+    };
+    if (status === 'submitted' ) update.claimSubmittedAt = new Date();
+    if (notes !== undefined) update.claimNotes = notes.trim();
+
+    const booking = await Booking.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user._id },
+      update,
+      { new: true }
+    );
+    if (!booking) return res.status(404).json({ error: 'Booking not found' });
+    res.json({ ok: true, claimStatus: booking.claimStatus, claimNotes: booking.claimNotes, claimUpdatedAt: booking.claimUpdatedAt });
+  } catch (err) {
+    console.error('[bookings] claim-status error:', err.message);
+    res.status(500).json({ error: 'Failed to update claim status' });
+  }
+});
+
+/**
  * Generate a complete, ready-to-send refund request email for a price-drop claim.
  * Returns { subject, body, claimUrl, claimPhone }
  */

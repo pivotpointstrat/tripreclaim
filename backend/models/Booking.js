@@ -102,6 +102,16 @@ const bookingSchema = new mongoose.Schema({
     serpApiSummary:    { type: Object, default: null }, // top 5 results from Serpapi
     alertType:         { type: String, default: 'price_drop' }, // price_drop | not_worth_it | miles_drop
   }],
+
+  // Claim status tracking — user updates after submitting to airline
+  claimStatus: {
+    type: String,
+    enum: ['not_submitted', 'submitted', 'in_progress', 'approved', 'denied', 'expired'],
+    default: 'not_submitted',
+  },
+  claimSubmittedAt: { type: Date, default: null },
+  claimUpdatedAt:   { type: Date, default: null },
+  claimNotes:       { type: String, default: null }, // user notes: "Emailed AA on May 27", "Approved $180 refund"
 }, {
   timestamps: true,
 });
