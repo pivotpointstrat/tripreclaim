@@ -69,15 +69,16 @@ router.post('/refresh', requireAuth, async (req, res) => {
 
 /**
  * POST /policy/seed
- * (Re-)seed the static research data into MongoDB.
- * Safe to call multiple times — uses $setOnInsert.
+ * Admin: (Re-)seed airline policies from scraped JSON into MongoDB.
+ * Safe to call multiple times — uses upsert.
  */
-router.post('/seed', requireAuth, async (req, res) => {
+router.post('/seed', async (req, res) => {
   try {
-    const count = await seedPolicies();
-    res.json({ message: `Seeded ${count} airline policies.` });
+    await seedPolicies();
+    const count = await AirlinePolicy.countDocuments();
+    res.json({ ok: true, policiesInDb: count, message: `Seeded successfully — ${count} airline policies in DB` });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to seed policies' });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -95,7 +96,6 @@ router.get('/:airlineCode', async (req, res) => {
         error: `No policy found for "${airlineCode}". Supported codes: UA, AA, DL, WN, AS, B6`,
       });
     }
-    // Strip large scraped markdown from public response
     if (policy.policies) {
       delete policy.policies.scrapedMarkdown;
     }
@@ -103,24 +103,6 @@ router.get('/:airlineCode', async (req, res) => {
   } catch (err) {
     console.error('[policy] Error fetching policy:', err.message);
     res.status(500).json({ error: 'Failed to fetch policy' });
-  }
-});
-
-
-/**
- * POST /policy/seed
- * Admin: manually trigger policy seeding from scraped JSON.
- * Safe to call multiple times (upsert).
- */
-router.post('/seed', async (req, res) => {
-  try {
-    const { seedPolicies } = require('../services/policyAgent');
-    await seedPolicies();
-    const AirlinePolicy = require('../models/AirlinePolicy');
-    const count = await AirlinePolicy.countDocuments();
-    res.json({ ok: true, policiesInDb: count, message: `Seeded successfully — ${count} airline policies in DB` });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
   }
 });
 
