@@ -2578,15 +2578,14 @@ async function saveCredit() {
     notes: document.getElementById('wl-notes').value
   };
   try {
-    const res = await apiFetch('/api/credits', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-    const data = await res.json();
-    if (data.ok) {
+    const data = await apiFetch('/api/credits', { method:'POST', body: JSON.stringify(body) });
+    if (data.credit || data.ok !== false) {
       await renderWalletTab();
     } else {
       alert('Error saving credit: ' + (data.error || 'Unknown error'));
     }
   } catch(e) {
-    alert('Failed to save credit. Please try again.');
+    alert('Failed to save credit: ' + (e.message || 'Please try again.'));
   }
 }
 
@@ -2594,13 +2593,11 @@ async function markCreditUsed(creditId) {
   const usedFor = prompt('What did you use this credit for? (optional)');
   if (usedFor === null) return; // cancelled
   try {
-    const res = await apiFetch(`/api/credits/${creditId}`, {
+    const data = await apiFetch(`/api/credits/${creditId}`, {
       method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ status: 'used', usedFor: usedFor || undefined })
     });
-    const data = await res.json();
-    if (data.ok) await renderWalletTab();
+    if (data.credit || data.ok !== false) await renderWalletTab();
     else alert('Error updating credit.');
   } catch(e) { alert('Failed to update credit.'); }
 }
@@ -2608,9 +2605,8 @@ async function markCreditUsed(creditId) {
 async function deleteCredit(creditId) {
   if (!confirm('Remove this credit from your wallet?')) return;
   try {
-    const res = await apiFetch(`/api/credits/${creditId}`, { method: 'DELETE' });
-    const data = await res.json();
-    if (data.ok) {
+    const data = await apiFetch(`/api/credits/${creditId}`, { method: 'DELETE' });
+    if (data.ok || data.deleted) {
       const el = document.getElementById(`credit-${creditId}`);
       if (el) el.remove();
       // Refresh to update total
