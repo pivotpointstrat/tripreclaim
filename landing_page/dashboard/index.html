@@ -2326,10 +2326,6 @@ async function submitHelpTicket() {
   }
 }
 
-// ── Boot ──
-init();
-</script>
-<script src="/cookie-consent.js">
 
 // ── Airline Credit Wallet ─────────────────────────────────────────────────────
 const POLICY_SLUGS_WALLET = {
@@ -2415,136 +2411,134 @@ function renderCreditCard(c) {
 }
 
 async function renderWalletTab() {
-  const el = document.getElementById('tab-content');
-  el.innerHTML = '<div style="text-align:center;padding:40px"><div class="spinner"></div><p style="color:#64748b;margin-top:12px">Loading your credit wallet...</p></div>';
-
-  let credits = [], totalActive = 0;
   try {
-    const data = await apiFetch('/api/credits');
-    credits = data.credits || [];
-    totalActive = data.totalActive || 0;
-  } catch(e) {
-    el.innerHTML = '<div style="padding:40px;text-align:center;color:#dc2626">Failed to load wallet. Please try again.</div>';
-    return;
-  }
+    const el = document.getElementById('tab-content');
+    if (!el) { console.error('[Wallet] tab-content element not found'); return; }
 
-  const active  = credits.filter(c => c.status === 'active');
-  const used    = credits.filter(c => c.status === 'used'   );
-  const expired = credits.filter(c => c.status === 'expired');
+    const airlineOptions = AIRLINES_LIST.map(a =>
+      `<option value="${a.code}">${a.name}</option>`
+    ).join('');
 
-  const airlineOptions = AIRLINES_LIST.map(a =>
-    `<option value="${a.code}">${a.name}</option>`
-  ).join('');
-
-  const trustBar = `
-  <div class="wallet-trust-bar">
-    <div class="trust-card">
-      <div class="trust-icon">✈️</div>
-      <h4>Airlines Won't Tell You</h4>
-      <p>Airlines keep your credits quiet. They profit when you forget. TripReclaim tracks every credit so nothing expires unnoticed.</p>
-    </div>
-    <div class="trust-card">
-      <div class="trust-icon">📋</div>
-      <h4>All Airlines, One Place</h4>
-      <p>Delta, American, United, Emirates, Qantas — every credit from every carrier in a single wallet, sorted by urgency.</p>
-    </div>
-    <div class="trust-card">
-      <div class="trust-icon">🔔</div>
-      <h4>Automatic Reminders</h4>
-      <p>You'll get email alerts at 90, 30, and 7 days before each credit expires. Never lose a credit to a missed deadline again.</p>
-    </div>
-  </div>`;
-
-  const securityNote = `
-  <div class="security-note">
-    🔒 <strong>Your data stays private.</strong> This is a personal tracker — you enter your own credits. TripReclaim never accesses your airline accounts, passwords, or loyalty numbers.
-  </div>`;
-
-  const totalCard = credits.length > 0 ? `
-  <div class="wallet-total">
-    <div>
-      <div style="font-size:0.85rem;opacity:.8;margin-bottom:4px">Total Active Credits</div>
-      <h2>$${totalActive.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</h2>
-      <p>${active.length} active · ${used.length} used · ${expired.length} expired</p>
-    </div>
-    <button onclick="toggleAddCredit()" style="background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;font-weight:700;padding:12px 22px;border-radius:8px;cursor:pointer;font-size:14px">+ Add Credit</button>
-  </div>` : '';
-
-  const addForm = `
-  <div id="add-credit-form" class="add-credit-form">
-    <h3 style="margin:0 0 18px;font-size:1rem;font-weight:700">+ Add Airline Credit</h3>
-    <div class="form-row">
-      <div>
-        <label class="form-label">Airline *</label>
-        <select id="wl-airline" class="form-input" onchange="updateWalletAirlineName()">
-          <option value="">Select airline...</option>
-          ${airlineOptions}
-        </select>
+    const trustBar = `
+    <div class="wallet-trust-bar">
+      <div class="trust-card">
+        <div class="trust-icon">✈️</div>
+        <h4>Airlines Won't Tell You</h4>
+        <p>Airlines keep your credits quiet. They profit when you forget. TripReclaim tracks every credit so nothing expires unnoticed.</p>
       </div>
-      <div>
-        <label class="form-label">Credit Amount (USD) *</label>
-        <input type="number" id="wl-amount" class="form-input" placeholder="350.00" min="0" step="0.01">
+      <div class="trust-card">
+        <div class="trust-icon">📋</div>
+        <h4>All Airlines, One Place</h4>
+        <p>Delta, American, United, Emirates, Qantas — every credit from every carrier in a single wallet, sorted by urgency.</p>
       </div>
-    </div>
-    <div class="form-row">
-      <div>
-        <label class="form-label">Credit Code / Voucher Number</label>
-        <input type="text" id="wl-code" class="form-input" placeholder="e.g. ZXKP2019DL">
+      <div class="trust-card">
+        <div class="trust-icon">🔔</div>
+        <h4>Automatic Reminders</h4>
+        <p>You'll get email alerts at 90, 30, and 7 days before each credit expires. Never lose a credit to a missed deadline again.</p>
       </div>
-      <div>
-        <label class="form-label">Expiry Date *</label>
-        <input type="date" id="wl-expiry" class="form-input">
-      </div>
-    </div>
-    <div class="form-row">
-      <div>
-        <label class="form-label">Issue Date</label>
-        <input type="date" id="wl-issue" class="form-input">
-      </div>
-      <div>
-        <label class="form-label">Notes (optional)</label>
-        <input type="text" id="wl-notes" class="form-input" placeholder="e.g. From JFK-LAX cancellation May 2025">
-      </div>
-    </div>
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:6px">
-      <button onclick="toggleAddCredit()" style="background:#f1f5f9;color:#64748b;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:600">Cancel</button>
-      <button onclick="saveCredit()" style="background:#1d4ed8;color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-weight:600">Save Credit</button>
-    </div>
-  </div>`;
-
-  const emptyState = credits.length === 0 ? `
-  <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:48px 32px;text-align:center;margin-bottom:24px">
-    <div style="font-size:3rem;margin-bottom:16px">💳</div>
-    <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:8px">Your Credit Wallet is Empty</h3>
-    <p style="color:#64748b;font-size:14px;max-width:400px;margin:0 auto 24px">Add your airline travel credits to start tracking them. Most airline credits expire in 12 months — TripReclaim will remind you before they vanish.</p>
-    <button onclick="toggleAddCredit()" style="background:#1d4ed8;color:#fff;border:none;padding:12px 28px;border-radius:8px;cursor:pointer;font-weight:700;font-size:15px">+ Add My First Credit</button>
-    <div style="margin-top:20px;font-size:12px;color:#94a3b8">💡 Have credits from a canceled flight? Add them now — most users have $200–$800 in forgotten credits.</div>
-  </div>` : '';
-
-  const activeCards  = active.map(renderCreditCard).join('');
-  const usedSection  = used.length > 0
-    ? `<div style="margin-top:24px"><h4 style="font-size:0.85rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Used Credits</h4>${used.map(renderCreditCard).join('')}</div>` : '';
-  const expiredSection = expired.length > 0
-    ? `<div style="margin-top:24px"><h4 style="font-size:0.85rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Expired Credits</h4>${expired.map(renderCreditCard).join('')}</div>` : '';
-
-  const addBtnTop = credits.length > 0 ? ''  : ''; // total card has the button when credits exist
-  const addBtnStandalone = credits.length === 0
-    ? ''  // empty state has button
-    : '';
-
-  el.innerHTML = `
-    <div style="max-width:720px;margin:0 auto;padding:24px 0">
-      ${trustBar}
-      ${securityNote}
-      ${totalCard}
-      ${addForm}
-      ${emptyState}
-      ${activeCards}
-      ${usedSection}
-      ${expiredSection}
     </div>`;
-}
 
+    const securityNote = `
+    <div class="security-note">
+      🔒 <strong>Your data stays private.</strong> This is a personal tracker — you enter your own credits. TripReclaim never accesses your airline accounts, passwords, or loyalty numbers.
+    </div>`;
+
+    const addForm = `
+    <div id="add-credit-form" class="add-credit-form">
+      <h3 style="margin:0 0 18px;font-size:1rem;font-weight:700">+ Add Airline Credit</h3>
+      <div class="form-row">
+        <div><label class="form-label">Airline *</label>
+          <select id="wl-airline" class="form-input"><option value="">Select airline...</option>${airlineOptions}</select>
+        </div>
+        <div><label class="form-label">Credit Amount (USD) *</label>
+          <input type="number" id="wl-amount" class="form-input" placeholder="350.00" min="0" step="0.01">
+        </div>
+      </div>
+      <div class="form-row">
+        <div><label class="form-label">Credit Code / Voucher Number</label>
+          <input type="text" id="wl-code" class="form-input" placeholder="e.g. ZXKP2019DL">
+        </div>
+        <div><label class="form-label">Expiry Date *</label>
+          <input type="date" id="wl-expiry" class="form-input">
+        </div>
+      </div>
+      <div class="form-row">
+        <div><label class="form-label">Issue Date</label>
+          <input type="date" id="wl-issue" class="form-input">
+        </div>
+        <div><label class="form-label">Notes (optional)</label>
+          <input type="text" id="wl-notes" class="form-input" placeholder="e.g. From JFK-LAX cancellation May 2025">
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:6px">
+        <button type="button" onclick="toggleAddCredit()" style="background:#f1f5f9;color:#64748b;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:600">Cancel</button>
+        <button type="button" onclick="saveCredit()" style="background:#1d4ed8;color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-weight:600">Save Credit</button>
+      </div>
+    </div>`;
+
+    // Render static shell immediately (no API call needed)
+    el.innerHTML = `
+      <div style="max-width:720px;margin:0 auto;padding:24px 0">
+        ${trustBar}
+        ${securityNote}
+        <div id="wallet-total-area"></div>
+        ${addForm}
+        <div id="wallet-credits-area">
+          <div style="text-align:center;padding:32px"><div class="spinner"></div><p style="color:#64748b;margin-top:8px;font-size:14px">Loading your credits...</p></div>
+        </div>
+      </div>`;
+
+    // Now load credits async — UI is already visible
+    try {
+      const data = await apiFetch('/api/credits');
+      const credits = data.credits || [];
+      const totalActive = data.totalActive || 0;
+
+      const active   = credits.filter(c => c.status === 'active');
+      const used     = credits.filter(c => c.status === 'used');
+      const expired  = credits.filter(c => c.status === 'expired');
+
+      // Update total card
+      const totalEl = document.getElementById('wallet-total-area');
+      if (totalEl) {
+        totalEl.innerHTML = `
+          <div class="wallet-total">
+            <div>
+              <div style="font-size:0.85rem;opacity:.8;margin-bottom:4px">Total Active Credits</div>
+              <h2>$${totalActive.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</h2>
+              <p>${active.length} active · ${used.length} used · ${expired.length} expired</p>
+            </div>
+            <button type="button" onclick="toggleAddCredit()" style="background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;font-weight:700;padding:12px 22px;border-radius:8px;cursor:pointer;font-size:14px">+ Add Credit</button>
+          </div>`;
+      }
+
+      // Update credits area
+      const creditsEl = document.getElementById('wallet-credits-area');
+      if (!creditsEl) return;
+
+      if (credits.length === 0) {
+        creditsEl.innerHTML = `
+          <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:48px 32px;text-align:center">
+            <div style="font-size:3rem;margin-bottom:16px">💳</div>
+            <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:8px">Your Credit Wallet is Empty</h3>
+            <p style="color:#64748b;font-size:14px;max-width:400px;margin:0 auto 24px">Add your airline travel credits to start tracking them. Most airline credits expire in 12 months — TripReclaim will remind you before they vanish.</p>
+            <button type="button" onclick="toggleAddCredit()" style="background:#1d4ed8;color:#fff;border:none;padding:12px 28px;border-radius:8px;cursor:pointer;font-weight:700;font-size:15px">+ Add My First Credit</button>
+            <div style="margin-top:20px;font-size:12px;color:#94a3b8">💡 Most users have $200–$800 in forgotten airline credits. Add yours now.</div>
+          </div>`;
+      } else {
+        const activeCards  = active.map(renderCreditCard).join('');
+        const usedSection  = used.length > 0 ? `<div style="margin-top:24px"><h4 style="font-size:0.85rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Used Credits</h4>${used.map(renderCreditCard).join('')}</div>` : '';
+        const expiredSec   = expired.length > 0 ? `<div style="margin-top:24px"><h4 style="font-size:0.85rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Expired Credits</h4>${expired.map(renderCreditCard).join('')}</div>` : '';
+        creditsEl.innerHTML = activeCards + usedSection + expiredSec;
+      }
+    } catch(apiErr) {
+      const creditsEl = document.getElementById('wallet-credits-area');
+      if (creditsEl) creditsEl.innerHTML = '<div style="padding:24px;text-align:center;color:#dc2626;background:#fef2f2;border-radius:10px">Could not load credits. Please try again.</div>';
+    }
+  } catch(outerErr) {
+    console.error('[Wallet] Render error:', outerErr);
+  }
+}
 function toggleAddCredit() {
   const form = document.getElementById('add-credit-form');
   if (!form) return;
@@ -2616,6 +2610,8 @@ async function deleteCredit(creditId) {
   } catch(e) { alert('Failed to remove credit.'); }
 }
 
+
+// ── Boot ──
+init();
 </script>
-</body>
-</html>
+<script src="/cookie-consent.js"></script>
