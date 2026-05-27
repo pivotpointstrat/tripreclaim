@@ -2422,21 +2422,21 @@ async function renderWalletTab() {
 
     const trustBar = `
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 16px">
-        <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.09em;color:#1d4ed8;margin-bottom:8px">Airlines Won't Tell You</div>
-        <p style="font-size:0.82rem;color:#475569;line-height:1.55;margin:0">Airlines keep your credits quiet. They profit when you forget. TripReclaim tracks every credit so nothing expires unnoticed.</p>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 16px;text-align:center">
+        <div style="font-size:0.85rem;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:#1d4ed8;margin-bottom:8px">Airlines Won't Tell You</div>
+        <p style="font-size:0.75rem;color:#475569;line-height:1.55;margin:0">Airlines keep your credits quiet. They profit when you forget. TripReclaim tracks every credit so nothing expires unnoticed.</p>
       </div>
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 16px">
-        <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.09em;color:#1d4ed8;margin-bottom:8px">All Airlines, One Place</div>
-        <p style="font-size:0.82rem;color:#475569;line-height:1.55;margin:0">Delta, American, United, Emirates, Qantas — every credit from every carrier in a single wallet, sorted by urgency.</p>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 16px;text-align:center">
+        <div style="font-size:0.85rem;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:#1d4ed8;margin-bottom:8px">All Airlines, One Place</div>
+        <p style="font-size:0.75rem;color:#475569;line-height:1.55;margin:0">Delta, American, United, Emirates, Qantas — every credit from every carrier in a single wallet, sorted by urgency.</p>
       </div>
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 16px">
-        <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.09em;color:#1d4ed8;margin-bottom:8px">Automatic Reminders</div>
-        <p style="font-size:0.82rem;color:#475569;line-height:1.55;margin:0">You'll get email alerts at 90, 30, and 7 days before each credit expires. Never lose a credit to a missed deadline again.</p>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 16px;text-align:center">
+        <div style="font-size:0.85rem;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:#1d4ed8;margin-bottom:8px">Automatic Reminders</div>
+        <p style="font-size:0.75rem;color:#475569;line-height:1.55;margin:0">You'll get email alerts at 90, 30, and 7 days before each credit expires. Never lose a credit to a missed deadline again.</p>
       </div>
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 16px">
-        <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.09em;color:#1d4ed8;margin-bottom:8px">Your Data Stays Private</div>
-        <p style="font-size:0.82rem;color:#475569;line-height:1.55;margin:0">This is a personal tracker — you enter your own credits. TripReclaim never accesses your airline accounts, passwords, or loyalty numbers.</p>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 16px;text-align:center">
+        <div style="font-size:0.85rem;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:#1d4ed8;margin-bottom:8px">Your Data Stays Private</div>
+        <p style="font-size:0.75rem;color:#475569;line-height:1.55;margin:0">This is a personal tracker — you enter your own credits. TripReclaim never accesses your airline accounts, passwords, or loyalty numbers.</p>
       </div>
     </div>`;
 
@@ -2484,7 +2484,7 @@ async function renderWalletTab() {
               <div style="font-size:2rem;font-weight:800;letter-spacing:-0.02em" id="wallet-total-amount">$0.00</div>
               <div style="font-size:0.8rem;opacity:0.7;margin-top:4px" id="wallet-credit-counts">Loading...</div>
             </div>
-            <button type="button" onclick="toggleAddCredit()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;font-weight:700;padding:11px 22px;border-radius:8px;cursor:pointer;font-size:14px;white-space:nowrap">+ Add Credit</button>
+            <button type="button" onclick="toggleAddCredit()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;font-weight:700;padding:11px 22px;border-radius:8px;cursor:pointer;font-size:14px;white-space:nowrap">+ Add Travel Credit</button>
           </div>
         </div>
         ${addForm}
@@ -2549,11 +2549,22 @@ function updateWalletAirlineName() {
 }
 
 async function saveCredit() {
-  const code = document.getElementById('wl-airline').value;
-  const amount = document.getElementById('wl-amount').value;
-  const expiry = document.getElementById('wl-expiry').value;
-  if (!code || !amount || !expiry) {
-    alert('Please fill in Airline, Amount, and Expiry Date.');
+  const airlineEl = document.getElementById('wl-airline');
+  const amountEl  = document.getElementById('wl-amount');
+  const expiryEl  = document.getElementById('wl-expiry');
+  if (!airlineEl || !amountEl || !expiryEl) {
+    alert('Form not found. Please click the + Add Travel Credit button and try again.');
+    return;
+  }
+  const code   = airlineEl.value;
+  const amount = amountEl.value;
+  const expiry = expiryEl.value;
+  const missing = [];
+  if (!code)   missing.push('Airline');
+  if (!amount) missing.push('Amount');
+  if (!expiry) missing.push('Expiry Date');
+  if (missing.length > 0) {
+    alert('Please fill in: ' + missing.join(', '));
     return;
   }
   const airline = AIRLINES_LIST.find(a => a.code === code);
