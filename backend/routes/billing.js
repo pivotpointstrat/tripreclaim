@@ -73,7 +73,7 @@ router.post('/create-upgrade-checkout', requireAuth, async (req, res) => {
     }
 
     const sessionParams = {
-      mode: plan === 'annual' ? 'payment' : 'subscription',
+      mode: 'subscription', // both monthly and annual are Stripe recurring subscriptions
       line_items: [{ price: priceId, quantity: 1 }],
       customer_email: user.email,
       success_url: `${process.env.FRONTEND_URL}/dashboard/?upgraded=1`,

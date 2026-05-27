@@ -106,4 +106,22 @@ router.get('/:airlineCode', async (req, res) => {
   }
 });
 
+
+/**
+ * POST /policy/seed
+ * Admin: manually trigger policy seeding from scraped JSON.
+ * Safe to call multiple times (upsert).
+ */
+router.post('/seed', async (req, res) => {
+  try {
+    const { seedPolicies } = require('../services/policyAgent');
+    await seedPolicies();
+    const AirlinePolicy = require('../models/AirlinePolicy');
+    const count = await AirlinePolicy.countDocuments();
+    res.json({ ok: true, policiesInDb: count, message: `Seeded successfully — ${count} airline policies in DB` });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

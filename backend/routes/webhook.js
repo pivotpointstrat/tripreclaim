@@ -39,13 +39,13 @@ router.post('/stripe', express.raw({ type: 'application/json' }), async (req, re
     switch (event.type) {
 
       // ── One-time payment completed (per_trip plan) ──
-      // ── One-time payment completed (per_trip plan) ──
       case 'checkout.session.completed': {
         const session = event.data.object;
         const email = session.customer_details?.email || session.customer_email;
         if (!email) break;
 
         // ── Referral credit attribution (runs for ALL plan types) ──
+        let pendingReferredBy = null;
         const clientRef = session.client_reference_id;
         if (clientRef && clientRef.startsWith('ref:')) {
           const refCode = clientRef.replace('ref:', '').split('|')[0].trim();
@@ -63,11 +63,7 @@ router.post('/stripe', express.raw({ type: 'application/json' }), async (req, re
                   expiresAt,
                 }},
               });
-              await User.findOneAndUpdate(
-                { email: email.toLowerCase() },
-                { referredBy: refCode },
-                { upsert: false }
-              );
+              pendingReferredBy = refCode; // stored — will set after handleNewUser creates user
               sendReferralCreditEmail(referrer.email, email, 3)
                 .catch(e => console.warn('[webhook] Referral email failed (non-fatal):', e.message));
               console.log(`[webhook] 💰 Referral $3 credit → ${referrer.email} (referred: ${email})`);
@@ -103,6 +99,14 @@ router.post('/stripe', express.raw({ type: 'application/json' }), async (req, re
         if (session.mode === 'subscription') break;
 
         await handleNewUser(email, session.customer, 'per_trip', null);
+        // Now user exists — store referredBy if this was a referral
+        if (pendingReferredBy) {
+          await User.findOneAndUpdate(
+            { email: email.toLowerCase() },
+            { referredBy: pendingReferredBy },
+            { upsert: false }
+          ).catch(e => console.warn('[webhook] referredBy update failed:', e.message));
+        }
         break;
       }
 

@@ -4,8 +4,13 @@
 /evidence/*  /evidence/index.html  200
 /policies  /policies/  301
 /policies/*  /policies/index.html  200
+/support  /support/  301
+/support/*  /support/index.html  200
+/calculator  /calculator/  301
+/calculator/*  /calculator/index.html  200
+/sms-consent  /sms-consent/  301
+/sms-consent/*  /sms-consent/index.html  200
 /privacy  /privacy/  301
 /terms  /terms/  301
-/sms-consent  /sms-consent/  301
 /blog  /blog/  301
 /blog/*  /blog/:splat  200
