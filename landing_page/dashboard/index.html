@@ -2151,25 +2151,32 @@ async function upgradeWithCredit(plan) {
 
 async function confirmUpgradeWithCredit(plan, btn) {
   const orig = btn.textContent;
-  btn.textContent = 'Creating checkout...';
+  btn.textContent = 'Applying...';
   btn.disabled = true;
+  // plan is 'monthly' or 'annual' — map to endpoint values
+  const endpointPlan = plan === 'annual' ? 'annual' : 'subscription';
   try {
-    const data = await apiFetch('/billing/create-upgrade-checkout', {
+    const data = await apiFetch('/billing/apply-credit', {
       method: 'POST',
-      body: JSON.stringify({ plan })
+      body: JSON.stringify({ plan: endpointPlan })
     });
-    if (data.url) {
-      if (data.creditApplied > 0) {
-        btn.textContent = `Redirecting (saving $${data.creditApplied.toFixed(2)})...`;
-      }
-      window.location.href = data.url;
-    } else {
-      throw new Error('No checkout URL returned');
+    // Show success inline — no checkout redirect needed
+    const box = btn.closest('.credit-confirm-box');
+    if (box) {
+      const successColor = plan === 'annual' ? '#1d4ed8' : '#15803d';
+      const successBg   = plan === 'annual' ? '#eff6ff' : '#f0fdf4';
+      const successBorder= plan === 'annual' ? '#93c5fd' : '#86efac';
+      box.innerHTML = `<div style="background:${successBg};border:1px solid ${successBorder};border-radius:10px;padding:16px 18px;">`
+        + `<div style="font-size:0.95rem;font-weight:700;color:${successColor};margin-bottom:6px;">Credit Applied!</div>`
+        + `<p style="font-size:0.87rem;color:${successColor};margin:0;opacity:0.85;">${data.message || 'Your credit has been applied to your subscription.'}</p>`
+        + `</div>`;
     }
+    // Refresh account tab after a moment to show updated credit balance
+    setTimeout(() => renderAccountTab(), 2500);
   } catch(e) {
     btn.textContent = orig;
     btn.disabled = false;
-    alert('Could not create checkout: ' + (e.message || 'Please try again'));
+    alert('Could not apply credit: ' + (e.message || 'Please try again'));
   }
 }
 

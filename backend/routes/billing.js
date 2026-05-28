@@ -133,4 +133,79 @@ router.get('/info', requireAuth, async (req, res) => {
   });
 });
 
+/**
+ * POST /billing/apply-credit
+ * Apply account credit to the existing Stripe subscription (no checkout redirect)
+ * plan = 'subscription' → discount next bill on current plan
+ * plan = 'annual'       → upgrade subscription to annual, apply credit discount
+ */
+router.post('/apply-credit', requireAuth, async (req, res) => {
+  const { plan } = req.body;
+  if (!['subscription', 'annual'].includes(plan)) {
+    return res.status(400).json({ error: 'Invalid plan. Use subscription or annual.' });
+  }
+
+  const User = require('../models/User');
+  const freshUser = await User.findById(req.user._id).lean();
+  const credit = freshUser?.accountCredit || 0;
+
+  if (credit <= 0) return res.status(400).json({ error: 'No account credit available.' });
+  if (!freshUser?.stripeSubscriptionId) {
+    return res.status(400).json({ error: 'No active subscription found. Purchase a plan first.' });
+  }
+
+  try {
+    const planAmountCents = plan === 'annual' ? 4900 : (freshUser.plan === 'annual' ? 4900 : 599);
+    const creditCents = Math.min(Math.floor(credit * 100), planAmountCents);
+
+    // Create a one-time Stripe coupon for the credit amount
+    const coupon = await stripe.coupons.create({
+      amount_off: creditCents,
+      currency: 'usd',
+      duration: 'once',
+      name: `TripReclaim referral credit ($${(creditCents / 100).toFixed(2)})`,
+      max_redemptions: 1,
+    });
+
+    if (plan === 'annual') {
+      // Upgrade existing subscription to annual price, apply coupon
+      const sub = await stripe.subscriptions.retrieve(freshUser.stripeSubscriptionId);
+      await stripe.subscriptions.update(freshUser.stripeSubscriptionId, {
+        items: [{ id: sub.items.data[0].id, price: process.env.STRIPE_PRICE_ANNUAL }],
+        discounts: [{ coupon: coupon.id }],
+        proration_behavior: 'none',
+      });
+      // Update user plan in MongoDB
+      await User.findByIdAndUpdate(freshUser._id, {
+        plan: 'annual',
+        accountCredit: Math.max(0, parseFloat((credit - creditCents / 100).toFixed(2))),
+      });
+      res.json({
+        ok: true,
+        creditApplied: creditCents / 100,
+        message: `Annual upgrade applied. Credit of $${(creditCents / 100).toFixed(2)} will reduce your next bill.`,
+      });
+    } else {
+      // Apply coupon to existing subscription — reduces next invoice
+      await stripe.subscriptions.update(freshUser.stripeSubscriptionId, {
+        discounts: [{ coupon: coupon.id }],
+      });
+      // Deduct credit from user account
+      await User.findByIdAndUpdate(freshUser._id, {
+        accountCredit: Math.max(0, parseFloat((credit - creditCents / 100).toFixed(2))),
+      });
+      const nextBillAmount = Math.max(0, planAmountCents / 100 - creditCents / 100);
+      res.json({
+        ok: true,
+        creditApplied: creditCents / 100,
+        nextBillAmount,
+        message: `Credit applied. Your next bill will be $${nextBillAmount.toFixed(2)}.`,
+      });
+    }
+  } catch (err) {
+    console.error('[billing] apply-credit error:', err.message);
+    res.status(500).json({ error: 'Failed to apply credit: ' + err.message });
+  }
+});
+
 module.exports = router;
