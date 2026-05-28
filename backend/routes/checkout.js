@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
     return res.status(400).json({ error: 'Invalid plan' });
   }
 
-  const frontendUrl = (process.env.FRONTEND_URL || 'https://tripreclaim.com').replace(//$/, '');
+  const frontendUrl = (process.env.FRONTEND_URL || 'https://tripreclaim.com').replace(/\/$/,  '');
 
   const sessionParams = {
     mode: config.mode,
