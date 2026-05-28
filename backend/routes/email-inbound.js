@@ -4,6 +4,7 @@ const axios = require('axios');
 const User = require('../models/User');
 const Booking = require('../models/Booking');
 const { parseConfirmationEmail } = require('../services/emailParser');
+const { upsertContact } = require('../services/ghl');
 const { runOcrOnEmail } = require('../services/imageOcr');
 const { Resend } = require('resend');
 
@@ -118,19 +119,62 @@ async function processInboundEmail(event) {
   const user = await User.findOne({ email: forwarderEmail.toLowerCase() });
   if (!user) {
     console.log(`[email-inbound] No TripReclaim account for ${forwarderEmail}`);
+
+    // Add to GHL as a warm lead (they already tried to use the product)
     try {
+      const noteDate = new Date().toISOString().split('T')[0];
+      await upsertContact({
+        email: forwarderEmail,
+        extraTags: ['email-no-account', 'warm-lead'],
+        note: `📧 Forwarded booking email without an account — ${noteDate}\nSubject: "${subject}"\nThey tried to use track@tripreclaim.com but have no account. High-intent lead.`,
+      });
+      console.log(`[email-inbound] Added ${forwarderEmail} to GHL as warm lead`);
+    } catch (e) { console.error('[email-inbound] GHL upsert failed (no-account):', e.message); }
+
+    // Send a warm, conversion-focused reply
+    try {
+      const signupUrl = `https://tripreclaim.com/?email=${encodeURIComponent(forwarderEmail)}`;
       await resend.emails.send({
         from: 'TripReclaim <hello@tripreclaim.com>',
         to: forwarderEmail,
-        subject: "We couldn't find your TripReclaim account",
+        subject: 'Your flight is eligible — finish setting up your account',
         html: `
-          <p>Hi there,</p>
-          <p>We received your forwarded confirmation email but couldn't find a TripReclaim account linked to <strong>${forwarderEmail}</strong>.</p>
-          <p>To use email monitoring, please <a href="https://tripreclaim.com">sign up for TripReclaim</a> first, then forward your confirmation email to track@tripreclaim.com.</p>
-          <p>— The TripReclaim Team</p>
+          <!DOCTYPE html>
+          <html>
+          <body style="margin:0;padding:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+            <div style="max-width:560px;margin:40px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+              <div style="background:#1e3a8a;padding:32px 40px;text-align:center;">
+                <img src="https://tripreclaim.com/logos/logo-white.png" alt="TripReclaim" style="height:36px;width:auto;">
+              </div>
+              <div style="padding:40px;">
+                <h1 style="margin:0 0 8px;font-size:24px;font-weight:700;color:#0f172a;">Your flight qualifies for monitoring ✈️</h1>
+                <p style="margin:0 0 24px;font-size:16px;color:#475569;line-height:1.6;">We received your booking confirmation — now we just need an account to start watching your fare for price drops.</p>
+
+                <div style="background:#eff6ff;border-left:4px solid #3b82f6;border-radius:4px;padding:16px 20px;margin:0 0 28px;">
+                  <p style="margin:0;font-size:14px;color:#1e40af;line-height:1.6;">
+                    <strong>How it works:</strong> Once your account is set up, we monitor your flight 24/7. If the price drops, we alert you instantly with step-by-step instructions to get money back — or we handle it for you.
+                  </p>
+                </div>
+
+                <a href="${signupUrl}" style="display:block;background:#1d4ed8;color:#ffffff;text-decoration:none;text-align:center;padding:16px 24px;border-radius:8px;font-size:16px;font-weight:600;margin:0 0 24px;">Create My Free Account →</a>
+
+                <p style="margin:0 0 8px;font-size:13px;color:#94a3b8;text-align:center;">Takes 60 seconds · Plans start at $2.99 · Cancel anytime</p>
+
+                <hr style="border:none;border-top:1px solid #e2e8f0;margin:28px 0;">
+                <p style="margin:0;font-size:13px;color:#64748b;line-height:1.6;">
+                  After signing up, forward your booking confirmation again to <a href="mailto:track@tripreclaim.com" style="color:#1d4ed8;">track@tripreclaim.com</a> and we'll start monitoring immediately.
+                </p>
+              </div>
+              <div style="background:#f1f5f9;padding:20px 40px;text-align:center;">
+                <p style="margin:0;font-size:12px;color:#94a3b8;">TripReclaim · hello@tripreclaim.com · <a href="https://tripreclaim.com/unsubscribe/" style="color:#94a3b8;">Unsubscribe</a></p>
+              </div>
+            </div>
+          </body>
+          </html>
         `
       });
-    } catch (e) { console.error('[email-inbound] Failed to send no-account email:', e.message); }
+      console.log(`[email-inbound] Sent warm-lead invite email to ${forwarderEmail}`);
+    } catch (e) { console.error('[email-inbound] Failed to send no-account invite email:', e.message); }
     return;
   }
 
