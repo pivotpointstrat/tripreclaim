@@ -2084,8 +2084,8 @@ function renderCreditBlock(data) {
       + '<div style="font-size:1.8rem;font-weight:800;margin-bottom:2px;">$' + credit.toFixed(2) + '</div>'
       + '<div style="font-size:0.8rem;opacity:0.85;margin-bottom:16px;">Covers the full $49 annual plan' + (hasRemaining ? ' &middot; $' + remaining + ' stays in your balance' : ' completely') + '</div>'
       + '<div style="display:flex;flex-direction:column;gap:8px;">'
-      + '<button onclick="upgradeWithCredit('annual')" style="background:#fff;color:#14532d;border:none;padding:11px 20px;border-radius:8px;font-weight:800;font-size:0.92rem;cursor:pointer;">&#127873; Claim Free Annual Plan &rarr;</button>'
-      + '<button onclick="upgradeWithCredit('monthly')" style="background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.3);padding:8px 16px;border-radius:7px;font-weight:500;font-size:0.8rem;cursor:pointer;">Or apply $' + MONTHLY_PRICE.toFixed(2) + ' toward next monthly bill</button>'
+      + '<button onclick="upgradeWithCredit(&apos;annual&apos;)" style="background:#fff;color:#14532d;border:none;padding:11px 20px;border-radius:8px;font-weight:800;font-size:0.92rem;cursor:pointer;">&#127873; Claim Free Annual Plan &rarr;</button>'
+      + '<button onclick="upgradeWithCredit(&apos;monthly&apos;)" style="background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.3);padding:8px 16px;border-radius:7px;font-weight:500;font-size:0.8rem;cursor:pointer;">Or apply $' + MONTHLY_PRICE.toFixed(2) + ' toward next monthly bill</button>'
       + '</div></div>';
   } else if (credit >= 30) {
     var pct = Math.min(100, Math.round((credit / ANNUAL_THRESHOLD) * 100));
@@ -2097,8 +2097,8 @@ function renderCreditBlock(data) {
       + '<div style="font-size:0.82rem;opacity:0.9;margin-bottom:8px;">Only <strong>$' + needed + '</strong> more unlocks a free year! (' + refsNeeded + ' more referral' + (refsNeeded !== 1 ? 's' : '') + ')</div>'
       + '<div style="background:rgba(255,255,255,0.25);border-radius:6px;height:8px;margin-bottom:14px;overflow:hidden;"><div style="background:#fff;height:100%;width:' + pct + '%;border-radius:6px;"></div></div>'
       + '<div style="display:flex;flex-direction:column;gap:8px;">'
-      + '<button onclick="upgradeWithCredit('monthly')'" style="background:#fff;color:#15803d;border:none;padding:9px 16px;border-radius:7px;font-weight:700;font-size:0.85rem;cursor:pointer;">Apply to Subscription (covers ' + monthsCovered + ' month' + (monthsCovered !== 1 ? 's' : '') + ' automatically)</button>'
-      + '<button onclick="upgradeWithCredit('annual')" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);padding:8px 16px;border-radius:7px;font-weight:600;font-size:0.82rem;cursor:pointer;">Apply to Annual ($' + (ANNUAL_THRESHOLD - credit).toFixed(2) + ' remaining to pay)</button>'
+      + '<button onclick="upgradeWithCredit(&apos;monthly&apos;)" style="background:#fff;color:#15803d;border:none;padding:9px 16px;border-radius:7px;font-weight:700;font-size:0.85rem;cursor:pointer;">Apply to Subscription (covers ' + monthsCovered + ' month' + (monthsCovered !== 1 ? 's' : '') + ' automatically)</button>'
+      + '<button onclick="upgradeWithCredit(&apos;annual&apos;)" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);padding:8px 16px;border-radius:7px;font-weight:600;font-size:0.82rem;cursor:pointer;">Apply to Annual ($' + (ANNUAL_THRESHOLD - credit).toFixed(2) + ' remaining to pay)</button>'
       + '</div></div>';
   } else {
     var subtitle = monthsCovered >= 2
@@ -2111,8 +2111,8 @@ function renderCreditBlock(data) {
       + '<div style="font-size:0.78rem;opacity:0.8;">' + subtitle + '</div>'
       + '</div>'
       + '<div style="display:flex;flex-direction:column;gap:8px;">'
-      + '<button onclick="upgradeWithCredit('monthly')" style="background:#fff;color:#15803d;border:none;padding:9px 16px;border-radius:7px;font-weight:700;font-size:0.85rem;cursor:pointer;">Apply to Subscription</button>'
-      + '<button onclick="upgradeWithCredit('annual')" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);padding:9px 16px;border-radius:7px;font-weight:600;font-size:0.85rem;cursor:pointer;">Apply to Annual Upgrade</button>'
+      + '<button onclick="upgradeWithCredit(&apos;monthly&apos;)" style="background:#fff;color:#15803d;border:none;padding:9px 16px;border-radius:7px;font-weight:700;font-size:0.85rem;cursor:pointer;">Apply to Subscription</button>'
+      + '<button onclick="upgradeWithCredit(&apos;annual&apos;)" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);padding:9px 16px;border-radius:7px;font-weight:600;font-size:0.85rem;cursor:pointer;">Apply to Annual Upgrade</button>'
       + '</div></div>';
   }
 }

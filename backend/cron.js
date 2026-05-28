@@ -13,6 +13,16 @@
  */
 
 require('dotenv').config();
+// ── Sentry error tracking (optional — activate by setting SENTRY_DSN in Railway) ──
+if (process.env.SENTRY_DSN) {
+  const Sentry = require('@sentry/node');
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.NODE_ENV || 'production',
+    tracesSampleRate: 0.1,
+  });
+  console.log('[sentry] Error tracking active (cron)');
+}
 const http = require('http');
 const cron = require('node-cron');
 const connectDB = require('./db');

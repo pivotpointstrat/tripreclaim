@@ -9,6 +9,7 @@
     "cron": "node cron.js"
   },
   "dependencies": {
+    "@sentry/node": "^10.54.0",
     "axios": "^1.6.0",
     "cors": "^2.8.5",
     "date-fns": "^3.0.0",
