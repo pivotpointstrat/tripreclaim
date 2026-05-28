@@ -2042,18 +2042,7 @@ async function loadReferral() {
     const waShareHref = 'https://wa.me/?text=' + encodeURIComponent(_refMsg);
     const smsShareHref = 'sms:?body=' + encodeURIComponent(_refMsg);
     el.innerHTML = `
-      ${ data.accountCredit > 0 ? `
-      <div style="background:linear-gradient(135deg,#16a34a,#15803d);border-radius:12px;padding:18px 20px;color:#fff;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-        <div>
-          <div style="font-size:0.82rem;opacity:0.9;margin-bottom:2px;">💰 Available Account Credit</div>
-          <div style="font-size:1.8rem;font-weight:800;">$${data.accountCredit.toFixed(2)}</div>
-          <div style="font-size:0.78rem;opacity:0.8;">Apply toward your subscription or annual upgrade</div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <button onclick="upgradeWithCredit('monthly')" style="background:#fff;color:#15803d;border:none;padding:9px 16px;border-radius:7px;font-weight:700;font-size:0.85rem;cursor:pointer;">Apply to Subscription</button>
-          <button onclick="upgradeWithCredit('annual')" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);padding:9px 16px;border-radius:7px;font-weight:600;font-size:0.85rem;cursor:pointer;">Apply to Annual Upgrade</button>
-        </div>
-      </div>` : '' }
+      ${renderCreditBlock(data)}
       <div class="referral-card">
         <h3>🎁 Earn $3 Per Referral — No Cap</h3>
         <p>Share your link with your travel crew. Every time someone subscribes to any paid plan, <strong>you earn $3 account credit</strong> — valid for 12 months, redeemable toward any Monthly or Annual plan.</p>
@@ -2079,6 +2068,55 @@ function copyReferralLink(link) {
 }
 
 
+function renderCreditBlock(data) {
+  var credit = data.accountCredit || 0;
+  if (credit <= 0) return '';
+  var ANNUAL_THRESHOLD = 49;
+  var MONTHLY_PRICE = 5.99;
+  var monthsCovered = Math.floor(credit / MONTHLY_PRICE);
+
+  if (credit >= ANNUAL_THRESHOLD) {
+    var remaining = Math.max(0, credit - ANNUAL_THRESHOLD).toFixed(2);
+    var hasRemaining = parseFloat(remaining) > 0;
+    return '<div style="background:linear-gradient(135deg,#14532d,#15803d);border-radius:14px;padding:20px 22px;color:#fff;margin-bottom:16px;">'
+      + '<div style="font-size:0.78rem;letter-spacing:.06em;text-transform:uppercase;opacity:0.8;margin-bottom:4px;">&#10024; Referral Credit</div>'
+      + '<div style="font-size:0.9rem;font-weight:700;margin-bottom:6px;">&#127881; You&rsquo;ve earned a FREE year of TripReclaim!</div>'
+      + '<div style="font-size:1.8rem;font-weight:800;margin-bottom:2px;">$' + credit.toFixed(2) + '</div>'
+      + '<div style="font-size:0.8rem;opacity:0.85;margin-bottom:16px;">Covers the full $49 annual plan' + (hasRemaining ? ' &middot; $' + remaining + ' stays in your balance' : ' completely') + '</div>'
+      + '<div style="display:flex;flex-direction:column;gap:8px;">'
+      + '<button onclick="upgradeWithCredit('annual')" style="background:#fff;color:#14532d;border:none;padding:11px 20px;border-radius:8px;font-weight:800;font-size:0.92rem;cursor:pointer;">&#127873; Claim Free Annual Plan &rarr;</button>'
+      + '<button onclick="upgradeWithCredit('monthly')" style="background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.3);padding:8px 16px;border-radius:7px;font-weight:500;font-size:0.8rem;cursor:pointer;">Or apply $' + MONTHLY_PRICE.toFixed(2) + ' toward next monthly bill</button>'
+      + '</div></div>';
+  } else if (credit >= 30) {
+    var pct = Math.min(100, Math.round((credit / ANNUAL_THRESHOLD) * 100));
+    var needed = (ANNUAL_THRESHOLD - credit).toFixed(2);
+    var refsNeeded = Math.ceil((ANNUAL_THRESHOLD - credit) / 3);
+    return '<div style="background:linear-gradient(135deg,#16a34a,#15803d);border-radius:12px;padding:18px 20px;color:#fff;margin-bottom:16px;">'
+      + '<div style="font-size:0.82rem;opacity:0.9;margin-bottom:2px;">&#128176; Available Account Credit</div>'
+      + '<div style="font-size:1.8rem;font-weight:800;margin-bottom:4px;">$' + credit.toFixed(2) + '</div>'
+      + '<div style="font-size:0.82rem;opacity:0.9;margin-bottom:8px;">Only <strong>$' + needed + '</strong> more unlocks a free year! (' + refsNeeded + ' more referral' + (refsNeeded !== 1 ? 's' : '') + ')</div>'
+      + '<div style="background:rgba(255,255,255,0.25);border-radius:6px;height:8px;margin-bottom:14px;overflow:hidden;"><div style="background:#fff;height:100%;width:' + pct + '%;border-radius:6px;"></div></div>'
+      + '<div style="display:flex;flex-direction:column;gap:8px;">'
+      + '<button onclick="upgradeWithCredit('monthly')'" style="background:#fff;color:#15803d;border:none;padding:9px 16px;border-radius:7px;font-weight:700;font-size:0.85rem;cursor:pointer;">Apply to Subscription (covers ' + monthsCovered + ' month' + (monthsCovered !== 1 ? 's' : '') + ' automatically)</button>'
+      + '<button onclick="upgradeWithCredit('annual')" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);padding:8px 16px;border-radius:7px;font-weight:600;font-size:0.82rem;cursor:pointer;">Apply to Annual ($' + (ANNUAL_THRESHOLD - credit).toFixed(2) + ' remaining to pay)</button>'
+      + '</div></div>';
+  } else {
+    var subtitle = monthsCovered >= 2
+      ? 'Covers your next ' + monthsCovered + ' monthly bills automatically'
+      : 'Apply toward your subscription or annual upgrade';
+    return '<div style="background:linear-gradient(135deg,#16a34a,#15803d);border-radius:12px;padding:18px 20px;color:#fff;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">'
+      + '<div>'
+      + '<div style="font-size:0.82rem;opacity:0.9;margin-bottom:2px;">&#128176; Available Account Credit</div>'
+      + '<div style="font-size:1.8rem;font-weight:800;">$' + credit.toFixed(2) + '</div>'
+      + '<div style="font-size:0.78rem;opacity:0.8;">' + subtitle + '</div>'
+      + '</div>'
+      + '<div style="display:flex;flex-direction:column;gap:8px;">'
+      + '<button onclick="upgradeWithCredit('monthly')" style="background:#fff;color:#15803d;border:none;padding:9px 16px;border-radius:7px;font-weight:700;font-size:0.85rem;cursor:pointer;">Apply to Subscription</button>'
+      + '<button onclick="upgradeWithCredit('annual')" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);padding:9px 16px;border-radius:7px;font-weight:600;font-size:0.85rem;cursor:pointer;">Apply to Annual Upgrade</button>'
+      + '</div></div>';
+  }
+}
+
 async function upgradeWithCredit(plan) {
   // Fetch billing context first, then show confirmation before checkout
   const btn = event.target;
@@ -2102,13 +2140,14 @@ async function upgradeWithCredit(plan) {
   if (plan === 'monthly') {
     const nextAmt = info.monthlyAfterCredit.toFixed(2);
     const dateStr = info.nextBillDate || 'your next billing date';
+    const monthsCoveredConfirm = info.monthsCovered || Math.floor((info.accountCredit || 0) / 5.99);
+    const coverageMsg = monthsCoveredConfirm >= 2
+      ? `$${credit.toFixed(2)} credit covers your next <strong>${monthsCoveredConfirm} monthly bills</strong> automatically &mdash; no action needed each month.`
+      : `Your next bill on <strong>${dateStr}</strong> will be <strong>$${nextAmt}</strong>${credit > 0 ? ` <span style="color:#64748b;font-size:0.82rem;">($${info.monthlyPrice.toFixed(2)} &minus; $${credit.toFixed(2)} credit)</span>` : ''}.`;
     confirmHtml = `
       <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:16px 18px;margin-top:10px;">
         <div style="font-size:0.95rem;font-weight:700;color:#15803d;margin-bottom:6px;">Confirm: Apply Credit to Subscription</div>
-        <p style="font-size:0.87rem;color:#166534;margin:0 0 12px;">
-          Your next bill on <strong>${dateStr}</strong> will be <strong>$${nextAmt}</strong>
-          ${credit > 0 ? ` <span style="color:#64748b;font-size:0.82rem;">(${info.monthlyPrice.toFixed(2)} &minus; $${credit.toFixed(2)} credit)</span>` : ''}.
-        </p>
+        <p style="font-size:0.87rem;color:#166534;margin:0 0 12px;">${coverageMsg}</p>
         <div style="display:flex;gap:8px;">
           <button onclick="confirmUpgradeWithCredit('monthly', this)" style="background:#15803d;color:#fff;border:none;padding:8px 18px;border-radius:7px;font-weight:700;font-size:0.85rem;cursor:pointer;">Confirm &amp; Apply</button>
           <button onclick="this.closest('.credit-confirm-box').remove()" style="background:transparent;border:none;color:#94a3b8;font-size:0.85rem;cursor:pointer;">Cancel</button>
@@ -2120,18 +2159,24 @@ async function upgradeWithCredit(plan) {
     const endDate = info.currentPeriodEnd
       ? new Date((info.currentPeriodEnd + 365 * 86400) * 1000).toLocaleDateString('en-US', {month:'long',day:'numeric',year:'numeric'})
       : 'one year from then';
+    const freeAnnual    = credit >= 49;
+    const annualRemain  = Math.max(0, credit - 49).toFixed(2);
+    const annualBg      = freeAnnual ? '#f0fdf4' : '#eff6ff';
+    const annualBorder  = freeAnnual ? '#86efac' : '#93c5fd';
+    const annualHdr     = freeAnnual ? '#15803d' : '#1d4ed8';
+    const annualBody    = freeAnnual ? '#166534' : '#1e40af';
+    const annualBtnBg   = freeAnnual ? '#15803d' : '#1d4ed8';
+    const annualTitle   = freeAnnual ? '&#127881; Confirm: Free Annual Plan' : 'Confirm: Annual Upgrade';
+    const annualBtnTxt  = freeAnnual ? 'Confirm &amp; Claim Free Year' : 'Confirm &amp; Upgrade';
+    const annualBodyMsg = freeAnnual
+      ? `Your <strong>$${credit.toFixed(2)} credit</strong> covers the full $49 annual plan.${parseFloat(annualRemain) > 0 ? ` <strong>$${annualRemain}</strong> remaining will auto-apply to future renewals.` : ' Credit fully applied.'}`
+      : `Annual plan starts <strong>${startDate}</strong> through <strong>${endDate}</strong>. You will be charged <strong>$${annualAmt}</strong> <span style="color:#64748b;font-size:0.82rem;">($${info.annualPrice.toFixed(2)} &minus; $${credit.toFixed(2)} credit)</span>.`;
     confirmHtml = `
-      <div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:10px;padding:16px 18px;margin-top:10px;">
-        <div style="font-size:0.95rem;font-weight:700;color:#1d4ed8;margin-bottom:6px;">Confirm: Annual Upgrade</div>
-        <p style="font-size:0.87rem;color:#1e40af;margin:0 0 4px;">
-          Annual plan starts <strong>${startDate}</strong> and runs through <strong>${endDate}</strong>.
-        </p>
-        <p style="font-size:0.87rem;color:#1e40af;margin:0 0 12px;">
-          You will be charged <strong>$${annualAmt}</strong>
-          ${credit > 0 ? ` <span style="color:#64748b;font-size:0.82rem;">($${info.annualPrice.toFixed(2)} &minus; $${credit.toFixed(2)} credit)</span>` : ''}.
-        </p>
+      <div style="background:${annualBg};border:1px solid ${annualBorder};border-radius:10px;padding:16px 18px;margin-top:10px;">
+        <div style="font-size:0.95rem;font-weight:700;color:${annualHdr};margin-bottom:6px;">${annualTitle}</div>
+        <p style="font-size:0.87rem;color:${annualBody};margin:0 0 12px;">${annualBodyMsg}</p>
         <div style="display:flex;gap:8px;">
-          <button onclick="confirmUpgradeWithCredit('annual', this)" style="background:#1d4ed8;color:#fff;border:none;padding:8px 18px;border-radius:7px;font-weight:700;font-size:0.85rem;cursor:pointer;">Confirm &amp; Upgrade</button>
+          <button onclick="confirmUpgradeWithCredit('annual', this)" style="background:${annualBtnBg};color:#fff;border:none;padding:8px 18px;border-radius:7px;font-weight:700;font-size:0.85rem;cursor:pointer;">${annualBtnTxt}</button>
           <button onclick="this.closest('.credit-confirm-box').remove()" style="background:transparent;border:none;color:#94a3b8;font-size:0.85rem;cursor:pointer;">Cancel</button>
         </div>
       </div>`;

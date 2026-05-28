@@ -36,67 +36,8 @@ router.get('/status', requireAuth, async (req, res) => {
 });
 
 /**
- * POST /billing/create-upgrade-checkout
- * Create a Stripe checkout session for monthly/annual upgrade with account credit applied
- */
-router.post('/create-upgrade-checkout', requireAuth, async (req, res) => {
-  const { plan } = req.body;
-  if (!['monthly', 'annual'].includes(plan)) {
-    return res.status(400).json({ error: 'Credit can only be applied to monthly or annual plans' });
-  }
-
-  const user = req.user;
-  const User = require('../models/User');
-  const freshUser = await User.findById(user._id).lean();
-  const accountCredit = freshUser?.accountCredit || 0;
-
-  const priceId = plan === 'monthly'
-    ? process.env.STRIPE_PRICE_MONTHLY
-    : process.env.STRIPE_PRICE_ANNUAL;
-  const planAmountCents = plan === 'monthly' ? 599 : 4900;
-  const creditCents = Math.min(Math.floor(accountCredit * 100), planAmountCents);
-
-  try {
-    let discounts = [];
-    let couponId = null;
-
-    if (creditCents > 0) {
-      const coupon = await stripe.coupons.create({
-        amount_off: creditCents,
-        currency: 'usd',
-        duration: 'once',
-        name: `TripReclaim referral credit ($${(creditCents / 100).toFixed(2)})`,
-        max_redemptions: 1,
-      });
-      couponId = coupon.id;
-      discounts = [{ coupon: couponId }];
-    }
-
-    const sessionParams = {
-      mode: 'subscription', // both monthly and annual are Stripe recurring subscriptions
-      line_items: [{ price: priceId, quantity: 1 }],
-      customer_email: user.email,
-      success_url: `${process.env.FRONTEND_URL}/dashboard/?upgraded=1`,
-      cancel_url: `${process.env.FRONTEND_URL}/dashboard/`,
-      metadata: {
-        creditApplied: creditCents.toString(),
-        userId: user._id.toString(),
-        couponId: couponId || '',
-      },
-    };
-    if (discounts.length > 0) sessionParams.discounts = discounts;
-
-    const session = await stripe.checkout.sessions.create(sessionParams);
-    res.json({ url: session.url, creditApplied: creditCents / 100 });
-  } catch (err) {
-    console.error('[billing] create-upgrade-checkout error:', err.message);
-    res.status(500).json({ error: 'Failed to create checkout session' });
-  }
-});
-
-/**
  * GET /billing/info
- * Return billing context: next bill date, credit balance, amounts after credit
+ * Return billing context: next bill date, credit balance, threshold info for upsell
  */
 router.get('/info', requireAuth, async (req, res) => {
   const User = require('../models/User');
@@ -122,22 +63,26 @@ router.get('/info', requireAuth, async (req, res) => {
   const ANNUAL  = 49.00;
 
   res.json({
-    plan:            freshUser?.plan || null,
+    plan:               freshUser?.plan || null,
     nextBillDate,
     currentPeriodEnd,
-    accountCredit:   parseFloat(credit.toFixed(2)),
-    monthlyPrice:    MONTHLY,
-    annualPrice:     ANNUAL,
+    accountCredit:      parseFloat(credit.toFixed(2)),
+    monthlyPrice:       MONTHLY,
+    annualPrice:        ANNUAL,
     monthlyAfterCredit: parseFloat(Math.max(0, MONTHLY - credit).toFixed(2)),
     annualAfterCredit:  parseFloat(Math.max(0, ANNUAL  - credit).toFixed(2)),
+    monthsCovered:      Math.floor(credit / MONTHLY),
+    creditCoversAnnual: credit >= ANNUAL,
+    annualThreshold:    ANNUAL,
+    nudgeAmount:        parseFloat(Math.max(0, ANNUAL - credit).toFixed(2)),
   });
 });
 
 /**
  * POST /billing/apply-credit
- * Apply account credit to the existing Stripe subscription (no checkout redirect)
- * plan = 'subscription' → discount next bill on current plan
- * plan = 'annual'       → upgrade subscription to annual, apply credit discount
+ * Apply account credit using Stripe Customer Balance (auto-applies to all future invoices)
+ * plan = 'subscription' → add full credit to Stripe balance (covers multiple months automatically)
+ * plan = 'annual'       → upgrade subscription to annual + add credit to Stripe balance
  */
 router.post('/apply-credit', requireAuth, async (req, res) => {
   const { plan } = req.body;
@@ -150,56 +95,70 @@ router.post('/apply-credit', requireAuth, async (req, res) => {
   const credit = freshUser?.accountCredit || 0;
 
   if (credit <= 0) return res.status(400).json({ error: 'No account credit available.' });
-  if (!freshUser?.stripeSubscriptionId) {
-    return res.status(400).json({ error: 'No active subscription found. Purchase a plan first.' });
+  if (!freshUser?.stripeCustomerId) {
+    return res.status(400).json({ error: 'No Stripe account found. Please contact support.' });
   }
 
+  const creditCents = Math.round(credit * 100); // full amount — not capped
+
   try {
-    const planAmountCents = plan === 'annual' ? 4900 : (freshUser.plan === 'annual' ? 4900 : 599);
-    const creditCents = Math.min(Math.floor(credit * 100), planAmountCents);
-
-    // Create a one-time Stripe coupon for the credit amount
-    const coupon = await stripe.coupons.create({
-      amount_off: creditCents,
-      currency: 'usd',
-      duration: 'once',
-      name: `TripReclaim referral credit ($${(creditCents / 100).toFixed(2)})`,
-      max_redemptions: 1,
-    });
-
     if (plan === 'annual') {
-      // Upgrade existing subscription to annual price, apply coupon
-      const sub = await stripe.subscriptions.retrieve(freshUser.stripeSubscriptionId);
-      await stripe.subscriptions.update(freshUser.stripeSubscriptionId, {
-        items: [{ id: sub.items.data[0].id, price: process.env.STRIPE_PRICE_ANNUAL }],
-        discounts: [{ coupon: coupon.id }],
-        proration_behavior: 'none',
+      // Upgrade existing subscription to annual price
+      if (freshUser?.stripeSubscriptionId) {
+        const sub = await stripe.subscriptions.retrieve(freshUser.stripeSubscriptionId);
+        await stripe.subscriptions.update(freshUser.stripeSubscriptionId, {
+          items: [{ id: sub.items.data[0].id, price: process.env.STRIPE_PRICE_ANNUAL }],
+          proration_behavior: 'none',
+        });
+      }
+
+      // Add full credit as Stripe customer balance (auto-applies to next invoice)
+      await stripe.customers.createBalanceTransaction(freshUser.stripeCustomerId, {
+        amount: -creditCents,
+        currency: 'usd',
+        description: `TripReclaim referral credit — $${credit.toFixed(2)} applied to annual plan`,
       });
-      // Update user plan in MongoDB
+
+      // Update MongoDB: plan = annual, zero out credit (Stripe owns it now)
       await User.findByIdAndUpdate(freshUser._id, {
         plan: 'annual',
-        accountCredit: Math.max(0, parseFloat((credit - creditCents / 100).toFixed(2))),
+        accountCredit: 0,
       });
+
+      const annualCost = 49.00;
+      const remaining = parseFloat(Math.max(0, credit - annualCost).toFixed(2));
+      const charged   = parseFloat(Math.max(0, annualCost - credit).toFixed(2));
+
       res.json({
         ok: true,
-        creditApplied: creditCents / 100,
-        message: `Annual upgrade applied. Credit of $${(creditCents / 100).toFixed(2)} will reduce your next bill.`,
+        creditApplied: credit,
+        charged,
+        remaining,
+        message: credit >= annualCost
+          ? `Annual plan activated! Your $${credit.toFixed(2)} credit covers the full $49 plan.${ remaining > 0 ? ` $${remaining.toFixed(2)} remaining credit will auto-apply to future renewals.` : ''}`
+          : `Annual upgrade applied. $${credit.toFixed(2)} credit reduces your first annual bill to $${charged.toFixed(2)}.`,
       });
+
     } else {
-      // Apply coupon to existing subscription — reduces next invoice
-      await stripe.subscriptions.update(freshUser.stripeSubscriptionId, {
-        discounts: [{ coupon: coupon.id }],
+      // Apply full credit to Stripe customer balance — auto-applies across multiple monthly invoices
+      await stripe.customers.createBalanceTransaction(freshUser.stripeCustomerId, {
+        amount: -creditCents,
+        currency: 'usd',
+        description: `TripReclaim referral credit — $${credit.toFixed(2)} added to account`,
       });
-      // Deduct credit from user account
-      await User.findByIdAndUpdate(freshUser._id, {
-        accountCredit: Math.max(0, parseFloat((credit - creditCents / 100).toFixed(2))),
-      });
-      const nextBillAmount = Math.max(0, planAmountCents / 100 - creditCents / 100);
+
+      // Zero out credit in MongoDB (Stripe owns it now)
+      await User.findByIdAndUpdate(freshUser._id, { accountCredit: 0 });
+
+      const monthsCovered = Math.floor(credit / 5.99);
+      const remainder     = parseFloat((credit % 5.99).toFixed(2));
+
       res.json({
         ok: true,
-        creditApplied: creditCents / 100,
-        nextBillAmount,
-        message: `Credit applied. Your next bill will be $${nextBillAmount.toFixed(2)}.`,
+        creditApplied: credit,
+        monthsCovered,
+        remainder,
+        message: `$${credit.toFixed(2)} credit applied to your account. Stripe will automatically cover your next ${ monthsCovered > 1 ? `${monthsCovered} monthly bills` : 'monthly bill' } — no action needed each month.${ remainder > 0 ? ` ($${remainder.toFixed(2)} remaining after ${monthsCovered} month${monthsCovered !== 1 ? 's' : ''})` : '' }`,
       });
     }
   } catch (err) {
