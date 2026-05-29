@@ -48,6 +48,8 @@ const userSchema = new mongoose.Schema({
   trialDestination: { type: String, default: null },
   trialDepartureDate: { type: String, default: null },
   trialPricePaid: { type: Number, default: null },
+  trialNudgeEmailSent: { type: Boolean, default: false },
+  trialExpiredEmailSent: { type: Boolean, default: false },
   createdAt: {
     type: Date,
     default: Date.now,

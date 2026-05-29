@@ -27,7 +27,7 @@ const http = require('http');
 const cron = require('node-cron');
 const connectDB = require('./db');
 const { runMonitoringCycle } = require('./services/alerts');
-const { sendCreditExpiryReminder, sendPolicyChangeAlert, sendOnboardingDay3, sendOnboardingDay7 } = require('./services/email');
+const { sendCreditExpiryReminder, sendPolicyChangeAlert, sendOnboardingDay3, sendOnboardingDay7, sendTrialPreExpiryNudge, sendTrialExpiredEmail } = require('./services/email');
 const { refreshAllPolicies, getRecentPolicyChanges } = require('./services/policyAgent');
 const { seedPolicies } = require('./services/policyAgent');
 const Booking = require('./models/Booking');
@@ -68,6 +68,54 @@ const start = async () => {
       await runMonitoringCycle();
     } catch (err) {
       console.error('[cron] Monitoring cycle error:', err.message);
+    }
+  });
+
+  // ── Every 15 minutes: trial pre-expiry nudge (sent ~2h before trial ends) ──
+  cron.schedule('*/15 * * * *', async () => {
+    try {
+      const now = new Date();
+      const twoHoursFromNow = new Date(now.getTime() + 2.5 * 60 * 60 * 1000);
+      const oneHourFromNow = new Date(now.getTime() + 1.5 * 60 * 60 * 1000);
+      const nudgeUsers = await User.find({
+        plan: 'trial',
+        trialExpiresAt: { $gte: oneHourFromNow, $lte: twoHoursFromNow },
+        trialNudgeEmailSent: { $ne: true },
+      }).limit(50);
+      for (const user of nudgeUsers) {
+        try {
+          await sendTrialPreExpiryNudge(user.email, user);
+          await User.findByIdAndUpdate(user._id, { trialNudgeEmailSent: true });
+          console.log(`[cron] Trial nudge sent to ${user.email}`);
+        } catch (e) {
+          console.error(`[cron] Trial nudge failed for ${user.email}:`, e.message);
+        }
+      }
+    } catch (err) {
+      console.error('[cron] Trial nudge check error:', err.message);
+    }
+  });
+
+  // ── Every 15 minutes: trial expired email (sent when 24h trial ends) ──
+  cron.schedule('*/15 * * * *', async () => {
+    try {
+      const now = new Date();
+      const expiredUsers = await User.find({
+        plan: 'trial',
+        trialExpiresAt: { $lte: now },
+        trialExpiredEmailSent: { $ne: true },
+      }).limit(50);
+      for (const user of expiredUsers) {
+        try {
+          await sendTrialExpiredEmail(user.email, user);
+          await User.findByIdAndUpdate(user._id, { trialExpiredEmailSent: true });
+          console.log(`[cron] Trial expired email sent to ${user.email}`);
+        } catch (e) {
+          console.error(`[cron] Trial expired email failed for ${user.email}:`, e.message);
+        }
+      }
+    } catch (err) {
+      console.error('[cron] Trial expired check error:', err.message);
     }
   });
 

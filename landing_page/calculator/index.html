@@ -210,7 +210,7 @@
 <div class="calc-wrapper">
   <div class="calc-card">
     <div class="calc-form">
-      <h2><img src="/logos/trip-reclaim-fb.png" alt="TripReclaim" style="height:36px;vertical-align:middle;margin-right:10px;">Enter Your Flight Details</h2>
+      <h2><img src="/logos/trip-reclaim-fb.png" alt="TripReclaim" style="height:47px;vertical-align:middle;margin-right:10px;">Enter Your Flight Details</h2>
 
       <div class="trip-toggle">
         <button class="trip-tab" id="tab-oneway" onclick="setTripType('oneway')">✈️ One Way</button>
@@ -516,7 +516,9 @@ setupAutocomplete('to-input', 'to-suggestions', 'to-code');
   const today = new Date();
   const dep = new Date(today);
   dep.setDate(dep.getDate() + 45);
-  document.getElementById('booked-date').value = today.toISOString().split('T')[0];
+  const todayStr = today.toISOString().split('T')[0];
+  document.getElementById('booked-date').value = todayStr;
+  document.getElementById('booked-date').max = todayStr;
   document.getElementById('depart-date').value = dep.toISOString().split('T')[0];
 })();
 
@@ -559,6 +561,11 @@ function calculate() {
 
   if (bookedStr && booked > depart) {
     alert('Your booking date cannot be after your departure date.');
+    return;
+  }
+
+  if (bookedStr && booked > today) {
+    alert('Your booking date cannot be in the future.');
     return;
   }
 

@@ -675,4 +675,91 @@ const sendSaleNotification = async (email, plan, isReferral = false, referralCod
   }
 };
 
-module.exports = { sendMagicLink, sendWelcome, sendPriceDropAlert, sendCreditExpiryReminder, sendPolicyChangeAlert, sendSmsAlert, sendSmsPriceDropAlert, sendOnboardingDay0, sendOnboardingDay3, sendOnboardingDay7, sendReferralCreditEmail, sendSaleNotification };
+
+// ── Trial pre-expiry nudge (sent ~2 hours before trial expires) ───────────────
+const sendTrialPreExpiryNudge = async (email, user) => {
+  const route = user.trialOrigin && user.trialDestination
+    ? `${user.trialOrigin}→${user.trialDestination}`
+    : 'your route';
+  const pricePaid = user.trialPricePaid ? `$${user.trialPricePaid.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'the price you paid';
+  try {
+    await resend.emails.send({
+      from: 'TripReclaim <alerts@tripreclaim.com>',
+      to: email,
+      subject: `⏰ 2 hours left on your free TripReclaim trial — ${route}`,
+      html: `
+        <div style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto;background:#fff;">
+          <div style="background:#0f172a;padding:24px 32px;">
+            <img src="https://tripreclaim.com/logos/logo.png" alt="TripReclaim" style="height:36px;">
+          </div>
+          <div style="padding:32px;">
+            <div style="background:#fef3c7;border-left:4px solid #f59e0b;padding:16px 20px;border-radius:4px;margin-bottom:24px;">
+              <strong style="color:#92400e;">⏰ Your free trial expires in ~2 hours</strong>
+            </div>
+            <h2 style="color:#0f172a;font-size:22px;margin:0 0 12px;">We're still watching ${route}</h2>
+            <p style="color:#475569;line-height:1.6;margin:0 0 20px;">
+              Your free 24-hour price monitoring trial is almost up. We're checking fares on ${route}
+              every 15 minutes and comparing them to ${pricePaid}.
+            </p>
+            <p style="color:#475569;line-height:1.6;margin:0 0 24px;">
+              Don't let the monitoring stop — continue for just <strong>$2.99/trip</strong> and
+              we'll keep watching until 30 days before your departure.
+            </p>
+            <a href="https://tripreclaim.com/dashboard/" style="display:inline-block;padding:14px 28px;background:#1d4ed8;color:#fff;text-decoration:none;border-radius:8px;font-weight:700;font-size:16px;">Continue Monitoring — $2.99 →</a>
+            <p style="color:#94a3b8;font-size:13px;margin-top:24px;">Or try monthly ($5.99/mo) or annual ($49/yr) for unlimited flights.</p>
+          </div>
+          <div style="padding:0 32px 32px;">${getCanSpamFooter(email)}</div>
+        </div>
+      `,
+    });
+    console.log(`[email] Trial pre-expiry nudge sent to ${email}`);
+  } catch (e) {
+    console.warn('[email] sendTrialPreExpiryNudge failed:', e.message);
+  }
+};
+
+// ── Trial expired email (sent when 24h trial ends) ────────────────────────────
+const sendTrialExpiredEmail = async (email, user) => {
+  const route = user.trialOrigin && user.trialDestination
+    ? `${user.trialOrigin}→${user.trialDestination}`
+    : 'your route';
+  const pricePaid = user.trialPricePaid ? `$${user.trialPricePaid.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'the price you paid';
+  const departDate = user.trialDepartureDate ? new Date(user.trialDepartureDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : null;
+  try {
+    await resend.emails.send({
+      from: 'TripReclaim <alerts@tripreclaim.com>',
+      to: email,
+      subject: `Your free TripReclaim trial has ended — continue monitoring ${route}`,
+      html: `
+        <div style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto;background:#fff;">
+          <div style="background:#0f172a;padding:24px 32px;">
+            <img src="https://tripreclaim.com/logos/logo.png" alt="TripReclaim" style="height:36px;">
+          </div>
+          <div style="padding:32px;">
+            <h2 style="color:#0f172a;font-size:22px;margin:0 0 12px;">Your free trial has ended</h2>
+            <p style="color:#475569;line-height:1.6;margin:0 0 20px;">
+              Your 24-hour free monitoring trial for <strong>${route}</strong>${departDate ? ` on ${departDate}` : ''} has ended.
+              We were watching this route and comparing prices against ${pricePaid}.
+            </p>
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:20px;margin-bottom:24px;">
+              <p style="color:#0f172a;font-weight:600;margin:0 0 8px;">Continue monitoring for just $2.99</p>
+              <p style="color:#64748b;font-size:14px;margin:0;">We'll check prices every hour until 30 days before departure and alert you instantly when fares drop.</p>
+            </div>
+            <a href="https://tripreclaim.com/#pricing" style="display:inline-block;padding:14px 28px;background:#1d4ed8;color:#fff;text-decoration:none;border-radius:8px;font-weight:700;font-size:16px;">Continue Monitoring →</a>
+            <div style="margin-top:20px;">
+              <a href="https://tripreclaim.com/#pricing" style="display:inline-block;margin-right:12px;padding:10px 18px;background:#f1f5f9;color:#1d4ed8;text-decoration:none;border-radius:6px;font-size:14px;font-weight:600;">$2.99 / trip</a>
+              <a href="https://tripreclaim.com/#pricing" style="display:inline-block;margin-right:12px;padding:10px 18px;background:#f1f5f9;color:#1d4ed8;text-decoration:none;border-radius:6px;font-size:14px;font-weight:600;">$5.99 / month</a>
+              <a href="https://tripreclaim.com/#pricing" style="display:inline-block;padding:10px 18px;background:#f1f5f9;color:#1d4ed8;text-decoration:none;border-radius:6px;font-size:14px;font-weight:600;">$49 / year</a>
+            </div>
+          </div>
+          <div style="padding:0 32px 32px;">${getCanSpamFooter(email)}</div>
+        </div>
+      `,
+    });
+    console.log(`[email] Trial expired email sent to ${email}`);
+  } catch (e) {
+    console.warn('[email] sendTrialExpiredEmail failed:', e.message);
+  }
+};
+
+module.exports = { sendMagicLink, sendWelcome, sendPriceDropAlert, sendCreditExpiryReminder, sendPolicyChangeAlert, sendSmsAlert, sendSmsPriceDropAlert, sendOnboardingDay0, sendOnboardingDay3, sendOnboardingDay7, sendReferralCreditEmail, sendSaleNotification, sendTrialPreExpiryNudge, sendTrialExpiredEmail };
