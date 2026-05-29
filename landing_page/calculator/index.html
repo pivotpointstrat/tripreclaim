@@ -57,6 +57,7 @@
     .trip-tab { flex: 1; padding: 9px 16px; border: none; background: transparent; font-family: inherit; font-size: 0.875rem; font-weight: 600; color: var(--slate); cursor: pointer; border-radius: 8px; transition: all 0.2s; }
     .trip-tab.active { background: #fff; color: var(--navy); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
     .return-date-row { display: none; margin-bottom: 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .return-date-row.visible { display: block; }
     /* CALCULATOR CARD */
     .calc-wrapper { max-width: 720px; margin: 0 auto; padding: 0 24px; transform: translateY(32px); }
@@ -209,11 +210,11 @@
 <div class="calc-wrapper">
   <div class="calc-card">
     <div class="calc-form">
-      <h2>✈️ Enter Your Flight Details</h2>
+      <h2><img src="/logos/trip-reclaim-fb.png" alt="TripReclaim" style="height:36px;vertical-align:middle;margin-right:10px;">Enter Your Flight Details</h2>
 
       <div class="trip-toggle">
-        <button class="trip-tab active" id="tab-oneway" onclick="setTripType('oneway')">✈️ One Way</button>
-        <button class="trip-tab" id="tab-roundtrip" onclick="setTripType('roundtrip')">🔄 Round Trip</button>
+        <button class="trip-tab" id="tab-oneway" onclick="setTripType('oneway')">✈️ One Way</button>
+        <button class="trip-tab active" id="tab-roundtrip" onclick="setTripType('roundtrip')">🔄 Round Trip</button>
       </div>
 
       <div class="form-grid">
@@ -239,7 +240,7 @@
           <label>Departure Date</label>
           <input type="date" id="depart-date">
         </div>
-        <div class="return-date-row" id="return-date-row">
+        <div class="return-date-row visible" id="return-date-row">
           <label>Return Date</label>
           <input type="date" id="return-date">
         </div>
@@ -292,6 +293,8 @@
             <div class="stat-lbl">Days Until Flight</div>
           </div>
         </div>
+
+        <div id="live-price-box" style="display:none;margin-bottom:16px;"></div>
 
         <div class="breakdown">
           <h4>What factors into this estimate</h4>
@@ -519,7 +522,7 @@ setupAutocomplete('to-input', 'to-suggestions', 'to-code');
 
 // ── Calculation logic ─────────────────────────────────────────────────────────
 // ── Trip type toggle ──────────────────────────────────────────────────────────
-let tripType = 'oneway';
+let tripType = 'roundtrip';
 function setTripType(type) {
   tripType = type;
   document.getElementById('tab-oneway').classList.toggle('active', type === 'oneway');
@@ -667,6 +670,79 @@ function calculate() {
   // Show results
   document.getElementById('results').classList.add('visible');
   document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Trigger live real-time price check (non-blocking)
+  const retDateForCheck = tripType === 'roundtrip' ? document.getElementById('return-date').value : null;
+  runLivePriceCheck(fromCode, toCode, departStr, retDateForCheck, price);
+}
+
+// ── Live real-time price check ────────────────────────────────────────────────
+async function runLivePriceCheck(origin, destination, outbound_date, return_date, price_paid) {
+  const box = document.getElementById('live-price-box');
+  if (!box || !origin || !destination || !outbound_date) return;
+
+  // Show loading state
+  box.style.display = 'block';
+  box.innerHTML = '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:10px;">'
+    + '<div style="width:16px;height:16px;border:2px solid #3b82f6;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div>'
+    + '<span style="font-size:0.87rem;color:#64748b;">Checking live current prices for this route&hellip;</span>'
+    + '</div>';
+
+  try {
+    const resp = await fetch('https://tripreclaim-production.up.railway.app/api/calculator/check-price', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        origin,
+        destination,
+        outbound_date,
+        return_date: return_date || null,
+        price_paid: price_paid || 0,
+        trip_type: tripType,
+      })
+    });
+    const data = await resp.json();
+
+    if (!data.found) {
+      box.innerHTML = '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;">'
+        + '<div style="font-size:0.82rem;font-weight:700;color:#64748b;margin-bottom:2px;">&#128241; Live Price Check</div>'
+        + '<div style="font-size:0.85rem;color:#94a3b8;">Could not retrieve live prices for this route right now. The estimate above is based on historical patterns.</div>'
+        + '</div>';
+      return;
+    }
+
+    if (data.priceDropFound && data.savings > 0) {
+      // Real savings found!
+      box.innerHTML = '<div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #22c55e;border-radius:12px;padding:16px 18px;">'
+        + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
+        + '<div style="background:#22c55e;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:800;">&#10003;</div>'
+        + '<div style="font-size:0.95rem;font-weight:800;color:#15803d;">Live Price Drop Detected!</div>'
+        + '</div>'
+        + '<div style="display:flex;gap:24px;margin-bottom:10px;flex-wrap:wrap;">'
+        + '<div><div style="font-size:0.75rem;color:#64748b;text-transform:uppercase;letter-spacing:.04em;">You Paid</div><div style="font-size:1.3rem;font-weight:800;color:#ef4444;">$' + data.pricePaid.toLocaleString() + '</div></div>'
+        + '<div><div style="font-size:0.75rem;color:#64748b;text-transform:uppercase;letter-spacing:.04em;">Current Price</div><div style="font-size:1.3rem;font-weight:800;color:#15803d;">$' + data.lowestPrice.toLocaleString() + '</div></div>'
+        + '<div><div style="font-size:0.75rem;color:#64748b;text-transform:uppercase;letter-spacing:.04em;">Potential Savings</div><div style="font-size:1.3rem;font-weight:800;color:#15803d;">$' + data.savings.toLocaleString() + ' (' + data.percentDrop + '% off)</div></div>'
+        + '</div>'
+        + '<div style="font-size:0.82rem;color:#166534;background:#bbf7d0;border-radius:6px;padding:8px 12px;">&#128204; Real-time data from Google Flights &middot; ' + data.totalFlightsFound + ' flights found on this route</div>'
+        + '</div>';
+    } else if (data.found && !data.priceDropFound && price_paid > 0) {
+      // No drop vs what they paid
+      box.innerHTML = '<div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:10px;padding:14px 16px;">'
+        + '<div style="font-size:0.88rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;">&#128241; Live Price Check &mdash; No Drop Yet</div>'
+        + '<div style="font-size:0.84rem;color:#1e40af;">Current lowest price: <strong>$' + data.lowestPrice.toLocaleString() + '</strong> &mdash; you paid <strong>$' + data.pricePaid.toLocaleString() + '</strong>. Prices are currently the same or higher, but airlines reprice daily. Setting up monitoring is still worth it.</div>'
+        + '</div>';
+    } else {
+      // Found prices but no paid amount to compare
+      box.innerHTML = '<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:14px 16px;">'
+        + '<div style="font-size:0.88rem;font-weight:700;color:#15803d;margin-bottom:4px;">&#128241; Live Price Check</div>'
+        + '<div style="font-size:0.84rem;color:#166534;">Current lowest price found: <strong>$' + data.lowestPrice.toLocaleString() + '</strong> across ' + data.totalFlightsFound + ' flights. Enter the price you paid above to see your potential savings.</div>'
+        + '</div>';
+    }
+  } catch (err) {
+    box.innerHTML = '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;">'
+      + '<div style="font-size:0.82rem;color:#94a3b8;">Live price check unavailable right now &mdash; estimate above is based on historical data.</div>'
+      + '</div>';
+  }
 }
 
 // ── Email capture ─────────────────────────────────────────────────────────────
